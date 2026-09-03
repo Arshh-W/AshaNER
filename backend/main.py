@@ -1,33 +1,70 @@
-from fastapi import FastAPI
+import sqlite3
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, EmailStr
 
-app = FastAPI(
-    title="Dementia care platform",
-    version="1.0.0",
-    description="Backend for cognitive games, offline sync and caregiver analytics"
-)
+from auth import hash_password, verify_password, create_access_token, get_current_user
+from database import init_db, DB_NAME
 
-origins = [
-    "http://localhost:5173",  
-    "http://localhost:3000", 
-    "*"           
-]
+app = FastAPI(title="Dementia Care Platform API")
+
+init_db()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return {
-        "status": "online",
-        "message": "Dementia Care Backend API is running smoothly."
-    }
+# Pydantic Schemas
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str
+    role: str = "caregiver"
 
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
+
+@app.post("/api/v1/auth/register")
+def register_user(user: UserRegister):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    # Check if user already exists
+    cursor.execute("SELECT id FROM users WHERE email = ?", (user.email,))
+    if cursor.fetchone():
+        conn.close()
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    hashed_pwd = hash_password(user.password)
+    cursor.execute(
+        "INSERT INTO users (email, hashed_password, role) VALUES (?, ?, ?)",
+        (user.email, hashed_pwd, user.role)
+    )
+    conn.commit()
+    conn.close()
+    return {"message": "User created successfully"}
+
+
+@app.post("/api/v1/auth/login")
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("SELECT hashed_password, role FROM users WHERE email = ?", (form_data.username,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row or not verify_password(form_data.password, row[0]):
+        raise HTTPException(status_code=400, detail="Incorrect email or password")
+
+    access_token = create_access_token(data={"sub": form_data.username, "role": row[1]})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.get("/api/v1/caregiver/me")
+def get_my_profile(current_user: dict = Depends(get_current_user)):
+    return {
+        "status": "Authenticated",
+        "user_data": current_user
+    }
