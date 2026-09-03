@@ -1,11 +1,13 @@
+# main.py
 import sqlite3
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr
+from typing import List
 
 from auth import hash_password, verify_password, create_access_token, get_current_user
 from database import init_db, DB_NAME
+from schemas import UserRegister, PatientCreate, PatientResponse
 
 app = FastAPI(title="Dementia Care Platform API")
 
@@ -19,19 +21,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Pydantic Schemas
-class UserRegister(BaseModel):
-    email: EmailStr
-    password: str
-    role: str = "caregiver"
+# Helper function to get current user ID from DB
+def get_current_user_id(current_user: dict = Depends(get_current_user)) -> int:
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM users WHERE email = ?", (current_user["email"],))
+    user = cursor.fetchone()
+    conn.close()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user[0]
 
-
+# --- Auth Routes ---
 @app.post("/api/v1/auth/register")
 def register_user(user: UserRegister):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    
-    # Check if user already exists
     cursor.execute("SELECT id FROM users WHERE email = ?", (user.email,))
     if cursor.fetchone():
         conn.close()
@@ -45,7 +50,6 @@ def register_user(user: UserRegister):
     conn.commit()
     conn.close()
     return {"message": "User created successfully"}
-
 
 @app.post("/api/v1/auth/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -62,9 +66,49 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/api/v1/caregiver/me")
-def get_my_profile(current_user: dict = Depends(get_current_user)):
-    return {
-        "status": "Authenticated",
-        "user_data": current_user
-    }
+@app.post("/api/v1/patients", response_model=PatientResponse, status_code=status.HTTP_201_CREATED)
+def create_patient(
+    patient: PatientCreate,
+    caregiver_id: int = Depends(get_current_user_id)
+):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    cursor.execute(
+        """
+        INSERT INTO patients (caregiver_id, full_name, age, region, preferred_language)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        (caregiver_id, patient.full_name, patient.age, patient.region, patient.preferred_language)
+    )
+    conn.commit()
+    patient_id = cursor.lastrowid
+    
+    cursor.execute("SELECT id, caregiver_id, full_name, age, region, preferred_language FROM patients WHERE id = ?", (patient_id,))
+    row = cursor.fetchone()
+    conn.close()
+
+    return PatientResponse(
+        id=row[0], caregiver_id=row[1], full_name=row[2],
+        age=row[3], region=row[4], preferred_language=row[5]
+    )
+
+# Get All Patients Managed by Caregiver
+@app.get("/api/v1/patients", response_model=List[PatientResponse])
+def get_caregiver_patients(caregiver_id: int = Depends(get_current_user_id)):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT id, caregiver_id, full_name, age, region, preferred_language FROM patients WHERE caregiver_id = ?",
+        (caregiver_id,)
+    )
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        PatientResponse(
+            id=row[0], caregiver_id=row[1], full_name=row[2],
+            age=row[3], region=row[4], preferred_language=row[5]
+        )
+        for row in rows
+    ]
