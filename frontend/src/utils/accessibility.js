@@ -1,2 +1,1 @@
-// TODO: Implement accessibility utilities
-export const accessibilityUtils = {};
+export const announce=(text)=>{const el=document.createElement("div");el.setAttribute("aria-live","polite");el.className="sr-only";el.textContent=text;document.body.appendChild(el);setTimeout(()=>el.remove(),1200)};

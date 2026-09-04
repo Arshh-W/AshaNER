@@ -1,8 +1,1 @@
-import React from "react";
-
-const PageHeader = () => {
-    // TODO: Implement PageHeader
-    return <div>PageHeader</div>;
-};
-
-export default PageHeader;
+import Logo from "./Logo";import OfflineIndicator from "./OfflineIndicator";import LanguagePicker from "./LanguagePicker";import {Volume2,Contrast,Minus,Plus,Mic} from "lucide-react";import {useWebSpeech} from "../../hooks/useWebSpeech";export default function PageHeader(){const {speak}=useWebSpeech();return <header className="topbar"><Logo/><div className="top-actions"><button className="tool-btn" onClick={()=>document.documentElement.classList.toggle("high-contrast")}><Contrast/> <span>Contrast</span></button><button className="tool-btn" onClick={()=>document.documentElement.style.fontSize="110%"}>A− &nbsp;A+</button><LanguagePicker/><OfflineIndicator/><button className="talk-btn" onClick={()=>speak("Hello. How can I help you today?")}><Mic/> Talk to Asha</button></div></header>}

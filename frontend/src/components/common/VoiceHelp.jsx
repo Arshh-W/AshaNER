@@ -1,8 +1,1 @@
-import React from "react";
-
-const VoiceHelp = () => {
-    // TODO: Implement VoiceHelp
-    return <div>VoiceHelp</div>;
-};
-
-export default VoiceHelp;
+import {Mic,RotateCcw,Volume2} from "lucide-react";import {useWebSpeech} from "../../hooks/useWebSpeech";export default function VoiceHelp({text="Would you like help with this?"}){const {speak}=useWebSpeech();return <div className="voice-bar"><div className="voice-avatar"><Mic/></div><div className="voice-copy"><small>ASHA VOICE ASSISTANCE</small><strong>“{text}”</strong></div><div className="wave">▂▅▇▅▂</div><button className="dark-pill" onClick={()=>speak(text)}><RotateCcw/> Repeat Instruction</button></div>}

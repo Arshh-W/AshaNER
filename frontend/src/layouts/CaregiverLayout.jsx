@@ -1,8 +1,1 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
-
-const CaregiverLayout = () => {
-    return <Outlet />;
-};
-
-export default CaregiverLayout;
+import {Outlet} from "react-router-dom";import PageHeader from "../components/common/PageHeader";import {NavLink} from "react-router-dom";import {Home,Brain,Users,PhoneCall} from "lucide-react";export default function CaregiverLayout(){return <div className="app-shell"><PageHeader/><main className="page-wrap"><Outlet/></main><nav className="bottom-nav"><NavLink to="/patient"><Home/>Home & Routine</NavLink><NavLink to="/patient/games"><Brain/>Brain Games</NavLink><NavLink className="active" to="/caregiver"><Users/>Caregiver Hub</NavLink><button className="sos-nav" onClick={()=>alert("Emergency call initiated.")}><PhoneCall/>Emergency SOS</button></nav></div>}

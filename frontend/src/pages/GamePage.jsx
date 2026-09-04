@@ -1,36 +1,31 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 
-import MemoryVillage from "../games/memory-village/MemoryVillage";
 import MemoryDetective from "../games/memory-detective/MemoryDetective";
+import MemoryMosaic from "../games/memory-mosaic/MemoryMosaic";
+import MemoryVillage from "../games/memory-village/MemoryVillage";
 import RoutineRescue from "../games/routine-rescue/RoutineRescue";
 import SoundObjectMatch from "../games/sound-object-match/SoundObjectMatch";
-import MemoryMosaic from "../games/memory-mosaic/MemoryMosaic";
 
-const GamePage = () => {
-    const { gameId } = useParams();
+export default function GamePage() {
+  const { gameId } = useParams();
 
-    if (gameId === "memory-village") {
-        return <MemoryVillage />;
-    }
+  switch (gameId) {
+    case "memory-detective":
+      return <MemoryDetective />;
 
-    if (gameId === "memory-detective") {
-        return <MemoryDetective />;
-    }
+    case "memory-mosaic":
+      return <MemoryMosaic />;
 
-    if (gameId === "routine-rescue") {
-        return <RoutineRescue />;
-    }
+    case "memory-village":
+      return <MemoryVillage />;
 
-    if (gameId === "sound-object-match") {
-        return <SoundObjectMatch />;
-    }
+    case "routine-rescue":
+      return <RoutineRescue />;
 
-    if (gameId === "memory-mosaic") {
-        return <MemoryMosaic />;
-    }
+    case "sound-object-match":
+      return <SoundObjectMatch />;
 
-    return <div>Game not found</div>;
-};
-
-export default GamePage;
+    default:
+      return <Navigate to="/patient/games" replace />;
+  }
+}

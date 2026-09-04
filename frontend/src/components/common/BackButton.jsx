@@ -1,8 +1,1 @@
-import React from "react";
-
-const BackButton = () => {
-    // TODO: Implement BackButton
-    return <div>BackButton</div>;
-};
-
-export default BackButton;
+import {ArrowLeft} from "lucide-react";import {useNavigate} from "react-router-dom";export default function BackButton(){const n=useNavigate();return <button className="icon-btn" onClick={()=>n(-1)} aria-label="Go back"><ArrowLeft/></button>}

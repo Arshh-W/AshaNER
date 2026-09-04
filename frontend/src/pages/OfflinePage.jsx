@@ -1,8 +1,1 @@
-import React from "react";
-
-const OfflinePage = () => {
-    // TODO: Implement OfflinePage
-    return <div>OfflinePage</div>;
-};
-
-export default OfflinePage;
+export default function OfflinePage(){return <div className="center-page"><div className="login-card"><h1>You’re offline</h1><p>Your saved routines and games remain available on this device.</p><button className="large-btn green" onClick={()=>location.href="/patient"}>Continue Offline</button></div></div>}

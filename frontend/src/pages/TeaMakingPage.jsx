@@ -1,8 +1,1 @@
-import React from "react";
-
-const TeaMakingPage = () => {
-    // TODO: Implement TeaMakingPage
-    return <div>TeaMakingPage</div>;
-};
-
-export default TeaMakingPage;
+import GameShell from "../games/GameShell";export default function TeaMakingPage(){return <GameShell><div className="card"><h1>Make Assam Tea</h1><p>Arrange the familiar steps in a calm, no-pressure sequence.</p><button className="gold-btn">Start</button></div></GameShell>}

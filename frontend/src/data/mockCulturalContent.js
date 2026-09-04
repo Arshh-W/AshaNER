@@ -1,2 +1,1 @@
-// TODO: Implement mock cultural content data
-export const mockCulturalContent = {};
+export const cultural={title:"Assam Tea Gardens",description:"Biren worked near Numaligarh gardens in 1968. Recognizing the two-leaves-and-a-bud stimulates long-term sensory recall and visual pattern anchoring."};
