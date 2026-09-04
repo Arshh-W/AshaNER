@@ -47,6 +47,15 @@ class SyncBatchResponse(BaseModel):
     synced_count: int
     synced_session_ids: List[str]
 
+class ReminderConfirmation(BaseModel):
+    action: str = Field(..., pattern="^(taken|dismissed)$")
+
+class VoiceCheckInRequest(BaseModel):
+    transcript: str = ""
+    locale: str = "en-IN"
+    audio_samples: Optional[List[float]] = None
+    sample_rate: int = 16000
+
 # --- Caregiver Dashboard Schemas ---
 
 class GameSessionResponse(BaseModel):
