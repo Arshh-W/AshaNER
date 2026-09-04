@@ -1,0 +1,215 @@
+/* src/games/routine-rescue/routineRescue.css */
+
+.routine-rescue {
+    width: 100%;
+    min-height: 100%;
+    padding: 32px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.routine-header {
+    margin-bottom: 28px;
+}
+
+.routine-label {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.routine-header h2 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.routine-instruction {
+    margin: 12px 0 8px;
+    font-size: 18px;
+}
+
+.routine-progress {
+    font-size: 14px;
+}
+
+/* Selected steps */
+
+.selected-steps {
+    max-width: 700px;
+    margin: 0 auto 25px;
+}
+
+.selected-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px 16px;
+    margin-bottom: 8px;
+
+    border-radius: 12px;
+
+    text-align: left;
+}
+
+.step-number {
+    min-width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-weight: 700;
+}
+
+/* Options */
+
+.routine-options {
+    max-width: 750px;
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.routine-option {
+    min-height: 150px;
+
+    border: none;
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    font-family: inherit;
+
+    transition: transform 0.2s ease;
+}
+
+.routine-option:hover:not(:disabled) {
+    transform: translateY(-4px);
+}
+
+.routine-option:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.routine-emoji {
+    font-size: 52px;
+}
+
+.routine-text {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.already-selected {
+    opacity: 0.45;
+    cursor: default;
+}
+
+/* Feedback */
+
+.routine-feedback {
+    width: fit-content;
+
+    margin: 24px auto 0;
+
+    padding: 12px 22px;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+}
+
+.feedback-correct {
+    background: #dff5df;
+}
+
+.feedback-wrong {
+    background: #fff3d6;
+}
+
+.option-shake {
+    animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Completion */
+
+.routine-complete {
+    min-height: 500px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.routine-complete-icon {
+    font-size: 70px;
+    margin-bottom: 20px;
+}
+
+.routine-complete h2 {
+    margin: 0;
+    font-size: 36px;
+}
+
+.routine-complete p {
+    font-size: 18px;
+    margin: 12px 0 28px;
+}
+
+.routine-button {
+    border: none;
+    border-radius: 12px;
+
+    padding: 14px 28px;
+
+    font-size: 17px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .routine-rescue {
+        padding: 20px;
+    }
+
+    .routine-header h2 {
+        font-size: 26px;
+    }
+
+    .routine-options {
+        grid-template-columns: 1fr;
+    }
+}
