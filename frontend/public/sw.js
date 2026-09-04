@@ -1,8 +1,7 @@
-// TODO: Implement service worker for PWA functionality
-self.addEventListener('install', (event) => {
-    // Perform install steps
-});
-
-self.addEventListener('fetch', (event) => {
-    // Fetch logic here
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", event => event.waitUntil(self.clients.claim()));
+self.addEventListener("fetch", event => {
+  if (event.request.method === "GET") {
+    event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+  }
 });

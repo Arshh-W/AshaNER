@@ -1,8 +1,1 @@
-export const useOfflineSync = () => {
-    // TODO: Implement offline sync hook
-    return {
-        isOnline: true,
-        lastSyncedAt: null,
-        syncNow: () => {}
-    };
-};
+export const useOfflineSync=()=>({sync:async()=>true,lastSync:"Just now"});

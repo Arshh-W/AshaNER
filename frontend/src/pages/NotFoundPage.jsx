@@ -1,8 +1,1 @@
-import React from "react";
-
-const NotFoundPage = () => {
-    // TODO: Implement NotFoundPage
-    return <div>NotFoundPage</div>;
-};
-
-export default NotFoundPage;
+import {Link} from "react-router-dom";export default function NotFoundPage(){return <div className="center-page"><div className="login-card"><h1>Page not found</h1><Link className="large-btn green" to="/patient">Return Home</Link></div></div>}

@@ -1,7 +1,1 @@
-export const useOnlineStatus = () => {
-    // TODO: Implement online status hook
-    return {
-        isOnline: navigator.onLine,
-        isOffline: !navigator.onLine
-    };
-};
+import {useEffect,useState} from "react"; export function useOnlineStatus(){const [online,set]=useState(navigator.onLine);useEffect(()=>{const a=()=>set(true),b=()=>set(false);addEventListener("online",a);addEventListener("offline",b);return()=>{removeEventListener("online",a);removeEventListener("offline",b)}},[]);return online}

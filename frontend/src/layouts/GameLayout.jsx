@@ -1,8 +1,1 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
-
-const GameLayout = () => {
-    return <Outlet />;
-};
-
-export default GameLayout;
+import {Outlet} from "react-router-dom";export default function GameLayout(){return <div className="game-layout"><Outlet/></div>}

@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./assets/styles/globals.css";
 import "./assets/styles/typography.css";
 import "./assets/styles/accessibility.css";
 import "./assets/styles/animations.css";
+import "./assets/styles/patient-dashboard.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>
+  <React.StrictMode><BrowserRouter><App /></BrowserRouter></React.StrictMode>
 );

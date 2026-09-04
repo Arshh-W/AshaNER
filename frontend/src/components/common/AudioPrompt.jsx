@@ -1,8 +1,1 @@
-import React from "react";
-
-const AudioPrompt = () => {
-    // TODO: Implement AudioPrompt
-    return <div>AudioPrompt</div>;
-};
-
-export default AudioPrompt;
+import {Volume2} from "lucide-react";import {useWebSpeech} from "../../hooks/useWebSpeech";export default function AudioPrompt({children="Listen"} ){const {speak}=useWebSpeech();return <button className="audio-chip" onClick={()=>speak(children)}><Volume2 size={18}/> {children}</button>}

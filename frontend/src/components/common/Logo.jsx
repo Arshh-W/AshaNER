@@ -1,8 +1,1 @@
-import React from "react";
-
-const Logo = () => {
-    // TODO: Implement Logo
-    return <div>Logo</div>;
-};
-
-export default Logo;
+import {Leaf} from "lucide-react"; export default function Logo(){return <div className="brand"><span className="brand-mark"><Leaf size={20}/></span><span><b>AshaNER</b><small>Cognitive Care & Memory Assistance</small></span></div>}

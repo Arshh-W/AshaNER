@@ -1,2 +1,1 @@
-// TODO: Implement DDA rules
-export const ddaRules = {};
+export const ddaRules={maxPairs:4,gentleMode:true,noPenaltyTimer:true};

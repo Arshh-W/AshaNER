@@ -1,0 +1,201 @@
+/* src/games/sound-object-match/soundObjectMatch.css */
+
+.sound-match {
+    width: 100%;
+    min-height: 100%;
+
+    padding: 32px;
+    box-sizing: border-box;
+
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.sound-header {
+    margin-bottom: 25px;
+}
+
+.sound-label {
+    margin: 0 0 8px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+.sound-header h2 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.sound-header p {
+    font-size: 18px;
+}
+
+.sound-progress {
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+/* Sound player */
+
+.sound-player {
+    max-width: 500px;
+
+    margin: 0 auto 30px;
+
+    padding: 28px;
+
+    border-radius: 24px;
+}
+
+.sound-play-button {
+    width: 100px;
+    height: 100px;
+
+    border: none;
+    border-radius: 50%;
+
+    font-size: 42px;
+
+    cursor: pointer;
+
+    transition: transform 0.2s ease;
+}
+
+.sound-play-button:hover {
+    transform: scale(1.05);
+}
+
+.sound-player h3 {
+    margin: 18px 0 8px;
+    font-size: 24px;
+}
+
+.sound-player p {
+    margin: 0 0 18px;
+}
+
+.sound-button {
+    border: none;
+    border-radius: 12px;
+
+    padding: 13px 24px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+/* Options */
+
+.sound-options {
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 18px;
+}
+
+.sound-option {
+    min-height: 150px;
+
+    border: none;
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 600;
+
+    transition: transform 0.2s ease;
+}
+
+.sound-option:hover {
+    transform: translateY(-4px);
+}
+
+.sound-option:active {
+    transform: scale(0.96);
+}
+
+.sound-option-emoji {
+    font-size: 55px;
+}
+
+/* Feedback */
+
+.sound-feedback {
+    width: fit-content;
+
+    margin: 22px auto 0;
+
+    padding: 12px 22px;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+}
+
+.feedback-correct {
+    background: #dff5df;
+}
+
+.feedback-wrong {
+    background: #fff3d6;
+}
+
+/* Complete */
+
+.sound-complete {
+    min-height: 500px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.sound-complete-icon {
+    font-size: 70px;
+    margin-bottom: 20px;
+}
+
+.sound-complete h2 {
+    margin: 0;
+    font-size: 36px;
+}
+
+.sound-complete p {
+    font-size: 18px;
+    margin: 12px 0 28px;
+}
+
+@media (max-width: 600px) {
+    .sound-match {
+        padding: 20px;
+    }
+
+    .sound-header h2 {
+        font-size: 26px;
+    }
+
+    .sound-options {
+        grid-template-columns: 1fr;
+    }
+}

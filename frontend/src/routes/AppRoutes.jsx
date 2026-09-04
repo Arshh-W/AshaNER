@@ -1,144 +1,86 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
-// Pages
 import SplashPage from "../pages/SplashPage";
 import LoginPage from "../pages/LoginPage";
-import OfflinePage from "../pages/OfflinePage";
-
 import PatientDashboard from "../pages/PatientDashboard";
-import CaregiverDashboard from "../pages/CaregiverDashboard";
-
 import GamesPage from "../pages/GamesPage";
 import GamePage from "../pages/GamePage";
-import ReminiscencePage from "../pages/ReminiscencePage";
-import TeaMakingPage from "../pages/TeaMakingPage";
-import MemoryMatchPage from "../pages/MemoryMatchPage";
-
+import CaregiverDashboard from "../pages/CaregiverDashboard";
 import ProfilePage from "../pages/ProfilePage";
 import SettingsPage from "../pages/SettingsPage";
+import OfflinePage from "../pages/OfflinePage";
 import NotFoundPage from "../pages/NotFoundPage";
 
-// Layouts
 import PatientLayout from "../layouts/PatientLayout";
 import CaregiverLayout from "../layouts/CaregiverLayout";
-import GameLayout from "../layouts/GameLayout";
+import ProtectedRoute from "./ProtectedRoute";
 
-const AppRoutes = () => {
-    return (
-        <BrowserRouter>
-            <Routes>
+export function AppRoutes() {
+  return (
+    <Routes>
+      {/* ─────────────────────────────
+          PUBLIC ROUTES
+      ───────────────────────────── */}
 
-                {/* ================= PUBLIC ================= */}
+      <Route path="/" element={<SplashPage />} />
 
-                <Route path="/" element={<SplashPage />} />
+      <Route path="/login" element={<LoginPage />} />
 
-                <Route path="/login" element={<LoginPage />} />
+      <Route path="/offline" element={<OfflinePage />} />
 
-                <Route path="/offline" element={<OfflinePage />} />
+      {/* ─────────────────────────────
+          PATIENT APP
+      ───────────────────────────── */}
 
+      <Route
+        element={
+          <ProtectedRoute>
+            <PatientLayout />
+          </ProtectedRoute>
+        }
+      >
+        {/* Patient Home */}
+        <Route path="/patient" element={<PatientDashboard />} />
 
-                {/* ================= PATIENT ================= */}
+        {/* Brain Games Hub */}
+        <Route path="/patient/games" element={<GamesPage />} />
 
-                <Route path="/patient" element={<PatientLayout />}>
+        {/* Individual Games
+            Examples:
+            /patient/games/memory-detective
+            /patient/games/memory-mosaic
+            /patient/games/memory-village
+            /patient/games/routine-rescue
+            /patient/games/sound-object-match
+        */}
+        <Route path="/patient/games/:gameId" element={<GamePage />} />
 
-                    {/* /patient */}
-                    <Route
-                        index
-                        element={<PatientDashboard />}
-                    />
+        {/* Patient Profile */}
+        <Route path="/patient/profile" element={<ProfilePage />} />
 
-                    {/* /patient/games */}
-                    <Route
-                        path="games"
-                        element={<GamesPage />}
-                    />
+        {/* Patient Settings */}
+        <Route path="/patient/settings" element={<SettingsPage />} />
+      </Route>
 
-                    {/* /patient/games/reminiscence */}
-                    <Route
-                        path="games/reminiscence"
-                        element={<ReminiscencePage />}
-                    />
+      {/* ─────────────────────────────
+          CAREGIVER APP
+      ───────────────────────────── */}
 
-                    {/* /patient/games/tea-making */}
-                    <Route
-                        path="games/tea-making"
-                        element={<TeaMakingPage />}
-                    />
+      <Route
+        element={
+          <ProtectedRoute role="caregiver">
+            <CaregiverLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/caregiver" element={<CaregiverDashboard />} />
+      </Route>
 
-                    {/* /patient/games/memory-match */}
-                    <Route
-                        path="games/memory-match"
-                        element={<MemoryMatchPage />}
-                    />
+      {/* ─────────────────────────────
+          FALLBACK / 404
+      ───────────────────────────── */}
 
-                    {/* /patient/profile */}
-                    <Route
-                        path="profile"
-                        element={<ProfilePage />}
-                    />
-
-                    {/* /patient/settings */}
-                    <Route
-                        path="settings"
-                        element={<SettingsPage />}
-                    />
-
-                </Route>
-
-
-                {/* ================= CAREGIVER ================= */}
-
-                <Route
-                    path="/caregiver"
-                    element={<CaregiverLayout />}
-                >
-
-                    {/* /caregiver */}
-                    <Route
-                        index
-                        element={<CaregiverDashboard />}
-                    />
-
-                    {/* /caregiver/profile */}
-                    <Route
-                        path="profile"
-                        element={<ProfilePage />}
-                    />
-
-                    {/* /caregiver/settings */}
-                    <Route
-                        path="settings"
-                        element={<SettingsPage />}
-                    />
-
-                </Route>
-
-
-                {/* ================= GAME ================= */}
-
-                <Route
-                    path="/game"
-                    element={<GameLayout />}
-                >
-                    {/* /game/:gameId */}
-                    <Route
-                        path=":gameId"
-                        element={<GamePage />}
-                    />
-                </Route>
-
-
-                {/* ================= 404 ================= */}
-
-                <Route
-                    path="*"
-                    element={<NotFoundPage />}
-                />
-
-            </Routes>
-        </BrowserRouter>
-    );
-};
-
-export default AppRoutes;
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
+  );
+}

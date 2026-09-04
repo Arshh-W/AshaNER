@@ -1,8 +1,1 @@
-import React from "react";
-
-const HoldToSpeak = () => {
-    // TODO: Implement HoldToSpeak
-    return <div>HoldToSpeak</div>;
-};
-
-export default HoldToSpeak;
+import {Mic} from "lucide-react";export default function HoldToSpeak(){return <button className="hold-speak"><Mic/> Hold to speak</button>}

@@ -1,10 +1,1 @@
-import React from "react";
-import { Outlet, Navigate } from "react-router-dom";
-
-const ProtectedRoute = ({ children }) => {
-    // TODO: Add authentication protection
-    // For now, just render children
-    return <div>{children}</div>;
-};
-
-export default ProtectedRoute;
+import {Navigate} from "react-router-dom";import {useAuth} from "../context/AuthContext";export default function ProtectedRoute({children,role}){const {user}=useAuth();if(!user)return <Navigate to="/login" replace/>;if(role&&user.role!==role)return <Navigate to="/patient" replace/>;return children;}

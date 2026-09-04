@@ -1,8 +1,1 @@
-import React from "react";
-
-const OfflineIndicator = () => {
-    // TODO: Implement OfflineIndicator
-    return <div>OfflineIndicator</div>;
-};
-
-export default OfflineIndicator;
+import {Cloud,CloudOff} from "lucide-react";import {useOffline} from "../../context/OfflineContext";export default function OfflineIndicator(){const {online}=useOffline();return <div className="status-pill"><span className={online?"status-dot online":"status-dot"}></span>{online?"Connected":"Offline"} <small>• Local Sync</small></div>}

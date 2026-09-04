@@ -1,4 +1,1 @@
-// TODO: Implement caregiver API
-export const getCaregiverData = async () => {
-    // TODO: Implement getCaregiverData
-};
+export const caregiverApi={getSummary:async()=>({index:78,adherence:85})};

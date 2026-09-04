@@ -1,1 +1,1 @@
-/* TODO: Implement accessibility styles */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}button,a,select,input{outline-offset:4px}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #d4af37}html.high-contrast{filter:contrast(1.12)}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}

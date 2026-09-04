@@ -1,4 +1,1 @@
-// TODO: Implement game API
-export const getGames = async () => {
-    // TODO: Implement getGames
-};
+export const gameApi={saveResult:async(result)=>localStorage.setItem("ashaner-game-result",JSON.stringify(result))};

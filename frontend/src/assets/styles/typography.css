@@ -1,1 +1,2 @@
-/* TODO: Implement typography styles */
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Lexend:wght@400;500;600;700&display=swap");
+:root{--heading:"Lexend",sans-serif;--body:"Atkinson Hyperlegible",sans-serif}h1,h2,h3,h4,button,.brand{font-family:var(--heading)}body{font-family:var(--body)}

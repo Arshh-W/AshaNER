@@ -1,8 +1,1 @@
-import React from "react";
-
-const LanguagePicker = () => {
-    // TODO: Implement LanguagePicker
-    return <div>LanguagePicker</div>;
-};
-
-export default LanguagePicker;
+import {useLanguage} from "../../context/LanguageContext";export default function LanguagePicker(){const {language,setLanguage,languages}=useLanguage();return <select className="language-picker" value={language} onChange={e=>setLanguage(e.target.value)} aria-label="Language">{languages.map(x=><option key={x}>{x}</option>)}</select>}

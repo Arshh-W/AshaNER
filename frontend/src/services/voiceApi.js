@@ -1,4 +1,1 @@
-// TODO: Implement voice API
-export const processVoiceCommand = async () => {
-    // TODO: Implement processVoiceCommand
-};
+export const voiceApi={speak:(text)=>window.speechSynthesis?.speak(new SpeechSynthesisUtterance(text))};

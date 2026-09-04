@@ -1,2 +1,1 @@
-// TODO: Implement route configuration
-export const routes = [];
+export const routeConfig={patient:"/patient",games:"/patient/games",caregiver:"/caregiver"};

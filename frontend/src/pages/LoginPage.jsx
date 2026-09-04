@@ -1,8 +1,1 @@
-import React from "react";
-
-const LoginPage = () => {
-    // TODO: Implement LoginPage
-    return <div>LoginPage</div>;
-};
-
-export default LoginPage;
+import {useAuth} from "../context/AuthContext";import {useNavigate} from "react-router-dom";export default function LoginPage(){const {login}=useAuth(),n=useNavigate();return <div className="center-page"><div className="login-card"><div className="brand-mark">🌿</div><h1>Welcome to AshaNER</h1><p>Choose your care view.</p><button className="large-btn green" onClick={()=>{login("patient");n("/patient")}}>Patient View</button><button className="large-btn coral" onClick={()=>{login("caregiver");n("/caregiver")}}>Caregiver View</button></div></div>}

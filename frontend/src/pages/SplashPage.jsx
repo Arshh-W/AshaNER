@@ -1,8 +1,1 @@
-import React from "react";
-
-const SplashPage = () => {
-    // TODO: Implement SplashPage
-    return <div>SplashPage</div>;
-};
-
-export default SplashPage;
+import {useEffect} from "react";import {useNavigate} from "react-router-dom";export default function SplashPage(){const n=useNavigate();useEffect(()=>{const t=setTimeout(()=>n("/patient"),700);return()=>clearTimeout(t)},[n]);return <div className="splash"><div className="brand-mark">🌿</div><h1>AshaNER</h1><p>Cognitive Care & Memory Assistance</p></div>}
