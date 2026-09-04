@@ -5,7 +5,10 @@ import DailyGreeting from "../components/dashboard/DailyGreeting";
 import RoutineReminder from "../components/dashboard/RoutineReminder";
 import FamilyPreview from "../components/dashboard/FamilyPreview";
 import QuickActionHub from "../components/dashboard/QuickActionHub";
+import BrainPuzzle from "../components/dashboard/BrainPuzzle";
+import BottomNavigation from "../components/dashboard/BottomNavigation";
 
+import "../assets/styles/patient-dashboard.css";
 
 const PatientDashboard = () => {
     return (
@@ -17,14 +20,14 @@ const PatientDashboard = () => {
 
                 <RoutineReminder />
 
-                <FamilyPreview />
+                <BrainPuzzle />
 
                 <QuickActionHub />
 
-             
+                <FamilyPreview />
             </main>
 
-        
+            <BottomNavigation />
         </div>
     );
 };

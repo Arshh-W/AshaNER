@@ -5,13 +5,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SplashPage from "../pages/SplashPage";
 import LoginPage from "../pages/LoginPage";
 import OfflinePage from "../pages/OfflinePage";
+
 import PatientDashboard from "../pages/PatientDashboard";
 import CaregiverDashboard from "../pages/CaregiverDashboard";
+
 import GamesPage from "../pages/GamesPage";
 import GamePage from "../pages/GamePage";
 import ReminiscencePage from "../pages/ReminiscencePage";
 import TeaMakingPage from "../pages/TeaMakingPage";
 import MemoryMatchPage from "../pages/MemoryMatchPage";
+
 import ProfilePage from "../pages/ProfilePage";
 import SettingsPage from "../pages/SettingsPage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -26,7 +29,7 @@ const AppRoutes = () => {
         <BrowserRouter>
             <Routes>
 
-                {/* ==================== PUBLIC ROUTES ==================== */}
+                {/* ================= PUBLIC ================= */}
 
                 <Route path="/" element={<SplashPage />} />
 
@@ -35,7 +38,7 @@ const AppRoutes = () => {
                 <Route path="/offline" element={<OfflinePage />} />
 
 
-                {/* ==================== PATIENT ROUTES ==================== */}
+                {/* ================= PATIENT ================= */}
 
                 <Route path="/patient" element={<PatientLayout />}>
 
@@ -84,9 +87,12 @@ const AppRoutes = () => {
                 </Route>
 
 
-                {/* ==================== CAREGIVER ROUTES ==================== */}
+                {/* ================= CAREGIVER ================= */}
 
-                <Route path="/caregiver" element={<CaregiverLayout />}>
+                <Route
+                    path="/caregiver"
+                    element={<CaregiverLayout />}
+                >
 
                     {/* /caregiver */}
                     <Route
@@ -109,20 +115,21 @@ const AppRoutes = () => {
                 </Route>
 
 
-                {/* ==================== GENERIC GAME ROUTE ==================== */}
+                {/* ================= GAME ================= */}
 
-                <Route path="/game" element={<GameLayout />}>
-
+                <Route
+                    path="/game"
+                    element={<GameLayout />}
+                >
                     {/* /game/:gameId */}
                     <Route
                         path=":gameId"
                         element={<GamePage />}
                     />
-
                 </Route>
 
 
-                {/* ==================== 404 ==================== */}
+                {/* ================= 404 ================= */}
 
                 <Route
                     path="*"
