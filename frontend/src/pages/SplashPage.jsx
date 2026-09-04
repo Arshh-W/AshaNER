@@ -21,6 +21,10 @@ export default function SplashPage() {
         navigate("/login");
     };
 
+    const goToRegister = () => {
+        navigate("/register");
+    };
+
     return (
         <main className="splash-page">
 
@@ -54,7 +58,7 @@ export default function SplashPage() {
                         <button
                             type="button"
                             className="splash-primary-btn splash-nav-cta"
-                            onClick={goToLogin}
+                            onClick={goToRegister}
                         >
                             Get Started
                             <ArrowRight size={18} />
