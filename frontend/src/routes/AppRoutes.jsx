@@ -16,71 +16,99 @@ import CaregiverLayout from "../layouts/CaregiverLayout";
 import ProtectedRoute from "./ProtectedRoute";
 
 export function AppRoutes() {
-  return (
-    <Routes>
-      {/* ─────────────────────────────
-          PUBLIC ROUTES
-      ───────────────────────────── */}
+    return (
+        <Routes>
 
-      <Route path="/" element={<SplashPage />} />
+            {/* =========================================
+                PUBLIC LANDING PAGE
+                ========================================= */}
 
-      <Route path="/login" element={<LoginPage />} />
+            <Route
+                path="/"
+                element={<SplashPage />}
+            />
 
-      <Route path="/offline" element={<OfflinePage />} />
+            {/* =========================================
+                OPTIONAL LOGIN
+                ========================================= */}
 
-      {/* ─────────────────────────────
-          PATIENT APP
-      ───────────────────────────── */}
+            <Route
+                path="/login"
+                element={<LoginPage />}
+            />
 
-      <Route
-        element={
-          <ProtectedRoute>
-            <PatientLayout />
-          </ProtectedRoute>
-        }
-      >
-        {/* Patient Home */}
-        <Route path="/patient" element={<PatientDashboard />} />
+            {/* =========================================
+                OFFLINE PAGE
+                ========================================= */}
 
-        {/* Brain Games Hub */}
-        <Route path="/patient/games" element={<GamesPage />} />
+            <Route
+                path="/offline"
+                element={<OfflinePage />}
+            />
 
-        {/* Individual Games
-            Examples:
-            /patient/games/memory-detective
-            /patient/games/memory-mosaic
-            /patient/games/memory-village
-            /patient/games/routine-rescue
-            /patient/games/sound-object-match
-        */}
-        <Route path="/patient/games/:gameId" element={<GamePage />} />
+            {/* =========================================
+                PROTECTED PATIENT APP
+                ========================================= */}
 
-        {/* Patient Profile */}
-        <Route path="/patient/profile" element={<ProfilePage />} />
+            <Route
+                element={
+                    <ProtectedRoute>
+                        <PatientLayout />
+                    </ProtectedRoute>
+                }
+            >
+                <Route
+                    path="/patient"
+                    element={<PatientDashboard />}
+                />
 
-        {/* Patient Settings */}
-        <Route path="/patient/settings" element={<SettingsPage />} />
-      </Route>
+                <Route
+                    path="/patient/games"
+                    element={<GamesPage />}
+                />
 
-      {/* ─────────────────────────────
-          CAREGIVER APP
-      ───────────────────────────── */}
+                <Route
+                    path="/patient/games/:gameId"
+                    element={<GamePage />}
+                />
 
-      <Route
-        element={
-          <ProtectedRoute role="caregiver">
-            <CaregiverLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="/caregiver" element={<CaregiverDashboard />} />
-      </Route>
+                <Route
+                    path="/patient/profile"
+                    element={<ProfilePage />}
+                />
 
-      {/* ─────────────────────────────
-          FALLBACK / 404
-      ───────────────────────────── */}
+                <Route
+                    path="/patient/settings"
+                    element={<SettingsPage />}
+                />
+            </Route>
 
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
-  );
+            {/* =========================================
+                PROTECTED CAREGIVER APP
+                ========================================= */}
+
+            <Route
+                element={
+                    <ProtectedRoute role="caregiver">
+                        <CaregiverLayout />
+                    </ProtectedRoute>
+                }
+            >
+                <Route
+                    path="/caregiver"
+                    element={<CaregiverDashboard />}
+                />
+            </Route>
+
+            {/* =========================================
+                404
+                ========================================= */}
+
+            <Route
+                path="*"
+                element={<NotFoundPage />}
+            />
+
+        </Routes>
+    );
 }

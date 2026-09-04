@@ -7,6 +7,7 @@ import "./assets/styles/typography.css";
 import "./assets/styles/accessibility.css";
 import "./assets/styles/animations.css";
 import "./assets/styles/patient-dashboard.css";
+import "./assets/styles/splash-page.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode><BrowserRouter><App /></BrowserRouter></React.StrictMode>

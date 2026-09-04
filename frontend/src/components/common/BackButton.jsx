@@ -1,1 +1,29 @@
-import {ArrowLeft} from "lucide-react";import {useNavigate} from "react-router-dom";export default function BackButton(){const n=useNavigate();return <button className="icon-btn" onClick={()=>n(-1)} aria-label="Go back"><ArrowLeft/></button>}
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+export default function BackButton({
+    label = "Back",
+    fallback = "/"
+}) {
+    const navigate = useNavigate();
+
+    const handleBack = () => {
+        if (window.history.length > 1) {
+            navigate(-1);
+            return;
+        }
+
+        navigate(fallback);
+    };
+
+    return (
+        <button
+            type="button"
+            className="back-button"
+            onClick={handleBack}
+        >
+            <ArrowLeft size={20} />
+            <span>{label}</span>
+        </button>
+    );
+}

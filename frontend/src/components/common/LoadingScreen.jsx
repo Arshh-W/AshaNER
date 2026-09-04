@@ -1,1 +1,15 @@
-export default function LoadingScreen(){return <div className="loading-screen"><div className="brand-mark pulse">🌿</div><h2>AshaNER</h2><p>Preparing a calm space for you…</p></div>}
+export default function LoadingScreen({
+    message = "Loading..."
+}) {
+    return (
+        <div
+            className="loading-screen"
+            role="status"
+            aria-live="polite"
+        >
+            <div className="loading-spinner" />
+
+            <p>{message}</p>
+        </div>
+    );
+}

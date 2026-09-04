@@ -1,1 +1,52 @@
-import Logo from "./Logo";import OfflineIndicator from "./OfflineIndicator";import LanguagePicker from "./LanguagePicker";import {Volume2,Contrast,Minus,Plus,Mic} from "lucide-react";import {useWebSpeech} from "../../hooks/useWebSpeech";export default function PageHeader(){const {speak}=useWebSpeech();return <header className="topbar"><Logo/><div className="top-actions"><button className="tool-btn" onClick={()=>document.documentElement.classList.toggle("high-contrast")}><Contrast/> <span>Contrast</span></button><button className="tool-btn" onClick={()=>document.documentElement.style.fontSize="110%"}>A− &nbsp;A+</button><LanguagePicker/><OfflineIndicator/><button className="talk-btn" onClick={()=>speak("Hello. How can I help you today?")}><Mic/> Talk to Asha</button></div></header>}
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+export default function PageHeader({
+    title,
+    subtitle,
+    showBack = false,
+    backTo,
+    actions
+}) {
+    const navigate = useNavigate();
+
+    const handleBack = () => {
+        if (backTo) {
+            navigate(backTo);
+            return;
+        }
+
+        navigate(-1);
+    };
+
+    return (
+        <header className="page-header">
+            <div className="page-header-main">
+                {showBack && (
+                    <button
+                        type="button"
+                        className="page-header-back"
+                        onClick={handleBack}
+                        aria-label="Go back"
+                    >
+                        <ArrowLeft size={22} />
+                    </button>
+                )}
+
+                <div>
+                    <h1>{title}</h1>
+
+                    {subtitle && (
+                        <p>{subtitle}</p>
+                    )}
+                </div>
+            </div>
+
+            {actions && (
+                <div className="page-header-actions">
+                    {actions}
+                </div>
+            )}
+        </header>
+    );
+}
