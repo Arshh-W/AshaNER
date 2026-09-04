@@ -19,37 +19,25 @@ export function AppRoutes() {
     return (
         <Routes>
 
-            {/* =========================================
-                PUBLIC LANDING PAGE
-                ========================================= */}
-
+            {/* PUBLIC LANDING PAGE */}
             <Route
                 path="/"
                 element={<SplashPage />}
             />
 
-            {/* =========================================
-                OPTIONAL LOGIN
-                ========================================= */}
-
+            {/* LOGIN PAGE */}
             <Route
                 path="/login"
                 element={<LoginPage />}
             />
 
-            {/* =========================================
-                OFFLINE PAGE
-                ========================================= */}
-
+            {/* OFFLINE */}
             <Route
                 path="/offline"
                 element={<OfflinePage />}
             />
 
-            {/* =========================================
-                PROTECTED PATIENT APP
-                ========================================= */}
-
+            {/* PATIENT */}
             <Route
                 element={
                     <ProtectedRoute>
@@ -83,10 +71,7 @@ export function AppRoutes() {
                 />
             </Route>
 
-            {/* =========================================
-                PROTECTED CAREGIVER APP
-                ========================================= */}
-
+            {/* CAREGIVER */}
             <Route
                 element={
                     <ProtectedRoute role="caregiver">
@@ -100,10 +85,7 @@ export function AppRoutes() {
                 />
             </Route>
 
-            {/* =========================================
-                404
-                ========================================= */}
-
+            {/* 404 */}
             <Route
                 path="*"
                 element={<NotFoundPage />}
