@@ -38,7 +38,7 @@ export function AppRoutes() {
                 path="/login/:role"
                 element={<RoleLoginPage />}
             />
-            {/* REGISTRATION */}
+
             {/* REGISTRATION */}
             <Route
                 path="/register"
@@ -56,17 +56,27 @@ export function AppRoutes() {
                 element={<OfflinePage />}
             />
 
-            {/* PATIENT */}
+            {/* ========================================= */}
+            {/* PATIENT - DEVELOPMENT BYPASS              */}
+            {/* ========================================= */}
+
             <Route
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute devBypass={true}>
                         <PatientLayout />
                     </ProtectedRoute>
                 }
             >
                 <Route
                     path="/patient"
-                    element={<PatientDashboard />}
+                    element={
+                        <ProtectedRoute
+                            role="patient"
+                            devBypass={true}
+                        >
+                            <PatientDashboard />
+                        </ProtectedRoute>
+                    }
                 />
 
                 <Route
@@ -90,7 +100,10 @@ export function AppRoutes() {
                 />
             </Route>
 
-            {/* CAREGIVER */}
+            {/* ========================================= */}
+            {/* CAREGIVER - NORMAL AUTHENTICATION         */}
+            {/* ========================================= */}
+
             <Route
                 element={
                     <ProtectedRoute role="caregiver">

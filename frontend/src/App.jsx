@@ -9,6 +9,7 @@ import { GameSessionProvider } from "./context/GameSessionContext";
 
 import AshaNERLogoAnimation from "./components/common/AshaNERLogoAnimation";
 import LoadingScreen from "./components/common/LoadingScreen";
+import Navbar from "./components/common/Navbar";
 
 
 export default function App() {
@@ -69,7 +70,10 @@ export default function App() {
                            ================================================= */}
 
                         {startupStage === "ready" && (
-                            <AppRoutes />
+                            <>
+                                <Navbar />
+                                <AppRoutes />
+                            </>
                         )}
 
                     </GameSessionProvider>

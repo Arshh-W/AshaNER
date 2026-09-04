@@ -1,79 +1,53 @@
-import { useState } from "react";
+import { useLanguage } from "../../context/LanguageContext";
 
-const languages = [
-    {
-        code: "en",
-        name: "English"
-    },
-    {
-        code: "hi",
-        name: "हिन्दी"
-    },
-    {
-        code: "as",
-        name: "অসমীয়া"
-    },
-    {
-        code: "bn",
-        name: "বাংলা"
-    },
-    {
-        code: "mn",
-        name: "মৈতৈলোন"
-    }
-];
+export default function LanguagePicker() {
 
-export default function LanguagePicker({
-    value,
-    onChange
-}) {
-    const [selected, setSelected] =
-        useState(
-            value ||
-            localStorage.getItem(
-                "language"
-            ) ||
-            "en"
-        );
+    const {
+        language,
+        changeLanguage,
+        languages
+    } = useLanguage();
+
 
     const handleChange = (event) => {
+
         const nextLanguage =
             event.target.value;
 
-        setSelected(nextLanguage);
-
-        localStorage.setItem(
-            "language",
-            nextLanguage
-        );
-
-        if (onChange) {
-            onChange(nextLanguage);
-        }
+        changeLanguage(nextLanguage);
     };
+
 
     return (
         <div className="language-picker">
-            <label htmlFor="language-select">
+
+            <label
+                htmlFor="language-select"
+                className="language-picker-label"
+            >
                 Language
             </label>
 
             <select
                 id="language-select"
-                value={selected}
+                value={language}
                 onChange={handleChange}
+                aria-label="Select language"
             >
-                {languages.map(
-                    (language) => (
-                        <option
-                            key={language.code}
-                            value={language.code}
-                        >
-                            {language.name}
-                        </option>
-                    )
-                )}
+
+                {languages.map((item) => (
+
+                    <option
+                        key={item.code}
+                        value={item.code}
+                    >
+                        {item.name}
+                    </option>
+
+                ))}
+
             </select>
+
         </div>
     );
 }

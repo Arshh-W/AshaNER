@@ -1,0 +1,346 @@
+/* =========================================
+   ASHANER NAVBAR
+   ========================================= */
+
+.navbar {
+    width: 100%;
+    height: 82px;
+
+    background: #f8f4ed;
+
+    border-bottom: 1px solid rgba(22, 79, 56, 0.12);
+
+    position: relative;
+    z-index: 1000;
+}
+
+
+/* =========================================
+   CONTAINER
+   ========================================= */
+
+.navbar-container {
+    width: min(1200px, calc(100% - 48px));
+    height: 100%;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 32px;
+}
+
+
+/* =========================================
+   BRAND
+   ========================================= */
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    text-decoration: none;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================
+   ACTUAL ASHANER SVG LOGO
+   ========================================= */
+
+.navbar-logo {
+    width: 52px;
+    height: 52px;
+
+    display: block;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================
+   BRAND NAME
+   ========================================= */
+
+.navbar-brand-name {
+    color: #164f38;
+
+    font-family: "Fraunces", Georgia, serif;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+
+    line-height: 1;
+}
+
+
+/* =========================================
+   NAVIGATION
+   ========================================= */
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+
+    gap: 30px;
+}
+
+
+.navbar-links a {
+    position: relative;
+
+    color: #164f38;
+
+    text-decoration: none;
+
+    font-family: "DM Sans", Arial, sans-serif;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    transition:
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+.navbar-links a:hover {
+    color: #0d3d2c;
+}
+
+
+/* =========================================
+   ACTIVE / UNDERLINE EFFECT
+   ========================================= */
+
+.navbar-links a::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -8px;
+
+    width: 0;
+    height: 2px;
+
+    background: #d5b63c;
+
+    border-radius: 2px;
+
+    transition: width 0.2s ease;
+}
+
+
+.navbar-links a:hover::after {
+    width: 100%;
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .navbar-container {
+        width: min(100% - 32px, 1200px);
+
+        gap: 20px;
+    }
+
+    .navbar-links {
+        gap: 20px;
+    }
+
+    .navbar-links a {
+        font-size: 14px;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 650px) {
+
+    .navbar {
+        height: auto;
+        min-height: 70px;
+    }
+
+    .navbar-container {
+        width: calc(100% - 24px);
+
+        min-height: 70px;
+
+        gap: 14px;
+    }
+
+    .navbar-logo {
+        width: 42px;
+        height: 42px;
+    }
+
+    .navbar-brand-name {
+        font-size: 21px;
+    }
+
+    .navbar-links {
+        gap: 12px;
+    }
+
+    .navbar-links a {
+        font-size: 12px;
+    }
+
+}
+
+
+/* =========================================
+   VERY SMALL SCREENS
+   ========================================= */
+
+@media (max-width: 450px) {
+
+    .navbar-brand-name {
+        display: none;
+    }
+
+    .navbar-links {
+        gap: 10px;
+    }
+
+    .navbar-links a {
+        font-size: 11px;
+    }
+
+}
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+/* =========================================
+   LANGUAGE PICKER
+   ========================================= */
+
+.language-picker {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    min-width: 106px;
+    height: 44px;
+
+    padding: 0 12px;
+
+    gap: 7px;
+
+    background: #ffffff;
+
+    border: 1px solid rgba(22, 79, 56, 0.12);
+
+    border-radius: 22px;
+
+    box-shadow: 0 4px 14px rgba(22, 79, 56, 0.06);
+}
+
+
+.language-picker-icon {
+    flex-shrink: 0;
+
+    color: #164f38;
+
+    pointer-events: none;
+}
+
+
+.language-select {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 100%;
+
+    padding: 0 20px 0 0;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #164f38;
+
+    font-family: var(--body);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.language-picker-chevron {
+    position: absolute;
+
+    right: 9px;
+
+    color: #164f38;
+
+    pointer-events: none;
+}
+
+
+/* Focus */
+
+.language-picker:focus-within {
+    border-color: rgba(22, 79, 56, 0.35);
+
+    box-shadow:
+        0 0 0 3px rgba(213, 182, 60, 0.16);
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .language-picker {
+        min-width: 44px;
+
+        width: 44px;
+
+        justify-content: center;
+
+        padding: 0;
+    }
+
+    .language-select {
+        position: absolute;
+
+        inset: 0;
+
+        width: 100%;
+
+        padding: 0;
+
+        opacity: 0;
+
+        cursor: pointer;
+    }
+
+    .language-picker-chevron {
+        display: none;
+    }
+
+}
