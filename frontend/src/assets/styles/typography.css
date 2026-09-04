@@ -1,2 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Lexend:wght@400;500;600;700&display=swap");
-:root{--heading:"Lexend",sans-serif;--body:"Atkinson Hyperlegible",sans-serif}h1,h2,h3,h4,button,.brand{font-family:var(--heading)}body{font-family:var(--body)}
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
+
+:root {
+    --heading: "Manrope", sans-serif;
+    --body: "Inter", sans-serif;
+}
+
+body {
+    font-family: var(--body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+.brand {
+    font-family: var(--heading);
+}
