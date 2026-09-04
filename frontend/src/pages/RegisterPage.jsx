@@ -1,167 +1,364 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+    useNavigate,
+    useParams
+} from "react-router-dom";
+
+import { useAuth } from "../context/AuthContext";
 import Logo from "../components/common/Logo";
-import api from "../services/api";
-import "../assets/styles/register.css";
+
+import "../assets/styles/register-page.css";
+
 
 export default function RegisterPage() {
+
     const { role } = useParams();
+
     const navigate = useNavigate();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const auth = useAuth();
 
-    const [error, setError] = useState("");
-    const [isRegistering, setIsRegistering] = useState(false);
 
-    const isPatient = role === "patient";
-    const isCaregiver = role === "caregiver";
+    /* =====================================================
+       SAFETY
+       ===================================================== */
 
-    if (!isPatient && !isCaregiver) {
+    if (!auth) {
         return (
-            <main className="register-page">
-                <div className="register-card">
-                    <h1>Invalid registration type</h1>
+            <main className="register-page-form">
 
-                    <button
-                        type="button"
-                        onClick={() => navigate("/login")}
-                    >
-                        Back to login
-                    </button>
+                <div className="register-wrapper">
+
+                    <div className="register-card">
+
+                        <div className="register-logo">
+                            <Logo />
+                        </div>
+
+                        <div className="register-heading">
+
+                            <h1>
+                                Authentication unavailable.
+                            </h1>
+
+                            <p>
+                                The authentication provider is not
+                                available. Please refresh the page.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            className="register-submit patient-submit"
+                            onClick={() =>
+                                window.location.reload()
+                            }
+                        >
+                            Refresh
+                        </button>
+
+                    </div>
+
                 </div>
+
             </main>
         );
     }
 
+
+    const {
+        register,
+        authError,
+        isRegistering
+    } = auth;
+
+
+    /* =====================================================
+       FORM STATE
+       ===================================================== */
+
+    const [name, setName] =
+        useState("");
+
+    const [email, setEmail] =
+        useState("");
+
+    const [password, setPassword] =
+        useState("");
+
+    const [confirmPassword, setConfirmPassword] =
+        useState("");
+
+    const [error, setError] =
+        useState("");
+
+
+    /* =====================================================
+       ROLE
+       ===================================================== */
+
+    const isPatient =
+        role === "patient";
+
+    const isCaregiver =
+        role === "caregiver";
+
+
+    /* =====================================================
+       INVALID ROLE
+       ===================================================== */
+
+    if (!isPatient && !isCaregiver) {
+
+        return (
+            <main className="register-page-form">
+
+                <div className="register-wrapper">
+
+                    <div className="register-card">
+
+                        <div className="register-logo">
+                            <Logo />
+                        </div>
+
+                        <div className="register-heading">
+
+                            <h1>
+                                Invalid registration type.
+                            </h1>
+
+                            <p>
+                                Please choose whether you want
+                                to register as a patient or caregiver.
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            className="register-submit patient-submit"
+                            onClick={() =>
+                                navigate("/register")
+                            }
+                        >
+                            Back to registration
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </main>
+        );
+    }
+
+
+    /* =====================================================
+       SUBMIT
+       ===================================================== */
+
     const handleSubmit = async (event) => {
+
         event.preventDefault();
 
         setError("");
 
-        if (!email.trim()) {
-            setError("Please enter your email address.");
+
+        if (
+            !name.trim() ||
+            !email.trim() ||
+            !password ||
+            !confirmPassword
+        ) {
+
+            setError(
+                "Please fill in all fields."
+            );
+
             return;
         }
 
-        if (password.length < 6) {
-            setError(
-                "Password must be at least 6 characters long."
-            );
-            return;
-        }
 
         if (password !== confirmPassword) {
-            setError("Passwords do not match.");
+
+            setError(
+                "Passwords do not match."
+            );
+
             return;
         }
 
-        try {
-            setIsRegistering(true);
 
-            await api.post("/auth/register", {
-                email: email.trim(),
-                password,
-                role
-            });
-
-            /*
-             * Registration succeeded.
-             * Send the user to the appropriate login page.
-             */
-            navigate(`/login/${role}`, {
-                replace: true,
-                state: {
-                    registered: true
-                }
-            });
-        } catch (err) {
-            console.error(
-                "AshaNER registration failed:",
-                err
-            );
+        if (password.length < 8) {
 
             setError(
-                err?.message ||
-                "Unable to create your account. Please try again."
+                "Password must be at least 8 characters."
             );
-        } finally {
-            setIsRegistering(false);
+
+            return;
         }
+
+
+        if (typeof register !== "function") {
+
+            setError(
+                "Registration service is unavailable. Please refresh the page."
+            );
+
+            return;
+        }
+
+
+        const success =
+            await register(
+                name.trim(),
+                email.trim(),
+                password,
+                role
+            );
+
+
+        if (!success) {
+            return;
+        }
+
+
+        navigate(
+            `/login/${role}`,
+            {
+                replace: true
+            }
+        );
     };
 
+
+    /* =====================================================
+       PAGE
+       ===================================================== */
+
     return (
-        <main className="register-page">
+        <main
+            className={
+                `register-page-form ${
+                    isPatient
+                        ? "patient-register-page"
+                        : "caregiver-register-page"
+                }`
+            }
+        >
 
             <div className="register-wrapper">
 
-                {/* Back */}
+                {/* BACK */}
+
                 <button
                     type="button"
                     className="register-back"
                     onClick={() =>
-                        navigate(`/login/${role}`)
+                        navigate("/register")
                     }
+                    disabled={isRegistering}
                 >
                     <span>←</span>
-                    Back to sign in
+                    Back
                 </button>
 
-                {/* Card */}
+
+                {/* CARD */}
+
                 <div className="register-card">
 
-                    {/* Logo */}
+                    {/* LOGO */}
+
                     <div className="register-logo">
                         <Logo />
                     </div>
 
-                    {/* Heading */}
+
+                    {/* HEADING */}
+
                     <div className="register-heading">
 
                         <span
                             className={
-                                isPatient
-                                    ? "register-label patient-register-label"
-                                    : "register-label caregiver-register-label"
+                                `register-role-label ${
+                                    isPatient
+                                        ? "patient-label"
+                                        : "caregiver-label"
+                                }`
                             }
                         >
                             {isPatient
-                                ? "PATIENT ACCOUNT"
-                                : "CAREGIVER ACCOUNT"}
+                                ? "PATIENT VIEW"
+                                : "CAREGIVER VIEW"}
                         </span>
+
 
                         <h1>
                             Create your account.
                         </h1>
 
+
                         <p>
                             {isPatient
-                                ? "Create your personal AshaNER care space."
-                                : "Create your caregiver account to stay connected and support care."}
+                                ? "Set up your personal AshaNER care space."
+                                : "Set up your connected caregiver account."
+                            }
                         </p>
 
                     </div>
 
-                    {/* Form */}
+
+                    {/* FORM */}
+
                     <form
                         className="register-form"
                         onSubmit={handleSubmit}
                     >
 
-                        {/* Email */}
-                        <div className="register-field">
+                        {/* NAME */}
 
-                            <label htmlFor="register-email">
+                        <div className="form-field">
+
+                            <label htmlFor="name">
+                                Full name
+                            </label>
+
+                            <input
+                                id="name"
+                                type="text"
+                                value={name}
+                                onChange={(event) =>
+                                    setName(
+                                        event.target.value
+                                    )
+                                }
+                                placeholder="Your name"
+                                autoComplete="name"
+                                required
+                                disabled={isRegistering}
+                            />
+
+                        </div>
+
+
+                        {/* EMAIL */}
+
+                        <div className="form-field">
+
+                            <label htmlFor="email">
                                 Email address
                             </label>
 
                             <input
-                                id="register-email"
+                                id="email"
                                 type="email"
                                 value={email}
                                 onChange={(event) =>
-                                    setEmail(event.target.value)
+                                    setEmail(
+                                        event.target.value
+                                    )
                                 }
                                 placeholder="you@example.com"
                                 autoComplete="email"
@@ -172,19 +369,22 @@ export default function RegisterPage() {
                         </div>
 
 
-                        {/* Password */}
-                        <div className="register-field">
+                        {/* PASSWORD */}
 
-                            <label htmlFor="register-password">
+                        <div className="form-field">
+
+                            <label htmlFor="password">
                                 Password
                             </label>
 
                             <input
-                                id="register-password"
+                                id="password"
                                 type="password"
                                 value={password}
                                 onChange={(event) =>
-                                    setPassword(event.target.value)
+                                    setPassword(
+                                        event.target.value
+                                    )
                                 }
                                 placeholder="Create a password"
                                 autoComplete="new-password"
@@ -192,15 +392,12 @@ export default function RegisterPage() {
                                 disabled={isRegistering}
                             />
 
-                            <span className="register-hint">
-                                Use at least 6 characters.
-                            </span>
-
                         </div>
 
 
-                        {/* Confirm password */}
-                        <div className="register-field">
+                        {/* CONFIRM PASSWORD */}
+
+                        <div className="form-field">
 
                             <label htmlFor="confirm-password">
                                 Confirm password
@@ -215,7 +412,7 @@ export default function RegisterPage() {
                                         event.target.value
                                     )
                                 }
-                                placeholder="Enter your password again"
+                                placeholder="Repeat your password"
                                 autoComplete="new-password"
                                 required
                                 disabled={isRegistering}
@@ -224,51 +421,75 @@ export default function RegisterPage() {
                         </div>
 
 
-                        {/* Error */}
-                        {error && (
+                        {/* ERROR */}
+
+                        {(error || authError) && (
+
                             <div
                                 className="register-error"
                                 role="alert"
                             >
-                                {error}
+                                {error || authError}
                             </div>
+
                         )}
 
 
-                        {/* Submit */}
+                        {/* SUBMIT */}
+
                         <button
                             type="submit"
                             className={
-                                isPatient
-                                    ? "register-submit patient-register-submit"
-                                    : "register-submit caregiver-register-submit"
+                                `register-submit ${
+                                    isPatient
+                                        ? "patient-submit"
+                                        : "caregiver-submit"
+                                }`
                             }
                             disabled={isRegistering}
                         >
+
                             {isRegistering
                                 ? "Creating account..."
-                                : "Create account"}
+                                : isPatient
+                                    ? "Create Patient Account"
+                                    : "Create Caregiver Account"
+                            }
 
                             {!isRegistering && (
                                 <span>→</span>
                             )}
+
                         </button>
 
                     </form>
 
-                    {/* Existing account */}
-                    <p className="register-footer">
-                        Already have an account?{" "}
 
-                        <button
-                            type="button"
-                            onClick={() =>
-                                navigate(`/login/${role}`)
-                            }
-                        >
-                            Sign in
-                        </button>
-                    </p>
+                    {/* FOOTER */}
+
+                    <div className="register-footer">
+
+                        <p>
+                            Already have an account?{" "}
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    navigate(
+                                        `/login/${role}`
+                                    )
+                                }
+                                disabled={isRegistering}
+                            >
+                                Log in
+                            </button>
+                        </p>
+
+                        <span>
+                            Your information is kept private and secure.
+                        </span>
+
+                    </div>
 
                 </div>
 

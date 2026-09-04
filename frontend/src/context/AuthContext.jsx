@@ -5,16 +5,32 @@ import {
 } from "react";
 
 import api from "../services/api";
+import {
+    register as registerUser
+} from "../services/authApi";
+
 
 const Ctx = createContext(null);
 
 const TOKEN_KEY = "token";
 
-const createUser = (role, email) => ({
+
+/* =========================================================
+   CREATE USER
+   ========================================================= */
+
+const createUser = (
+    role,
+    email,
+    name = null
+) => ({
     name:
-        role === "caregiver"
-            ? "Caregiver"
-            : "Patient",
+        name ||
+        (
+            role === "caregiver"
+                ? "Caregiver"
+                : "Patient"
+        ),
 
     email,
 
@@ -23,80 +39,140 @@ const createUser = (role, email) => ({
     patientName: "Demo_Patient"
 });
 
+
+/* =========================================================
+   AUTH PROVIDER
+   ========================================================= */
+
 export function AuthProvider({ children }) {
+
+    /* =====================================================
+       RESTORE LOGIN SESSION
+       ===================================================== */
 
     const [user, setUser] = useState(() => {
 
         const token =
             localStorage.getItem(TOKEN_KEY);
 
-        const role =
-            localStorage.getItem("role");
-
-        const email =
-            localStorage.getItem("email");
-
         if (!token) {
             return null;
         }
 
+        const role =
+            localStorage.getItem("role") ||
+            "patient";
+
+        const email =
+            localStorage.getItem("email") ||
+            "";
+
+        const name =
+            localStorage.getItem("name") ||
+            null;
+
         return createUser(
-            role || "patient",
-            email || ""
+            role,
+            email,
+            name
         );
     });
 
 
+    /* =====================================================
+       STATE
+       ===================================================== */
+
     const [authError, setAuthError] =
         useState(null);
-
 
     const [isLoggingIn, setIsLoggingIn] =
         useState(false);
 
+    const [isRegistering, setIsRegistering] =
+        useState(false);
+
+
+    /* =====================================================
+       LOGIN
+       ===================================================== */
 
     const login = async (
         email,
         password,
-        role
+        selectedRole
     ) => {
 
         setIsLoggingIn(true);
         setAuthError(null);
 
+
         try {
 
+            const cleanEmail =
+                email.trim().toLowerCase();
+
+
+            if (!cleanEmail || !password) {
+
+                throw new Error(
+                    "Please enter your email and password."
+                );
+            }
+
+
             /*
-             * FastAPI's OAuth2PasswordRequestForm
-             * expects application/x-www-form-urlencoded
+             * FastAPI OAuth2PasswordRequestForm
+             * requires application/x-www-form-urlencoded.
              */
 
-            const credentials =
+            const formData =
                 new URLSearchParams();
 
-            credentials.append(
+            formData.append(
                 "username",
-                email
+                cleanEmail
             );
 
-            credentials.append(
+            formData.append(
                 "password",
                 password
             );
 
 
-            const data = await api.post(
-                "/auth/login",
-                credentials
+            console.log(
+                "Attempting AshaNER login:",
+                {
+                    email: cleanEmail,
+                    role: selectedRole
+                }
+            );
+
+
+            const data =
+                await api.post(
+                    "/auth/login",
+                    formData
+                );
+
+
+            console.log(
+                "AshaNER login response:",
+                data
             );
 
 
             if (!data?.access_token) {
+
                 throw new Error(
-                    "Login succeeded but no access token was returned."
+                    "Login succeeded but the server did not return an access token."
                 );
             }
 
+
+            /* =================================================
+               SAVE TOKEN
+               ================================================= */
 
             localStorage.setItem(
                 TOKEN_KEY,
@@ -104,15 +180,22 @@ export function AuthProvider({ children }) {
             );
 
 
+            /*
+             * The backend JWT contains the user's actual role.
+             *
+             * For now the frontend receives the selected role
+             * from RoleLoginPage, so keep it consistent.
+             */
+
             localStorage.setItem(
                 "role",
-                role
+                selectedRole
             );
 
 
             localStorage.setItem(
                 "email",
-                email
+                cleanEmail
             );
 
 
@@ -122,10 +205,14 @@ export function AuthProvider({ children }) {
             );
 
 
+            /* =================================================
+               UPDATE AUTH STATE
+               ================================================= */
+
             setUser(
                 createUser(
-                    role,
-                    email
+                    selectedRole,
+                    cleanEmail
                 )
             );
 
@@ -140,10 +227,17 @@ export function AuthProvider({ children }) {
             );
 
 
-            setAuthError(
+            /*
+             * api.js may already convert the FastAPI response
+             * into an Error. Use its message when available.
+             */
+
+            const message =
                 error?.message ||
-                "Unable to sign in. Please check your email and password."
-            );
+                "Incorrect email or password.";
+
+
+            setAuthError(message);
 
 
             return false;
@@ -151,10 +245,111 @@ export function AuthProvider({ children }) {
         } finally {
 
             setIsLoggingIn(false);
-
         }
     };
 
+
+    /* =====================================================
+       REGISTER
+       ===================================================== */
+
+    const register = async (
+        name,
+        email,
+        password,
+        role
+    ) => {
+
+        setIsRegistering(true);
+        setAuthError(null);
+
+
+        try {
+
+            const cleanName =
+                name.trim();
+
+            const cleanEmail =
+                email.trim().toLowerCase();
+
+
+            if (!cleanName) {
+
+                throw new Error(
+                    "Please enter your full name."
+                );
+            }
+
+
+            if (!cleanEmail) {
+
+                throw new Error(
+                    "Please enter your email address."
+                );
+            }
+
+
+            if (!password) {
+
+                throw new Error(
+                    "Please enter a password."
+                );
+            }
+
+
+            /*
+             * Backend currently accepts:
+             *
+             * email
+             * password
+             * role
+             *
+             * `name` is harmless if Pydantic ignores extra
+             * fields, but we don't need to depend on that.
+             */
+
+            const data =
+                await registerUser({
+                    email: cleanEmail,
+                    password,
+                    role
+                });
+
+
+            console.log(
+                "AshaNER registration successful:",
+                data
+            );
+
+
+            return true;
+
+        } catch (error) {
+
+            console.error(
+                "AshaNER registration failed:",
+                error
+            );
+
+
+            setAuthError(
+                error?.message ||
+                "Unable to create your account. Please try again."
+            );
+
+
+            return false;
+
+        } finally {
+
+            setIsRegistering(false);
+        }
+    };
+
+
+    /* =====================================================
+       LOGOUT
+       ===================================================== */
 
     const logout = () => {
 
@@ -171,23 +366,39 @@ export function AuthProvider({ children }) {
         );
 
         localStorage.removeItem(
+            "name"
+        );
+
+        localStorage.removeItem(
             "patientId"
         );
 
-        setUser(null);
 
+        setUser(null);
         setAuthError(null);
     };
 
+
+    /* =====================================================
+       PROVIDER
+       ===================================================== */
 
     return (
         <Ctx.Provider
             value={{
                 user,
+
                 login,
+
+                register,
+
                 logout,
+
                 authError,
-                isLoggingIn
+
+                isLoggingIn,
+
+                isRegistering
             }}
         >
             {children}
@@ -195,6 +406,10 @@ export function AuthProvider({ children }) {
     );
 }
 
+
+/* =========================================================
+   USE AUTH
+   ========================================================= */
 
 export const useAuth = () =>
     useContext(Ctx);
