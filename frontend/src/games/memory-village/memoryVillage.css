@@ -1,0 +1,281 @@
+/* src/games/memory-village/memoryVillage.css */
+
+.memory-village {
+  width: 100%;
+  min-height: 100%;
+  padding: 32px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Header */
+
+.memory-village-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.game-label {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.memory-village-header h2 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.game-hint {
+  margin: 10px 0 20px;
+  font-size: 16px;
+}
+
+/* Progress */
+
+.progress {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.progress span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.4s ease;
+}
+
+/* Village */
+
+.village {
+  position: relative;
+
+  max-width: 850px;
+  min-height: 430px;
+
+  margin: 0 auto;
+
+  padding: 35px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  border-radius: 28px;
+}
+
+/* Village items */
+
+.village-item {
+  min-height: 150px;
+
+  border: none;
+  border-radius: 22px;
+
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  font-family: inherit;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.village-item:hover {
+  transform: translateY(-4px);
+}
+
+.village-item:active {
+  transform: scale(0.96);
+}
+
+.item-emoji {
+  font-size: 58px;
+  line-height: 1;
+}
+
+.item-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Correct answer */
+
+.village-item.correct {
+  animation: correctPulse 0.8s ease;
+}
+
+@keyframes correctPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Feedback */
+
+.feedback {
+  position: fixed;
+
+  left: 50%;
+  bottom: 30px;
+
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 14px 24px;
+
+  border-radius: 14px;
+
+  font-weight: 600;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+
+  animation: feedbackIn 0.25s ease;
+}
+
+.feedback span {
+  font-size: 22px;
+}
+
+.feedback p {
+  margin: 0;
+}
+
+.correct-feedback {
+  background: #dff5df;
+}
+
+.try-again-feedback {
+  background: #fff3d6;
+}
+
+@keyframes feedbackIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Completion */
+
+.memory-village-complete {
+  min-height: 500px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.complete-icon {
+  font-size: 70px;
+  margin-bottom: 20px;
+}
+
+.memory-village-complete h2 {
+  margin: 0;
+
+  font-size: 36px;
+}
+
+.memory-village-complete p {
+  max-width: 450px;
+
+  margin: 12px 0 28px;
+
+  font-size: 18px;
+}
+
+.restart-button {
+  border: none;
+
+  padding: 14px 28px;
+
+  border-radius: 12px;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.restart-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+  .memory-village {
+    padding: 20px;
+  }
+
+  .memory-village-header h2 {
+    font-size: 26px;
+  }
+
+  .village {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding: 20px;
+  }
+
+  .village-item {
+    min-height: 130px;
+  }
+
+  .item-emoji {
+    font-size: 46px;
+  }
+
+  .item-name {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 450px) {
+  .village {
+    grid-template-columns: 1fr;
+  }
+}
