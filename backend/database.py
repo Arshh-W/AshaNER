@@ -30,16 +30,18 @@ def init_db():
     )
     """)
 
-    # Game Sessions Table
+    # Game Sessions Table (Updated for 5 Games)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS game_sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         local_session_id TEXT UNIQUE NOT NULL,
         patient_id INTEGER NOT NULL,
-        game_type TEXT NOT NULL,
+        game_type TEXT NOT NULL, -- memory_village, memory_detective, routine_rescue, sound_object, memory_mosaic
         score INTEGER NOT NULL,
         duration_seconds REAL NOT NULL,
         total_errors INTEGER NOT NULL,
+        level_achieved INTEGER DEFAULT 1,
+        reaction_times_json TEXT, -- Serialized JSON array of click latencies
         created_at TEXT NOT NULL,
         FOREIGN KEY (patient_id) REFERENCES patients(id)
     )
