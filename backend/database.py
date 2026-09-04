@@ -90,18 +90,20 @@ def init_db():
     )
     """)
 
-    _ensure_columns(cursor, "game_sessions", {
-        "avg_cdi": "REAL",
-        "avg_valence": "REAL",
-        "triggered_reminiscence": "INTEGER DEFAULT 0",
-        "xai_reason": "TEXT",
-    })
     _ensure_columns(cursor, "telemetry_ticks", {
         "event_type": "TEXT",
         "reminder_id": "INTEGER",
         "patient_id": "INTEGER",
         "locale": "TEXT",
         "detail": "TEXT",
+    })
+    _ensure_columns(cursor, "game_sessions", {
+        "level_achieved": "INTEGER DEFAULT 1",
+        "reaction_times_json": "TEXT",
+        "avg_cdi": "REAL",
+        "avg_valence": "REAL",
+        "triggered_reminiscence": "INTEGER DEFAULT 0",
+        "xai_reason": "TEXT",
     })
 
 
@@ -197,3 +199,4 @@ def _ensure_columns(cursor, table: str, columns: dict):
 
 if __name__ == "__main__":
     init_db()
+    print("database updated!!")
