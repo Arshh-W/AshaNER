@@ -10,8 +10,11 @@ from database import init_db, DB_NAME
 from schemas import (
     UserRegister, PatientCreate, PatientResponse,
     SyncBatchRequest, SyncBatchResponse,
-    DDAEngineRequest, DDAEngineResponse, GameTypeEnum
+    DDAEngineRequest, DDAEngineResponse, GameTypeEnum,
+    ReminderConfirmation, VoiceCheckInRequest,
 )
+from reminder_daemon import RoutineReminderDaemon
+from voice_checkin import process_check_in
 
 app = FastAPI(
     title="Dementia Care Platform API",
@@ -20,6 +23,8 @@ app = FastAPI(
 )
 
 init_db()
+reminder_daemon = RoutineReminderDaemon()
+reminder_daemon.start()
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,6 +43,28 @@ def get_current_user_id(current_user: dict = Depends(get_current_user)) -> int:
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user[0]
+
+# Helper to ensure the requested patient actually belongs to the caller,
+# so one caregiver can never read another caregiver's patient data.
+def get_owned_patient(patient_id: int, caregiver_id: int, cursor) -> tuple:
+    cursor.execute(
+        "SELECT id, caregiver_id, full_name, age, region, preferred_language FROM patients WHERE id = ?",
+        (patient_id,)
+    )
+    row = cursor.fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    if row[1] != caregiver_id:
+        raise HTTPException(status_code=403, detail="Not authorized for this patient")
+    return row
+
+
+def assert_owned_patient(patient_id: int, caregiver_id: int) -> tuple:
+    conn = sqlite3.connect(DB_NAME)
+    try:
+        return get_owned_patient(patient_id, caregiver_id, conn.cursor())
+    finally:
+        conn.close()
 
 # --- Auth Routes ---
 @app.post("/api/v1/auth/register", tags=["Authentication"])
@@ -100,6 +127,67 @@ def create_patient(
         age=row[3], region=row[4], preferred_language=row[5]
     )
 
+@app.get("/api/v1/patients/{patient_id}/reminders/due")
+def get_due_reminders(
+    patient_id: int,
+    caregiver_id: int = Depends(get_current_user_id),
+):
+    assert_owned_patient(patient_id, caregiver_id)
+    reminders = [
+        reminder for reminder in reminder_daemon.due_reminders()
+        if reminder.patient_id == patient_id
+    ]
+    return [
+        {
+            "id": reminder.reminder_id,
+            "patient_id": reminder.patient_id,
+            "title": reminder.title,
+            "category": reminder.category,
+            "scheduled_time": reminder.scheduled_time,
+            "prompt": reminder.prompt,
+            "locale": reminder.locale,
+            "audio": reminder_daemon.prompt_player.resolve(reminder),
+        }
+        for reminder in reminders
+    ]
+
+
+@app.post("/api/v1/patients/{patient_id}/reminders/{reminder_id}/confirm")
+def confirm_reminder(
+    patient_id: int,
+    reminder_id: int,
+    confirmation: ReminderConfirmation,
+    caregiver_id: int = Depends(get_current_user_id),
+):
+    assert_owned_patient(patient_id, caregiver_id)
+    conn = sqlite3.connect(DB_NAME)
+    reminder = conn.execute(
+        "SELECT 1 FROM routines WHERE id = ? AND patient_id = ? AND active = 1",
+        (reminder_id, patient_id),
+    ).fetchone()
+    conn.close()
+    if not reminder:
+        raise HTTPException(status_code=404, detail="Active reminder not found")
+    tick_id = reminder_daemon.confirm(reminder_id, patient_id, confirmation.action)
+    return {"status": "recorded", "tick_id": tick_id, "action": confirmation.action}
+
+
+@app.post("/api/v1/patients/{patient_id}/voice/check-in")
+def voice_check_in(
+    patient_id: int,
+    request: VoiceCheckInRequest,
+    caregiver_id: int = Depends(get_current_user_id),
+):
+    assert_owned_patient(patient_id, caregiver_id)
+    return process_check_in(
+        request.transcript,
+        patient_id=patient_id,
+        locale=request.locale,
+        audio_samples=request.audio_samples,
+        sample_rate=request.sample_rate,
+    )
+
+# Get All Patients Managed by Caregiver
 @app.get("/api/v1/patients", response_model=List[PatientResponse], tags=["Patients"])
 def get_caregiver_patients(caregiver_id: int = Depends(get_current_user_id)):
     conn = sqlite3.connect(DB_NAME)
