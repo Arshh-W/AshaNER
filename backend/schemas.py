@@ -141,3 +141,40 @@ class DDAEngineResponse(BaseModel):
     show_voice_hint: bool
     audio_prompt_key: Optional[str] = None # e.g., 'hint_water_plants' or 'hint_find_uncle'
     hint_message: Optional[str] = None
+
+
+class TrajectoryPoint(BaseModel):
+    date: str
+    cognitive_drift: float
+    speech_pause_sec: float
+    vocal_shimmer: float
+
+class TrajectoryResponse(BaseModel):
+    patient_id: int
+    timeframe_days: int
+    trajectory: List[TrajectoryPoint]
+
+class HeatmapCell(BaseModel):
+    hour: int
+    avg_valence: float
+    avg_arousal: float
+    agitation_risk: str # 'LOW', 'MODERATE', 'HIGH'
+
+class SundowningHeatmapResponse(BaseModel):
+    patient_id: int
+    hourly_heatmap: List[HeatmapCell]
+
+class AdherenceResponse(BaseModel):
+    patient_id: int
+    log_date: str
+    medication_adherence_percentage: float
+    hydration_percentage: float
+    game_completion_rate: float
+
+class XAIClinicalCard(BaseModel):
+    event_id: str
+    severity: str # 'INFO', 'WARNING', 'CRITICAL'
+    title: str
+    plain_language_summary: str # Targeted for ASHA/Community Workers
+    clinical_recommendation: str
+    detected_at: str

@@ -104,6 +104,46 @@ def init_db():
         "detail": "TEXT",
     })
 
+
+    # Clinical Audio/Vocal Metrics Table
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS clinical_audio_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        patient_id INTEGER NOT NULL,
+        speech_pause_duration_sec REAL NOT NULL,
+        vocal_shimmer_percentage REAL NOT NULL,
+        cognitive_drift_score REAL NOT NULL,
+        recorded_at TEXT NOT NULL,
+        FOREIGN KEY (patient_id) REFERENCES patients(id)
+    )
+    """)
+
+    # Facial Valence & Arousal (Agitation/Sundowning) Logs
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS facial_agitation_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        patient_id INTEGER NOT NULL,
+        valence REAL NOT NULL, -- -1.0 (Negative) to 1.0 (Positive)
+        arousal REAL NOT NULL, -- 0.0 (Calm) to 1.0 (Highly Excited/Agitated)
+        hour_of_day INTEGER NOT NULL, -- 0 to 23
+        recorded_at TEXT NOT NULL,
+        FOREIGN KEY (patient_id) REFERENCES patients(id)
+    )
+    """)
+
+    # Adherence & Routine Tracking Table
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS daily_adherence (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        patient_id INTEGER NOT NULL,
+        medication_taken INTEGER DEFAULT 0, -- 1 for True, 0 for False
+        hydration_ml INTEGER DEFAULT 0,
+        target_hydration_ml INTEGER DEFAULT 2000,
+        log_date TEXT NOT NULL,
+        FOREIGN KEY (patient_id) REFERENCES patients(id)
+    )
+    """)
+
     conn.commit()
     conn.close()
 

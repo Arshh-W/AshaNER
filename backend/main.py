@@ -15,12 +15,14 @@ from schemas import (
 )
 from reminder_daemon import RoutineReminderDaemon
 from voice_checkin import process_check_in
+from analytics import router as analytics_router
 
 app = FastAPI(
     title="Dementia Care Platform API",
     version="1.0.0",
     description="Backend API for Cognitive Games, Offline Sync, DDA Engine, and Caregiver Analytics"
 )
+app.include_router(analytics_router)
 
 init_db()
 reminder_daemon = RoutineReminderDaemon()
