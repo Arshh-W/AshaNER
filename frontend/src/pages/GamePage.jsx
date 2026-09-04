@@ -5,6 +5,7 @@ import MemoryMosaic from "../games/memory-mosaic/MemoryMosaic";
 import MemoryVillage from "../games/memory-village/MemoryVillage";
 import RoutineRescue from "../games/routine-rescue/RoutineRescue";
 import SoundObjectMatch from "../games/sound-object-match/SoundObjectMatch";
+//this is main page for the games, it will render the game based on the gameId in the url
 
 export default function GamePage() {
   const { gameId } = useParams();
