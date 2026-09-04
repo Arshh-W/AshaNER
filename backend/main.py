@@ -7,7 +7,7 @@ from typing import List
 
 from auth import hash_password, verify_password, create_access_token, get_current_user
 from database import init_db, DB_NAME
-from schemas import UserRegister, PatientCreate, PatientResponse
+from schemas import UserRegister, PatientCreate, PatientResponse, SyncBatchRequest, SyncBatchResponse
 
 app = FastAPI(title="Dementia Care Platform API")
 
@@ -112,3 +112,51 @@ def get_caregiver_patients(caregiver_id: int = Depends(get_current_user_id)):
         )
         for row in rows
     ]
+
+@app.post("/api/v1/sync", response_model=SyncBatchResponse)
+def sync_offline_game_sessions(
+    batch: SyncBatchRequest,
+    current_user_id: int = Depends(get_current_user_id)
+):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    synced_ids = []
+
+    for session in batch.sessions:
+        # Check if session was already synced (Idempotency)
+        cursor.execute(
+            "SELECT id FROM game_sessions WHERE local_session_id = ?",
+            (session.local_session_id,)
+        )
+        if cursor.fetchone():
+            synced_ids.append(session.local_session_id)
+            continue
+
+        # Insert into SQLite
+        cursor.execute(
+            """
+            INSERT INTO game_sessions 
+            (local_session_id, patient_id, game_type, score, duration_seconds, total_errors, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                session.local_session_id,
+                session.patient_id,
+                session.game_type,
+                session.score,
+                session.duration_seconds,
+                session.total_errors,
+                session.created_at_offline
+            )
+        )
+        synced_ids.append(session.local_session_id)
+
+    conn.commit()
+    conn.close()
+
+    return SyncBatchResponse(
+        status="success",
+        synced_count=len(synced_ids),
+        synced_session_ids=synced_ids
+    )

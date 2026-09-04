@@ -15,4 +15,3 @@
     - batch storage -> will insert all unsynced data in the single table that will be game_sessions
     - background trigger -> sends synced sessions to backeground tasks to evaluate cognitive drops or to send alerts to caregiver
 
-    
