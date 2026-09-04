@@ -74,8 +74,9 @@ const useWebSpeech = () => {
 
             recognition.onerror = (event) => {
                 setError(
-                    event.error ||
-                    "Speech recognition failed."
+                    event.error === "not-allowed"
+                        ? "Microphone access was denied. Touch controls remain available."
+                        : event.error || "Speech recognition failed."
                 );
 
                 setIsListening(false);

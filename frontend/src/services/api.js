@@ -42,6 +42,7 @@ const request = async (
         const error = new Error(
             data?.message ||
             data?.error ||
+            data?.detail ||
             `Request failed with status ${response.status}`
         );
 

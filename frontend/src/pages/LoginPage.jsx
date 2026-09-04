@@ -2,17 +2,13 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-    const { login } = useAuth();
+    const { login, authError, isLoggingIn } = useAuth();
     const navigate = useNavigate();
 
-    const handlePatientLogin = () => {
-        login("patient");
-        navigate("/patient");
-    };
-
-    const handleCaregiverLogin = () => {
-        login("caregiver");
-        navigate("/caregiver");
+    const handleLogin = async (role) => {
+        if (await login(role)) {
+            navigate(role === "caregiver" ? "/caregiver" : "/patient");
+        }
     };
 
     return (
@@ -31,7 +27,8 @@ export default function LoginPage() {
                 <button
                     type="button"
                     className="large-btn green"
-                    onClick={handlePatientLogin}
+                    onClick={() => handleLogin("patient")}
+                    disabled={isLoggingIn}
                 >
                     Patient View
                 </button>
@@ -39,10 +36,12 @@ export default function LoginPage() {
                 <button
                     type="button"
                     className="large-btn coral"
-                    onClick={handleCaregiverLogin}
+                    onClick={() => handleLogin("caregiver")}
+                    disabled={isLoggingIn}
                 >
                     Caregiver View
                 </button>
+                {authError && <p role="alert">{authError}</p>}
             </div>
         </div>
     );

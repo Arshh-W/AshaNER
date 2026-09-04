@@ -11,7 +11,7 @@ import SoundObjectMatch from "../games/sound-object-match/SoundObjectMatch";
 
 export default function GamePage() {
   const { gameId } = useParams();
-  const { start, complete } = useGameSession();
+  const { start, complete, engineError, isAdapting } = useGameSession();
 
   useEffect(() => {
     start(gameId);
@@ -20,7 +20,7 @@ export default function GamePage() {
     };
   }, [gameId, start, complete]);
 
-  switch (gameId) {
+  const game = (() => { switch (gameId) {
     case "memory-detective":
       return <MemoryDetective />;
 
@@ -38,5 +38,11 @@ export default function GamePage() {
 
     default:
       return <Navigate to="/patient/games" replace />;
-  }
+  } })();
+
+  return <>
+    {isAdapting && <div role="status" aria-live="polite">Adjusting difficulty...</div>}
+    {engineError && <div role="alert">{engineError}</div>}
+    {game}
+  </>;
 }

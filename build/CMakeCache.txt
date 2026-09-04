@@ -19,11 +19,6 @@
 // else will be ignored.
 CMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;MinSizeRel;RelWithDebInfo
 
-//Enable output of a compile_commands.json file listing the exact
-// compiler invocation for each translation unit. Implemented by
-// the Makefile and Ninja generators; ignored elsewhere.
-CMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE
-
 //Value Computed by CMake.
 CMAKE_FIND_PACKAGE_REDIRECTS_DIR:STATIC=C:/Users/m4367/Desktop/Projects/Hackathons/AshaNER/build/CMakeFiles/pkgRedirects
 
@@ -72,19 +67,19 @@ CMAKE_CPACK_COMMAND:INTERNAL=C:/Program Files/CMake/bin/cpack.exe
 CMAKE_CTEST_COMMAND:INTERNAL=C:/Program Files/CMake/bin/ctest.exe
 //Set initial state for CMake diagnostics; used to persist state
 // set by command-line options across invocations.
-CMAKE_DIAGNOSTIC_INIT:INTERNAL=CMD_AUTHOR=WARN;CMD_DEPRECATED=WARN;CMD_EXPERIMENTAL=WARN;CMD_INSTALL_ABSOLUTE_DESTINATION=IGNORE;CMD_POLICY=WARN;CMD_UNINITIALIZED=IGNORE;CMD_UNUSED_CLI=IGNORE
+CMAKE_DIAGNOSTIC_INIT:INTERNAL=CMD_AUTHOR=WARN;CMD_DEPRECATED=WARN;CMD_EXPERIMENTAL=WARN;CMD_INSTALL_ABSOLUTE_DESTINATION=IGNORE;CMD_POLICY=WARN;CMD_UNINITIALIZED=IGNORE;CMD_UNUSED_CLI=WARN
 //Deprecated.  Use -W[no-]error=deprecated instead.
 CMAKE_ERROR_DEPRECATED:INTERNAL=OFF
 //Name of external makefile project generator.
 CMAKE_EXTRA_GENERATOR:INTERNAL=
 //Name of generator.
-CMAKE_GENERATOR:INTERNAL=Visual Studio 18 2026
+CMAKE_GENERATOR:INTERNAL=Visual Studio 17 2022
 //Generator instance identifier.
 CMAKE_GENERATOR_INSTANCE:INTERNAL=
 //Name of generator platform.
 CMAKE_GENERATOR_PLATFORM:INTERNAL=x64
 //Name of generator toolset.
-CMAKE_GENERATOR_TOOLSET:INTERNAL=host=x64
+CMAKE_GENERATOR_TOOLSET:INTERNAL=
 //Source directory with the top level CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=C:/Users/m4367/Desktop/Projects/Hackathons/AshaNER/backend

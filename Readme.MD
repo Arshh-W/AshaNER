@@ -51,3 +51,8 @@
 -> Habbal et al. (2025) it outlines non-invasive digital biomarkers, speech-based natural language processing (NLP) screening, and ethical explainable AI (XAI)
 
 -> Parvari & Schofield (2025) establishes a hybrid therapeutic framework combining Gamified AI with culture and Reminiscence Therapy, grounded in established game design psychology (Flow Theory, Self-Determination Theory).
+
+
+Demo login credentials: 
+caregiver@example.com 
+password123

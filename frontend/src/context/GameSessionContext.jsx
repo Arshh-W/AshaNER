@@ -11,6 +11,8 @@ const gameTypeForApi = (gameId) => {
 
 export function GameSessionProvider({ children }) {
 	const [session, setSession] = useState(null);
+	const [engineError, setEngineError] = useState(null);
+	const [isAdapting, setIsAdapting] = useState(false);
 	const sessionRef = useRef(null);
 
 	const start = useCallback((gameId) => {
@@ -46,6 +48,7 @@ export function GameSessionProvider({ children }) {
 		setSession(next);
 
 		if (!correct) {
+			setIsAdapting(true);
 			adaptGameDifficulty({
 				game_type: gameTypeForApi(current.gameId),
 				current_level: current.level,
@@ -58,7 +61,9 @@ export function GameSessionProvider({ children }) {
 					sessionRef.current = updated;
 					setSession(updated);
 				}
-			}).catch(() => undefined);
+			}).catch(() => {
+				setEngineError("Difficulty adaptation is unavailable. Continuing with touch-based play.");
+			}).finally(() => setIsAdapting(false));
 		}
 	}, []);
 
@@ -105,7 +110,9 @@ export function GameSessionProvider({ children }) {
 			start,
 			record,
 			complete,
-			reset
+			reset,
+			engineError,
+			isAdapting
 		}}>
 			{children}
 		</Ctx.Provider>
