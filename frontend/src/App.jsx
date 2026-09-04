@@ -10,45 +10,74 @@ import { GameSessionProvider } from "./context/GameSessionContext";
 import AshaNERLogoAnimation from "./components/common/AshaNERLogoAnimation";
 import LoadingScreen from "./components/common/LoadingScreen";
 
+
 export default function App() {
+
     const [startupStage, setStartupStage] =
         useState("logo");
+
 
     const handleLogoComplete = useCallback(() => {
         setStartupStage("loading");
     }, []);
 
+
     const handleLoadingComplete = useCallback(() => {
         setStartupStage("ready");
     }, []);
 
+
     return (
         <AuthProvider>
+
             <LanguageProvider>
+
                 <OfflineProvider>
+
                     <GameSessionProvider>
+
+                        {/* =================================================
+                            STARTUP LOGO
+                           ================================================= */}
 
                         {startupStage === "logo" && (
                             <AshaNERLogoAnimation
-                                onComplete={handleLogoComplete}
+                                onComplete={
+                                    handleLogoComplete
+                                }
                             />
                         )}
+
+
+                        {/* =================================================
+                            LOADING SCREEN
+                           ================================================= */}
 
                         {startupStage === "loading" && (
                             <LoadingScreen
                                 duration={1200}
                                 message="Preparing AshaNER..."
-                                onComplete={handleLoadingComplete}
+                                onComplete={
+                                    handleLoadingComplete
+                                }
                             />
                         )}
+
+
+                        {/* =================================================
+                            APPLICATION
+                           ================================================= */}
 
                         {startupStage === "ready" && (
                             <AppRoutes />
                         )}
 
                     </GameSessionProvider>
+
                 </OfflineProvider>
+
             </LanguageProvider>
+
         </AuthProvider>
     );
 }

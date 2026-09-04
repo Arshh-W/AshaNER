@@ -2,25 +2,42 @@ const API_BASE_URL =
     import.meta.env.VITE_API_URL ||
     "http://localhost:8000/api/v1";
 
-const getToken = () => {
-    return localStorage.getItem("token");
-};
 
-const request = async (
+const getToken = () =>
+    localStorage.getItem("token");
+
+
+async function request(
     endpoint,
     options = {}
-) => {
+) {
+
     const token = getToken();
 
-    const isFormData = options.body instanceof FormData;
+    const isFormData =
+        options.body instanceof FormData;
+
+    const isUrlEncoded =
+        options.body instanceof URLSearchParams;
+
+
     const headers = {
-        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        ...(isFormData || isUrlEncoded
+            ? {}
+            : {
+                "Content-Type":
+                    "application/json"
+            }),
+
         ...(options.headers || {})
     };
 
+
     if (token) {
-        headers.Authorization = `Bearer ${token}`;
+        headers.Authorization =
+            `Bearer ${token}`;
     }
+
 
     const response = await fetch(
         `${API_BASE_URL}${endpoint}`,
@@ -30,6 +47,7 @@ const request = async (
         }
     );
 
+
     let data = null;
 
     try {
@@ -38,66 +56,120 @@ const request = async (
         data = null;
     }
 
+
     if (!response.ok) {
-        const error = new Error(
-            data?.message ||
-            data?.error ||
+
+        const message =
             data?.detail ||
-            `Request failed with status ${response.status}`
-        );
+            data?.message ||
+            `Request failed with status ${response.status}`;
 
-        error.status = response.status;
-        error.data = data;
-
-        throw error;
+        throw new Error(message);
     }
+
 
     return data;
-};
+}
+
 
 const api = {
+
     get(endpoint, options = {}) {
-        return request(endpoint, {
-            ...options,
-            method: "GET"
-        });
+
+        return request(
+            endpoint,
+            {
+                ...options,
+                method: "GET"
+            }
+        );
     },
 
-    post(endpoint, body, options = {}) {
-        return request(endpoint, {
-            ...options,
-            method: "POST",
-            body: body instanceof FormData ? body : JSON.stringify(body)
-        });
+
+    post(
+        endpoint,
+        body,
+        options = {}
+    ) {
+
+        const isFormData =
+            body instanceof FormData;
+
+        const isUrlEncoded =
+            body instanceof URLSearchParams;
+
+
+        return request(
+            endpoint,
+            {
+                ...options,
+
+                method: "POST",
+
+                body:
+                    isFormData ||
+                    isUrlEncoded
+                        ? body
+                        : JSON.stringify(body)
+            }
+        );
     },
 
-    put(endpoint, body, options = {}) {
-        return request(endpoint, {
-            ...options,
-            method: "PUT",
-            body: JSON.stringify(body)
-        });
+
+    put(
+        endpoint,
+        body,
+        options = {}
+    ) {
+
+        return request(
+            endpoint,
+            {
+                ...options,
+
+                method: "PUT",
+
+                body:
+                    JSON.stringify(body)
+            }
+        );
     },
 
-    patch(endpoint, body, options = {}) {
-        return request(endpoint, {
-            ...options,
-            method: "PATCH",
-            body: JSON.stringify(body)
-        });
+
+    patch(
+        endpoint,
+        body,
+        options = {}
+    ) {
+
+        return request(
+            endpoint,
+            {
+                ...options,
+
+                method: "PATCH",
+
+                body:
+                    JSON.stringify(body)
+            }
+        );
     },
 
-    delete(endpoint, options = {}) {
-        return request(endpoint, {
-            ...options,
-            method: "DELETE"
-        });
+
+    delete(
+        endpoint,
+        options = {}
+    ) {
+
+        return request(
+            endpoint,
+            {
+                ...options,
+                method: "DELETE"
+            }
+        );
     }
 };
 
-export {
-    API_BASE_URL,
-    request
-};
 
 export default api;

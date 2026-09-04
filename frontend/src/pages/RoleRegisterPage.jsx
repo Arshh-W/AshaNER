@@ -1,52 +1,56 @@
 import { useNavigate } from "react-router-dom";
 import Logo from "../components/common/Logo";
-import "../assets/styles/login-page.css";
+import "../assets/styles/role-register.css";
 
-export default function LoginPage() {
+export default function RoleRegisterPage() {
     const navigate = useNavigate();
 
     return (
-        <main className="login-page">
-            <div className="login-container">
+        <main className="role-register-page">
+
+            <div className="role-register-container">
 
                 {/* Logo */}
-                <div className="login-top">
-                    <div className="login-logo-wrap">
-                        <Logo className="login-logo" />
+                <div className="role-register-top">
+                    <div className="role-register-logo">
+                        <Logo />
                     </div>
                 </div>
 
                 {/* Intro */}
-                <section className="login-intro">
-                    <div className="login-eyebrow">
-                        <span className="login-eyebrow-dot" />
-                        YOUR CARE SPACE
+                <section className="role-register-intro">
+
+                    <div className="role-register-eyebrow">
+                        <span className="role-register-eyebrow-dot" />
+                        GET STARTED
                     </div>
 
                     <h1>
-                        Welcome back
+                        Create your
                         <br />
-                        <span>to AshaNER.</span>
+                        <span>AshaNER account.</span>
                     </h1>
 
                     <p>
-                        Choose the view that fits how you care,
-                        connect, and spend time with AshaNER.
+                        Choose how you'll use AshaNER
+                        to create your care space.
                     </p>
+
                 </section>
 
                 {/* Role Cards */}
-                <section className="role-cards">
+                <section className="role-register-cards">
 
                     {/* Patient */}
                     <button
                         type="button"
-                        className="role-card role-card-patient"
-                        onClick={() => navigate("/login/patient")}
+                        className="role-register-card role-register-card-patient"
+                        onClick={() => navigate("/register/patient")}
                     >
-                        <div className="role-card-top">
 
-                            <div className="role-icon">
+                        <div className="role-register-card-top">
+
+                            <div className="role-register-icon">
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"
@@ -69,58 +73,43 @@ export default function LoginPage() {
                                 </svg>
                             </div>
 
-                            <div className="role-arrow">
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                >
-                                    <path
-                                        d="M6 12H18"
-                                        stroke="currentColor"
-                                        strokeWidth="1.7"
-                                        strokeLinecap="round"
-                                    />
-
-                                    <path
-                                        d="M13 7L18 12L13 17"
-                                        stroke="currentColor"
-                                        strokeWidth="1.7"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>
+                            <div className="role-register-arrow">
+                                →
                             </div>
 
                         </div>
 
-                        <div className="role-card-content">
-                            <span className="role-label">
+                        <div className="role-register-card-content">
+
+                            <span className="role-register-label">
                                 PATIENT VIEW
                             </span>
 
                             <h2>
-                                Continue as Patient
+                                Register as Patient
                             </h2>
 
                             <p>
-                                Gentle activities, routines,
-                                and memory support.
+                                Create your personal care space
+                                with activities and memory support.
                             </p>
-                        </div>
-                    </button>
 
+                        </div>
+
+                    </button>
 
                     {/* Caregiver */}
                     <button
                         type="button"
-                        className="role-card role-card-caregiver"
+                        className="role-register-card role-register-card-caregiver"
                         onClick={() =>
-                            navigate("/login/caregiver")
+                            navigate("/register/caregiver")
                         }
                     >
-                        <div className="role-card-top">
 
-                            <div className="role-icon">
+                        <div className="role-register-card-top">
+
+                            <div className="role-register-icon">
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"
@@ -158,49 +147,51 @@ export default function LoginPage() {
                                 </svg>
                             </div>
 
-                            <div className="role-arrow">
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                >
-                                    <path
-                                        d="M6 12H18"
-                                        stroke="currentColor"
-                                        strokeWidth="1.7"
-                                        strokeLinecap="round"
-                                    />
-
-                                    <path
-                                        d="M13 7L18 12L13 17"
-                                        stroke="currentColor"
-                                        strokeWidth="1.7"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>
+                            <div className="role-register-arrow">
+                                →
                             </div>
 
                         </div>
 
-                        <div className="role-card-content">
-                            <span className="role-label">
+                        <div className="role-register-card-content">
+
+                            <span className="role-register-label">
                                 CAREGIVER VIEW
                             </span>
 
                             <h2>
-                                Continue as Caregiver
+                                Register as Caregiver
                             </h2>
 
                             <p>
-                                Support, progress, routines,
-                                and connected care.
+                                Create an account to support,
+                                manage, and monitor connected care.
                             </p>
+
                         </div>
+
                     </button>
 
                 </section>
 
+                {/* Footer */}
+                <div className="role-register-footer">
+
+                    <span>
+                        Already have an account?
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() => navigate("/login")}
+                    >
+                        Log in
+                    </button>
+
+                </div>
+
             </div>
+
         </main>
     );
 }
