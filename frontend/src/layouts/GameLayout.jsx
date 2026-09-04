@@ -2,12 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 
 const GameLayout = () => {
-    // TODO: Implement GameLayout
-    return (
-        <div>
-            <Outlet />
-        </div>
-    );
+    return <Outlet />;
 };
 
 export default GameLayout;

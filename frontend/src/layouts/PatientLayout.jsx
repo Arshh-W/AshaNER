@@ -2,12 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 
 const PatientLayout = () => {
-    // TODO: Implement PatientLayout
-    return (
-        <div>
-            <Outlet />
-        </div>
-    );
+    return <Outlet />;
 };
 
 export default PatientLayout;
