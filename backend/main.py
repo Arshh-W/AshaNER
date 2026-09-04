@@ -16,6 +16,7 @@ from schemas import (
 from reminder_daemon import RoutineReminderDaemon
 from voice_checkin import process_check_in
 from analytics import router as analytics_router
+from ml_inference import router as ml_router
 import sync
 
 app = FastAPI(
@@ -24,6 +25,7 @@ app = FastAPI(
     description="Backend API for Cognitive Games, Offline Sync, DDA Engine, and Caregiver Analytics"
 )
 app.include_router(analytics_router)
+app.include_router(ml_router)
 app.include_router(sync.router, prefix="/api/v1")
 
 init_db()
@@ -235,8 +237,8 @@ def sync_offline_game_sessions(
         cursor.execute(
             """
             INSERT INTO game_sessions 
-            (local_session_id, patient_id, game_type, score, duration_seconds, total_errors, level_achieved, reaction_times_json, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (local_session_id, patient_id, game_type, score, duration_seconds, total_errors, level_achieved, reaction_times_json, created_at, avg_cdi, avg_valence, triggered_reminiscence, xai_reason)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 session.local_session_id,
@@ -247,7 +249,11 @@ def sync_offline_game_sessions(
                 session.total_errors,
                 session.level_achieved,
                 json.dumps(session.reaction_times_ms),
-                session.created_at_offline
+                session.created_at_offline,
+                session.avg_cdi,
+                session.avg_valence,
+                int(session.triggered_reminiscence),
+                session.xai_reason
             )
         )
         synced_ids.append(session.local_session_id)

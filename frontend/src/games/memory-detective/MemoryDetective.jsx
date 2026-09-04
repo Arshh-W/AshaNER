@@ -1,6 +1,7 @@
 // src/games/memory-detective/MemoryDetective.jsx
 
 import React, { useState } from "react";
+import { useGameSession } from "../../context/GameSessionContext";
 import { detectiveScenes } from "./memoryDetectiveData";
 import "./memoryDetective.css";
 
@@ -9,6 +10,7 @@ const MemoryDetective = () => {
     const [phase, setPhase] = useState("observe");
     const [selectedObject, setSelectedObject] = useState(null);
     const [feedback, setFeedback] = useState("");
+    const { record } = useGameSession();
 
     const scene = detectiveScenes[sceneIndex];
 
@@ -22,6 +24,7 @@ const MemoryDetective = () => {
         setSelectedObject(object.id);
 
         if (object.id === scene.changedObject) {
+            record({ correct: true });
             setFeedback("correct");
 
             setTimeout(() => {
@@ -35,6 +38,7 @@ const MemoryDetective = () => {
                 }
             }, 1200);
         } else {
+            record({ correct: false });
             setFeedback("try-again");
 
             setTimeout(() => {

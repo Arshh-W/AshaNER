@@ -1,6 +1,7 @@
 // src/games/memory-mosaic/MemoryMosaic.jsx
 
 import React, { useState } from "react";
+import { useGameSession } from "../../context/GameSessionContext";
 import { mosaicImages } from "./memoryMosaicData";
 import "./memoryMosaic.css";
 
@@ -14,6 +15,7 @@ const MemoryMosaic = () => {
     const [tiles, setTiles] = useState([]);
     const [selectedTiles, setSelectedTiles] = useState([]);
     const [feedback, setFeedback] = useState("");
+    const { record } = useGameSession();
 
     const image = mosaicImages[imageIndex];
 
@@ -43,6 +45,7 @@ const MemoryMosaic = () => {
             image.tiles[selectedTiles.length];
 
         if (!isCorrect) {
+            record({ correct: false });
             setFeedback("wrong");
 
             setTimeout(() => {
@@ -54,6 +57,7 @@ const MemoryMosaic = () => {
         }
 
         setFeedback("correct");
+        record({ correct: true });
 
         setTimeout(() => {
             setFeedback("");

@@ -1,6 +1,6 @@
 const API_BASE_URL =
     import.meta.env.VITE_API_URL ||
-    "http://localhost:5000/api";
+    "http://localhost:8000/api/v1";
 
 const getToken = () => {
     return localStorage.getItem("token");
@@ -12,8 +12,9 @@ const request = async (
 ) => {
     const token = getToken();
 
+    const isFormData = options.body instanceof FormData;
     const headers = {
-        "Content-Type": "application/json",
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
         ...(options.headers || {})
     };
 
@@ -65,7 +66,7 @@ const api = {
         return request(endpoint, {
             ...options,
             method: "POST",
-            body: JSON.stringify(body)
+            body: body instanceof FormData ? body : JSON.stringify(body)
         });
     },
 

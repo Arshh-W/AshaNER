@@ -1,6 +1,7 @@
 // src/games/routine-rescue/RoutineRescue.jsx
 
 import React, { useState } from "react";
+import { useGameSession } from "../../context/GameSessionContext";
 import { routines } from "./routineRescueData";
 import "./routineRescue.css";
 
@@ -9,6 +10,7 @@ const RoutineRescue = () => {
     const [nextStep, setNextStep] = useState(0);
     const [selectedSteps, setSelectedSteps] = useState([]);
     const [feedback, setFeedback] = useState("");
+    const { record } = useGameSession();
 
     const routine = routines[routineIndex];
 
@@ -21,6 +23,7 @@ const RoutineRescue = () => {
             const updatedSteps = [...selectedSteps, step];
             setSelectedSteps(updatedSteps);
             setFeedback("correct");
+                record({ correct: true });
 
             setTimeout(() => {
                 if (nextStep === routine.steps.length - 1) {
@@ -38,6 +41,7 @@ const RoutineRescue = () => {
                 }
             }, 900);
         } else {
+            record({ correct: false });
             setFeedback("try-again");
 
             setTimeout(() => {

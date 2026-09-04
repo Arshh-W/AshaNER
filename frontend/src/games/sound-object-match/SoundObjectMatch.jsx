@@ -1,17 +1,20 @@
 // src/games/sound-object-match/SoundObjectMatch.jsx
 
 import React, { useState } from "react";
+import { useGameSession } from "../../context/GameSessionContext";
 import { soundMatches } from "./soundObjectMatchData";
 import "./soundObjectMatch.css";
 
 const SoundObjectMatch = () => {
     const [questionIndex, setQuestionIndex] = useState(0);
     const [feedback, setFeedback] = useState("");
+    const { record } = useGameSession();
 
     const question = soundMatches[questionIndex];
 
     const handleOptionClick = (option) => {
         if (option.id === question.id) {
+            record({ correct: true });
             setFeedback("correct");
 
             setTimeout(() => {
@@ -23,6 +26,7 @@ const SoundObjectMatch = () => {
                 }
             }, 1000);
         } else {
+            record({ correct: false });
             setFeedback("try-again");
 
             setTimeout(() => {

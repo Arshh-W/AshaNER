@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { useParams, Navigate } from "react-router-dom";
+import { useGameSession } from "../context/GameSessionContext";
 
 import MemoryDetective from "../games/memory-detective/MemoryDetective";
 import MemoryMosaic from "../games/memory-mosaic/MemoryMosaic";
@@ -9,6 +11,14 @@ import SoundObjectMatch from "../games/sound-object-match/SoundObjectMatch";
 
 export default function GamePage() {
   const { gameId } = useParams();
+  const { start, complete } = useGameSession();
+
+  useEffect(() => {
+    start(gameId);
+    return () => {
+      complete().catch(() => undefined);
+    };
+  }, [gameId, start, complete]);
 
   switch (gameId) {
     case "memory-detective":
