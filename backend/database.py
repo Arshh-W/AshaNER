@@ -49,12 +49,12 @@ def init_db():
         avg_valence REAL,
         triggered_reminiscence INTEGER DEFAULT 0,
         xai_reason TEXT,
+        client_event_id TEXT UNIQUE,
         FOREIGN KEY (patient_id) REFERENCES patients(id)
     )
     """)
 
-    # Routines Table (medicine / hydration / appointment / walk reminders
-    # managed by the caregiver and consumed by the offline reminder daemon)
+    # Routines Table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS routines (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,8 +69,7 @@ def init_db():
     )
     """)
 
-    # Shared offline event log. The first eight fields are intentionally aligned
-    # with the native engine and the offline sync fixture.
+    # Telemetry Ticks Table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS telemetry_ticks (
         tick_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -90,22 +89,15 @@ def init_db():
     )
     """)
 
-    _ensure_columns(cursor, "telemetry_ticks", {
-        "event_type": "TEXT",
-        "reminder_id": "INTEGER",
-        "patient_id": "INTEGER",
-        "locale": "TEXT",
-        "detail": "TEXT",
-    })
-    _ensure_columns(cursor, "game_sessions", {
-        "level_achieved": "INTEGER DEFAULT 1",
-        "reaction_times_json": "TEXT",
-        "avg_cdi": "REAL",
-        "avg_valence": "REAL",
-        "triggered_reminiscence": "INTEGER DEFAULT 0",
-        "xai_reason": "TEXT",
-    })
-
+    # Offline Sync Processing Tracker (Idempotency Table)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS processed_sync_events (
+        client_event_id TEXT PRIMARY KEY,
+        event_type TEXT NOT NULL,
+        patient_id INTEGER NOT NULL,
+        processed_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
 
     # Clinical Audio/Vocal Metrics Table
     cursor.execute("""
@@ -142,9 +134,31 @@ def init_db():
         hydration_ml INTEGER DEFAULT 0,
         target_hydration_ml INTEGER DEFAULT 2000,
         log_date TEXT NOT NULL,
+        client_event_id TEXT UNIQUE,
         FOREIGN KEY (patient_id) REFERENCES patients(id)
     )
     """)
+
+    # Column Migrations (In-place Upgrades)
+    _ensure_columns(cursor, "telemetry_ticks", {
+        "event_type": "TEXT",
+        "reminder_id": "INTEGER",
+        "patient_id": "INTEGER",
+        "locale": "TEXT",
+        "detail": "TEXT",
+    })
+    _ensure_columns(cursor, "game_sessions", {
+        "level_achieved": "INTEGER DEFAULT 1",
+        "reaction_times_json": "TEXT",
+        "avg_cdi": "REAL",
+        "avg_valence": "REAL",
+        "triggered_reminiscence": "INTEGER DEFAULT 0",
+        "xai_reason": "TEXT",
+        "client_event_id": "TEXT",
+    })
+    _ensure_columns(cursor, "daily_adherence", {
+        "client_event_id": "TEXT",
+    })
 
     conn.commit()
     conn.close()
