@@ -16,71 +16,81 @@ import CaregiverLayout from "../layouts/CaregiverLayout";
 import ProtectedRoute from "./ProtectedRoute";
 
 export function AppRoutes() {
-  return (
-    <Routes>
-      {/* ─────────────────────────────
-          PUBLIC ROUTES
-      ───────────────────────────── */}
+    return (
+        <Routes>
 
-      <Route path="/" element={<SplashPage />} />
+            {/* PUBLIC LANDING PAGE */}
+            <Route
+                path="/"
+                element={<SplashPage />}
+            />
 
-      <Route path="/login" element={<LoginPage />} />
+            {/* LOGIN PAGE */}
+            <Route
+                path="/login"
+                element={<LoginPage />}
+            />
 
-      <Route path="/offline" element={<OfflinePage />} />
+            {/* OFFLINE */}
+            <Route
+                path="/offline"
+                element={<OfflinePage />}
+            />
 
-      {/* ─────────────────────────────
-          PATIENT APP
-      ───────────────────────────── */}
+            {/* PATIENT */}
+            <Route
+                element={
+                    <ProtectedRoute>
+                        <PatientLayout />
+                    </ProtectedRoute>
+                }
+            >
+                <Route
+                    path="/patient"
+                    element={<PatientDashboard />}
+                />
 
-      <Route
-        element={
-          <ProtectedRoute>
-            <PatientLayout />
-          </ProtectedRoute>
-        }
-      >
-        {/* Patient Home */}
-        <Route path="/patient" element={<PatientDashboard />} />
+                <Route
+                    path="/patient/games"
+                    element={<GamesPage />}
+                />
 
-        {/* Brain Games Hub */}
-        <Route path="/patient/games" element={<GamesPage />} />
+                <Route
+                    path="/patient/games/:gameId"
+                    element={<GamePage />}
+                />
 
-        {/* Individual Games
-            Examples:
-            /patient/games/memory-detective
-            /patient/games/memory-mosaic
-            /patient/games/memory-village
-            /patient/games/routine-rescue
-            /patient/games/sound-object-match
-        */}
-        <Route path="/patient/games/:gameId" element={<GamePage />} />
+                <Route
+                    path="/patient/profile"
+                    element={<ProfilePage />}
+                />
 
-        {/* Patient Profile */}
-        <Route path="/patient/profile" element={<ProfilePage />} />
+                <Route
+                    path="/patient/settings"
+                    element={<SettingsPage />}
+                />
+            </Route>
 
-        {/* Patient Settings */}
-        <Route path="/patient/settings" element={<SettingsPage />} />
-      </Route>
+            {/* CAREGIVER */}
+            <Route
+                element={
+                    <ProtectedRoute role="caregiver">
+                        <CaregiverLayout />
+                    </ProtectedRoute>
+                }
+            >
+                <Route
+                    path="/caregiver"
+                    element={<CaregiverDashboard />}
+                />
+            </Route>
 
-      {/* ─────────────────────────────
-          CAREGIVER APP
-      ───────────────────────────── */}
+            {/* 404 */}
+            <Route
+                path="*"
+                element={<NotFoundPage />}
+            />
 
-      <Route
-        element={
-          <ProtectedRoute role="caregiver">
-            <CaregiverLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="/caregiver" element={<CaregiverDashboard />} />
-      </Route>
-
-      {/* ─────────────────────────────
-          FALLBACK / 404
-      ───────────────────────────── */}
-
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
-  );
+        </Routes>
+    );
 }

@@ -1,1 +1,0 @@
-import GameShell from "../games/GameShell";export default function ReminiscencePage(){return <GameShell><div className="card"><h1>Assam Tea Garden Memories</h1><p>Listen to a gentle story and explore familiar scenes from Biren’s memories.</p><button className="gold-btn">▶ Play Memory</button></div></GameShell>}

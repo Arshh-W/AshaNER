@@ -1,1 +1,44 @@
-.pulse{animation:pulse 2.2s infinite}@keyframes pulse{50%{transform:scale(1.05);box-shadow:0 0 0 12px rgba(212,175,55,.08)}}.card,.large-btn,.dark-btn,.gold-btn,.coral-btn,.light-btn{transition:transform .12s ease,box-shadow .12s ease}.card:hover{transform:translateY(-1px)}button:active{transform:scale(.985)!important}
+/* =========================================
+   INTERACTIONS & MICRO-ANIMATIONS
+   ========================================= */
+
+.pulse {
+    animation: asha-pulse 2.2s infinite;
+}
+
+@keyframes asha-pulse {
+    50% {
+        transform: scale(1.05);
+        box-shadow:
+            0 0 0 12px rgba(212, 175, 55, 0.08);
+    }
+}
+
+
+/* Smooth interaction for common UI elements */
+.card,
+.large-btn,
+.dark-btn,
+.gold-btn,
+.coral-btn,
+.light-btn {
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease;
+}
+
+
+/* Card hover */
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 30px rgba(23, 75, 56, 0.07);
+}
+
+
+/* Button press */
+button:active {
+    transform: scale(0.985) !important;
+}

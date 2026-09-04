@@ -1,6 +1,7 @@
 // src/games/memory-village/MemoryVillage.jsx
 
 import { useState } from "react";
+import { useGameSession } from "../../context/GameSessionContext";
 import { villageItems, villageTasks } from "./memoryVillageData";
 import "./memoryVillage.css";
 
@@ -8,11 +9,13 @@ const MemoryVillage = () => {
   const [currentTask, setCurrentTask] = useState(0);
   const [feedback, setFeedback] = useState("");
   const [completed, setCompleted] = useState(false);
+  const { record } = useGameSession();
 
   const task = villageTasks[currentTask];
 
   const handleItemClick = (item) => {
     if (item.id === task.targetId) {
+      record({ correct: true });
       setFeedback("correct");
 
       setTimeout(() => {
@@ -24,6 +27,7 @@ const MemoryVillage = () => {
         }
       }, 1000);
     } else {
+      record({ correct: false });
       setFeedback("try-again");
 
       setTimeout(() => {

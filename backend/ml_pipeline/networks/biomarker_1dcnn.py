@@ -1,7 +1,7 @@
 import torch.nn as nn
 
 
-class Biomarker1DCNN(nn.Module):
+class AcousticBiomarkerNet(nn.Module):
     def __init__(self):
         super().__init__()
         self.net = nn.Sequential(
@@ -15,3 +15,6 @@ class Biomarker1DCNN(nn.Module):
 
     def forward(self, features):
         return self.net(features)
+
+
+Biomarker1DCNN = AcousticBiomarkerNet

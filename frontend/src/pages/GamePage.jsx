@@ -1,15 +1,26 @@
+import { useEffect } from "react";
 import { useParams, Navigate } from "react-router-dom";
+import { useGameSession } from "../context/GameSessionContext";
 
 import MemoryDetective from "../games/memory-detective/MemoryDetective";
 import MemoryMosaic from "../games/memory-mosaic/MemoryMosaic";
 import MemoryVillage from "../games/memory-village/MemoryVillage";
 import RoutineRescue from "../games/routine-rescue/RoutineRescue";
 import SoundObjectMatch from "../games/sound-object-match/SoundObjectMatch";
+//this is main page for the games, it will render the game based on the gameId in the url
 
 export default function GamePage() {
   const { gameId } = useParams();
+  const { start, complete, engineError, isAdapting } = useGameSession();
 
-  switch (gameId) {
+  useEffect(() => {
+    start(gameId);
+    return () => {
+      complete().catch(() => undefined);
+    };
+  }, [gameId, start, complete]);
+
+  const game = (() => { switch (gameId) {
     case "memory-detective":
       return <MemoryDetective />;
 
@@ -27,5 +38,11 @@ export default function GamePage() {
 
     default:
       return <Navigate to="/patient/games" replace />;
-  }
+  } })();
+
+  return <>
+    {isAdapting && <div role="status" aria-live="polite">Adjusting difficulty...</div>}
+    {engineError && <div role="alert">{engineError}</div>}
+    {game}
+  </>;
 }
