@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import Logo from "../components/common/Logo";
+
 import { useLanguage } from "../context/LanguageContext";
+
 import "../assets/styles/role-register.css";
 
 export default function RoleRegisterPage() {
@@ -12,15 +13,9 @@ export default function RoleRegisterPage() {
 
             <div className="role-register-container">
 
-                {/* Logo */}
-                <div className="role-register-top">
-                    <div className="role-register-logo">
-                        <Logo />
-                    </div>
-                </div>
-
-
-                {/* Intro */}
+                {/* =================================================
+                    INTRO
+                ================================================= */}
                 <section className="role-register-intro">
 
                     <div className="role-register-eyebrow">
@@ -34,10 +29,9 @@ export default function RoleRegisterPage() {
 
 
                     <h1>
-                        {t(
-                            "roleRegister.title",
-                            "Create your AshaNER account."
-                        )}
+                        Create your AshaNER
+                        <br />
+                        <span>account.</span>
                     </h1>
 
 
@@ -51,11 +45,14 @@ export default function RoleRegisterPage() {
                 </section>
 
 
-                {/* Role Cards */}
+                {/* =================================================
+                    ROLE CARDS
+                ================================================= */}
                 <section className="role-register-cards">
 
-
-                    {/* Patient */}
+                    {/* =================================================
+                        PATIENT
+                    ================================================= */}
                     <button
                         type="button"
                         className="role-register-card role-register-card-patient"
@@ -97,7 +94,26 @@ export default function RoleRegisterPage() {
                                 className="role-register-arrow"
                                 aria-hidden="true"
                             >
-                                →
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M6 12H18"
+                                        stroke="currentColor"
+                                        strokeWidth="1.7"
+                                        strokeLinecap="round"
+                                    />
+
+                                    <path
+                                        d="M13 7L18 12L13 17"
+                                        stroke="currentColor"
+                                        strokeWidth="1.7"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
                             </div>
 
                         </div>
@@ -133,8 +149,9 @@ export default function RoleRegisterPage() {
                     </button>
 
 
-
-                    {/* Caregiver */}
+                    {/* =================================================
+                        CAREGIVER
+                    ================================================= */}
                     <button
                         type="button"
                         className="role-register-card role-register-card-caregiver"
@@ -191,7 +208,26 @@ export default function RoleRegisterPage() {
                                 className="role-register-arrow"
                                 aria-hidden="true"
                             >
-                                →
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M6 12H18"
+                                        stroke="currentColor"
+                                        strokeWidth="1.7"
+                                        strokeLinecap="round"
+                                    />
+
+                                    <path
+                                        d="M13 7L18 12L13 17"
+                                        stroke="currentColor"
+                                        strokeWidth="1.7"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
                             </div>
 
                         </div>
@@ -229,7 +265,9 @@ export default function RoleRegisterPage() {
                 </section>
 
 
-                {/* Footer */}
+                {/* =================================================
+                    FOOTER
+                ================================================= */}
                 <div className="role-register-footer">
 
                     <span>

@@ -8,112 +8,82 @@ import LanguagePicker from "./LanguagePicker";
 
 import "../../assets/styles/Navbar.css";
 
-
 export default function Navbar() {
-
     const { user } = useAuth();
-
     const { t } = useLanguage();
 
+    const isLoggedIn = !!user;
+    const isPatient = user?.role === "patient";
+    const isCaregiver = user?.role === "caregiver";
 
     return (
         <header className="navbar">
 
             <div className="navbar-container">
 
-
                 {/* =================================================
                     BRAND
                 ================================================= */}
-
                 <Link
                     to="/"
                     className="navbar-brand"
                     aria-label="AshaNER Home"
                 >
-
                     <Logo className="navbar-logo" />
 
                     <span className="navbar-brand-name">
                         AshaNER
                     </span>
-
                 </Link>
 
 
                 {/* =================================================
                     RIGHT SIDE
                 ================================================= */}
-
                 <div className="navbar-right">
-
-
-                    {/* =================================================
-                        NAVIGATION
-                    ================================================= */}
 
                     <nav
                         className="navbar-links"
                         aria-label="Main navigation"
                     >
 
-                        {/* PUBLIC HOME */}
-
+                        {/* HOME
+                            Always visible
+                        */}
                         <Link to="/">
-                            {t("navbar.home")}
+                            {t("navbar.home", "Home")}
                         </Link>
 
 
                         {/* =================================================
-                            PUBLIC
+                            FULL NAVBAR
+                            ONLY FOR LOGGED-IN / PROFILE USERS
                         ================================================= */}
-
-                        {!user && (
-                            <>
-                                <Link to="/login">
-                                    {t("navbar.login")}
-                                </Link>
-
-                                <Link to="/register">
-                                    {t("navbar.register")}
-                                </Link>
-                            </>
-                        )}
-
-
-                        {/* =================================================
-                            PATIENT
-                        ================================================= */}
-
-                        {user?.role === "patient" && (
+                        {isLoggedIn && isPatient && (
                             <>
                                 <Link to="/patient">
-                                    {t("navbar.dashboard")}
+                                    {t("navbar.dashboard", "Dashboard")}
                                 </Link>
 
                                 <Link to="/patient/games">
-                                    {t("navbar.games")}
+                                    {t("navbar.games", "Games")}
                                 </Link>
 
                                 <Link to="/patient/profile">
-                                    {t("navbar.profile")}
+                                    {t("navbar.profile", "Profile")}
                                 </Link>
 
                                 <Link to="/patient/settings">
-                                    {t("navbar.settings")}
+                                    {t("navbar.settings", "Settings")}
                                 </Link>
                             </>
                         )}
 
 
-                        {/* =================================================
-                            CAREGIVER
-                        ================================================= */}
-
-                        {user?.role === "caregiver" && (
+                        {isLoggedIn && isCaregiver && (
                             <>
                                 <Link to="/caregiver">
-                                    {t("navbar.dashboard")}
+                                    {t("navbar.dashboard", "Dashboard")}
                                 </Link>
 
                                 <Link to="/caregiver/patients">
@@ -127,8 +97,8 @@ export default function Navbar() {
 
                     {/* =================================================
                         LANGUAGE
+                        Always visible
                     ================================================= */}
-
                     <LanguagePicker />
 
                 </div>

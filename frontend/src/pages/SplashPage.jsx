@@ -83,7 +83,7 @@ export default function SplashPage() {
                             <button
                                 type="button"
                                 className="splash-primary-btn splash-large-btn"
-                                onClick={goToLogin}
+                                onClick={goToRegister}
                             >
                                 {t(
                                     "splash.getStarted",
@@ -98,11 +98,9 @@ export default function SplashPage() {
                                 className="splash-secondary-btn"
                                 onClick={goToLogin}
                             >
-                                <UsersRound size={19} />
-
                                 {t(
-                                    "splash.caregiver",
-                                    "I'm a Caregiver"
+                                    "splash.welcomeBack",
+                                    "Welcome Back"
                                 )}
                             </button>
 

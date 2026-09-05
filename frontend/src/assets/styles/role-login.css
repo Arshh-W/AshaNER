@@ -1,27 +1,49 @@
 /* =========================================================
    ASHANER ROLE LOGIN
+   Green editorial theme — shared with Splash / Register
    ========================================================= */
 
 .role-login-page {
-    min-height: 100vh;
-    width: 100%;
+    --green-950: #103c2d;
+    --green-900: #174c39;
+    --green-800: #205d46;
+    --green-700: #2f7055;
+    --green-600: #4f8b68;
+    --green-500: #629b70;
+    --green-300: #b9d2bd;
+    --green-200: #dcebdd;
+    --green-100: #edf5ee;
 
+    --cream: #faf8f3;
+    --surface: #fffdf9;
+    --surface-soft: #f3f0e8;
+    --muted: #667870;
+    --border: rgba(23, 76, 57, 0.10);
+
+    min-height: calc(100vh - 86px);
+    width: 100%;
     box-sizing: border-box;
 
     display: flex;
     justify-content: center;
+    align-items: flex-start;
+
+    padding: 62px 24px 80px;
 
     background:
         radial-gradient(
-            circle at 85% 10%,
-            rgba(231, 241, 235, 0.95),
-            transparent 40%
+            circle at 82% 12%,
+            rgba(220, 235, 220, 0.82),
+            transparent 34%
         ),
-        #f8f4ed;
+        radial-gradient(
+            circle at 12% 82%,
+            rgba(232, 240, 229, 0.72),
+            transparent 32%
+        ),
+        var(--cream);
 
-    padding: 35px 24px 60px;
-
-    color: #164f38;
+    color: var(--green-900);
 }
 
 
@@ -30,7 +52,7 @@
    ========================================================= */
 
 .role-login-wrapper {
-    width: min(100%, 500px);
+    width: min(100%, 560px);
 }
 
 
@@ -41,23 +63,19 @@
 .login-back {
     display: inline-flex;
     align-items: center;
-
     gap: 8px;
 
-    margin-bottom: 25px;
-
-    padding: 8px 0;
+    margin: 0 0 24px;
+    padding: 7px 0;
 
     border: none;
-
     background: transparent;
 
-    color: #527565;
+    color: #5e756b;
 
     font-family: "DM Sans", sans-serif;
-
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 650;
 
     cursor: pointer;
 
@@ -72,39 +90,41 @@
 }
 
 .login-back:hover {
-    color: #164f38;
-    transform: translateX(-2px);
+    color: var(--green-900);
+    transform: translateX(-3px);
 }
 
 .login-back:focus-visible {
-    outline: 2px solid #d5b63c;
+    outline: 2px solid var(--green-500);
     outline-offset: 4px;
     border-radius: 5px;
 }
 
 
 /* =========================================================
-   LOGIN CARD
+   MAIN CARD
    ========================================================= */
 
 .role-login-card {
     width: 100%;
-
     box-sizing: border-box;
 
-    padding: 42px 42px 30px;
+    padding: 42px 44px 30px;
 
-    border: 1px solid rgba(22, 79, 56, 0.08);
-
-    border-radius: 25px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
 
     background:
-        rgba(255, 255, 255, 0.78);
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.94),
+            rgba(250, 249, 244, 0.91)
+        );
 
     box-shadow:
-        0 25px 70px rgba(22, 79, 56, 0.09);
+        0 30px 80px rgba(23, 76, 57, 0.09);
 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(14px);
 }
 
 
@@ -113,18 +133,16 @@
    ========================================================= */
 
 .role-login-logo {
-    width: 54px;
-    height: 54px;
+    width: 58px;
+    height: 58px;
 
-    margin-bottom: 30px;
+    margin-bottom: 29px;
 }
 
 .role-login-logo svg {
     display: block;
-
-    width: 54px !important;
-    height: 54px !important;
-
+    width: 58px !important;
+    height: 58px !important;
     max-width: none !important;
 }
 
@@ -134,59 +152,74 @@
    ========================================================= */
 
 .role-login-heading {
-    margin-bottom: 32px;
+    margin-bottom: 31px;
 }
 
 .role-login-label {
-    display: inline-block;
+    position: relative;
 
-    margin-bottom: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 14px;
+
+    color: var(--green-700);
 
     font-family: "DM Sans", sans-serif;
-
-    font-size: 9px;
-    font-weight: 800;
+    font-size: 10px;
+    font-weight: 850;
 
     letter-spacing: 0.15em;
-
     line-height: 1;
 
     text-transform: uppercase;
 }
 
-.patient-label {
-    color: #67a982;
+.role-login-label::before {
+    content: "";
+
+    width: 7px;
+    height: 7px;
+    flex: 0 0 7px;
+
+    border-radius: 50%;
+
+    background: #d5b63c;
 }
 
+.patient-label,
 .caregiver-label {
-    color: #df633c;
+    color: var(--green-700);
 }
 
 .role-login-heading h1 {
     margin: 0;
 
-    color: #164f38;
+    color: var(--green-900);
 
     font-family: "Fraunces", Georgia, serif;
-
-    font-size: 47px;
+    font-size: clamp(44px, 7vw, 62px);
     font-weight: 600;
 
-    line-height: 1;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+}
 
-    letter-spacing: -0.04em;
+.role-login-heading h1 span {
+    color: var(--green-500);
 }
 
 .role-login-heading p {
-    margin: 15px 0 0;
+    max-width: 500px;
 
-    color: #687970;
+    margin: 17px 0 0;
+
+    color: var(--muted);
 
     font-family: "DM Sans", sans-serif;
-
-    font-size: 14px;
-
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.65;
 }
 
 
@@ -196,10 +229,8 @@
 
 .role-login-form {
     display: flex;
-
     flex-direction: column;
-
-    gap: 20px;
+    gap: 19px;
 }
 
 
@@ -209,9 +240,7 @@
 
 .form-field {
     display: flex;
-
     flex-direction: column;
-
     gap: 8px;
 }
 
@@ -219,34 +248,27 @@
     color: #315d49;
 
     font-family: "DM Sans", sans-serif;
-
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 750;
 }
 
 .form-field input {
     width: 100%;
-
     box-sizing: border-box;
 
-    height: 51px;
+    height: 53px;
 
-    padding:
-        0
-        15px;
+    padding: 0 16px;
 
-    border: 1px solid #d9e1dc;
-
-    border-radius: 11px;
+    border: 1px solid #d7e0da;
+    border-radius: 13px;
 
     outline: none;
 
-    background: #ffffff;
-
-    color: #164f38;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--green-900);
 
     font-family: "DM Sans", sans-serif;
-
     font-size: 14px;
 
     transition:
@@ -256,27 +278,25 @@
 }
 
 .form-field input::placeholder {
-    color: #a4afa9;
+    color: #a0ada7;
 }
 
 .form-field input:hover {
-    border-color: #bdcec4;
+    border-color: #b9cbbf;
 }
 
 .form-field input:focus {
-    border-color: #67a982;
+    border-color: var(--green-500);
 
     box-shadow:
-        0 0 0 3px rgba(103, 169, 130, 0.13);
+        0 0 0 4px rgba(98, 155, 112, 0.12);
 
     background: #ffffff;
 }
 
 .form-field input:disabled {
     cursor: not-allowed;
-
-    background: #f1f3f1;
-
+    background: #f0f3f0;
     opacity: 0.7;
 }
 
@@ -288,18 +308,14 @@
 .role-login-error {
     padding: 12px 14px;
 
-    border: 1px solid #efc8bc;
+    border: 1px solid #e3c5bb;
+    border-radius: 12px;
 
-    border-radius: 10px;
-
-    background: #fbe5df;
-
-    color: #a13f2a;
+    background: #f8e9e4;
+    color: #9b4938;
 
     font-family: "DM Sans", sans-serif;
-
     font-size: 13px;
-
     line-height: 1.5;
 }
 
@@ -310,69 +326,55 @@
 
 .login-submit {
     width: 100%;
-
-    height: 54px;
+    height: 55px;
 
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 11px;
 
-    gap: 12px;
-
-    margin-top: 4px;
+    margin-top: 5px;
 
     border: none;
+    border-radius: 14px;
 
-    border-radius: 12px;
-
+    background: var(--green-900);
     color: #ffffff;
 
     font-family: "DM Sans", sans-serif;
-
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 800;
 
     cursor: pointer;
+
+    box-shadow:
+        0 12px 28px rgba(23, 76, 57, 0.17);
 
     transition:
         transform 180ms ease,
         box-shadow 180ms ease,
+        background 180ms ease,
         opacity 180ms ease;
 }
 
 .login-submit span {
     font-size: 18px;
-
-    transition:
-        transform 180ms ease;
+    transition: transform 180ms ease;
 }
 
-.patient-submit {
-    background: #164f38;
-
-    box-shadow:
-        0 10px 24px rgba(22, 79, 56, 0.17);
-}
-
+/* Both roles use the same AshaNER green system. */
+.patient-submit,
 .caregiver-submit {
-    background: #df633c;
-
+    background: var(--green-900);
     box-shadow:
-        0 10px 24px rgba(223, 99, 60, 0.16);
+        0 12px 28px rgba(23, 76, 57, 0.17);
 }
 
 .login-submit:hover:not(:disabled) {
     transform: translateY(-2px);
-}
-
-.patient-submit:hover:not(:disabled) {
+    background: var(--green-800);
     box-shadow:
-        0 14px 28px rgba(22, 79, 56, 0.22);
-}
-
-.caregiver-submit:hover:not(:disabled) {
-    box-shadow:
-        0 14px 28px rgba(223, 99, 60, 0.21);
+        0 16px 34px rgba(23, 76, 57, 0.22);
 }
 
 .login-submit:hover:not(:disabled) span {
@@ -385,14 +387,12 @@
 
 .login-submit:disabled {
     cursor: not-allowed;
-
     opacity: 0.55;
-
     box-shadow: none;
 }
 
 .login-submit:focus-visible {
-    outline: 3px solid #d5b63c;
+    outline: 3px solid rgba(98, 155, 112, 0.35);
     outline-offset: 3px;
 }
 
@@ -402,106 +402,12 @@
    ========================================================= */
 
 .role-login-footer {
-    margin: 25px 0 0;
+    margin: 24px 0 0;
 
-    color: #8a9690;
-
-    font-family: "DM Sans", sans-serif;
-
-    font-size: 11px;
-
-    line-height: 1.5;
-
-    text-align: center;
-}
-
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
-@media (max-width: 600px) {
-
-    .role-login-page {
-        padding:
-            25px
-            18px
-            45px;
-    }
-
-    .role-login-card {
-        padding:
-            34px
-            25px
-            27px;
-
-        border-radius: 21px;
-    }
-
-    .role-login-heading h1 {
-        font-size: 42px;
-    }
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 420px) {
-
-    .role-login-page {
-        padding:
-            20px
-            14px
-            35px;
-    }
-
-    .login-back {
-        margin-bottom: 18px;
-    }
-
-    .role-login-card {
-        padding:
-            30px
-            20px
-            24px;
-    }
-
-    .role-login-logo {
-        width: 48px;
-        height: 48px;
-
-        margin-bottom: 25px;
-    }
-
-    .role-login-logo svg {
-        width: 48px !important;
-        height: 48px !important;
-    }
-
-    .role-login-heading {
-        margin-bottom: 27px;
-    }
-
-    .role-login-heading h1 {
-        font-size: 38px;
-    }
-
-    .role-login-heading p {
-        font-size: 13px;
-    }
-}
-
-.role-login-footer {
-    margin-top: 25px;
-
-    color: #8a9690;
+    color: #7c8c85;
 
     font-family: "DM Sans", sans-serif;
-
     font-size: 12px;
-
     line-height: 1.6;
 
     text-align: center;
@@ -515,15 +421,12 @@
     padding: 0;
 
     border: none;
-
     background: transparent;
 
-    color: #164f38;
+    color: var(--green-800);
 
-    font-family: inherit;
-
-    font-size: inherit;
-    font-weight: 700;
+    font: inherit;
+    font-weight: 750;
 
     cursor: pointer;
 }
@@ -536,12 +439,89 @@
     font-size: 11px;
     color: #9aa49f;
 }
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .role-login-page {
+        min-height: calc(100vh - 76px);
+        padding: 48px 20px 65px;
+    }
+
+    .role-login-card {
+        padding: 36px 30px 28px;
+        border-radius: 26px;
+    }
+
+    .role-login-heading h1 {
+        font-size: 48px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+    .role-login-page {
+        padding: 34px 14px 45px;
+    }
+
+    .role-login-wrapper {
+        width: 100%;
+    }
+
+    .login-back {
+        margin-bottom: 18px;
+    }
+
+    .role-login-card {
+        padding: 29px 21px 24px;
+        border-radius: 23px;
+    }
+
+    .role-login-logo {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 24px;
+    }
+
+    .role-login-logo svg {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .role-login-heading {
+        margin-bottom: 26px;
+    }
+
+    .role-login-heading h1 {
+        font-size: 39px;
+    }
+
+    .role-login-heading p {
+        font-size: 13px;
+    }
+
+    .form-field input {
+        height: 51px;
+    }
+
+    .login-submit {
+        height: 53px;
+    }
+}
+
+
 /* =========================================================
    REDUCED MOTION
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-
     .login-back,
     .login-submit,
     .login-submit span,

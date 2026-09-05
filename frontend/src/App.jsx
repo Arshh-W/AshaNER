@@ -6,9 +6,10 @@ import { AuthProvider } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { OfflineProvider } from "./context/OfflineContext";
 import { GameSessionProvider } from "./context/GameSessionContext";
-
+import ScrollToTop from "./components/common/ScrollToTop";
 import AshaNERLogoAnimation from "./components/common/AshaNERLogoAnimation";
 import LoadingScreen from "./components/common/LoadingScreen";
+import Navbar from "./components/common/Navbar";
 
 export default function App() {
     const { pathname } = useLocation();
@@ -39,11 +40,20 @@ export default function App() {
             <LanguageProvider>
                 <OfflineProvider>
                     <GameSessionProvider>
+                        <ScrollToTop />
+                        {/* ================================
+                            STARTUP ANIMATION
+                        ================================= */}
+
                         {isSplashPage && startupStage === "logo" && (
                             <AshaNERLogoAnimation
                                 onComplete={handleLogoComplete}
                             />
                         )}
+
+                        {/* ================================
+                            LOADING SCREEN
+                        ================================= */}
 
                         {isSplashPage && startupStage === "loading" && (
                             <LoadingScreen
@@ -53,10 +63,22 @@ export default function App() {
                             />
                         )}
 
-                        {(!isSplashPage ||
-                            startupStage === "ready") && (
+                        {/* ================================
+                            NAVBAR
+                        ================================= */}
+
+                        {startupStage === "ready" && (
+                            <Navbar />
+                        )}
+
+                        {/* ================================
+                            ROUTES
+                        ================================= */}
+
+                        {(!isSplashPage || startupStage === "ready") && (
                             <AppRoutes />
                         )}
+
                     </GameSessionProvider>
                 </OfflineProvider>
             </LanguageProvider>

@@ -130,12 +130,7 @@ export default function PatientDashboard() {
                             )
                         )}
 
-                        <em>
-                            {translate(
-                                "dashboard.assameseGreeting",
-                                "(শুভ বাতিপুৱা)"
-                            )}
-                        </em>
+
 
                     </h1>
 
