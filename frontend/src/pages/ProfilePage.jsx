@@ -1,12 +1,24 @@
+import { useLanguage } from "../context/LanguageContext";
+
 export default function ProfilePage() {
+    const { t } = useLanguage();
+
     return (
         <section className="simple-page">
-            <h1>Profile</h1>
+            <h1>
+                {t("profile.title", "Profile")}
+            </h1>
 
             <div className="card">
-                <h2>Grandfather Biren</h2>
+                <h2>
+                    {t("profile.name", "Grandfather Biren")}
+                </h2>
+
                 <p>
-                    82 years • Grandfather • Guwahati, Assam
+                    {t(
+                        "profile.details",
+                        "82 years • Grandfather • Guwahati, Assam"
+                    )}
                 </p>
             </div>
         </section>

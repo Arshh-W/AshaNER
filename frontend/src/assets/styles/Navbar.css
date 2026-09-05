@@ -1,28 +1,18 @@
-/* =========================================
-   ASHANER NAVBAR
-   ========================================= */
+/* =========================================================
+   NAVBAR
+========================================================= */
 
 .navbar {
     width: 100%;
-    height: 82px;
-
-    background: #f8f4ed;
-
-    border-bottom: 1px solid rgba(22, 79, 56, 0.12);
-
+    background: #f8f5ef;
+    border-bottom: 1px solid rgba(22, 79, 56, 0.10);
     position: relative;
     z-index: 1000;
 }
 
-
-/* =========================================
-   CONTAINER
-   ========================================= */
-
 .navbar-container {
     width: min(1200px, calc(100% - 48px));
-    height: 100%;
-
+    min-height: 86px;
     margin: 0 auto;
 
     display: flex;
@@ -33,314 +23,302 @@
 }
 
 
-/* =========================================
+/* =========================================================
    BRAND
-   ========================================= */
+========================================================= */
 
 .navbar-brand {
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    gap: 13px;
 
-    gap: 12px;
-
+    color: #164f38;
     text-decoration: none;
 
     flex-shrink: 0;
 }
 
-
-/* =========================================
-   ACTUAL ASHANER SVG LOGO
-   ========================================= */
-
 .navbar-logo {
-    width: 52px;
-    height: 52px;
-
+    width: 48px;
+    height: 48px;
     display: block;
-
-    flex-shrink: 0;
 }
-
-
-/* =========================================
-   BRAND NAME
-   ========================================= */
 
 .navbar-brand-name {
-    color: #164f38;
-
-    font-family: "Fraunces", Georgia, serif;
-
-    font-size: 25px;
+    font-size: 26px;
     font-weight: 700;
-
-    letter-spacing: -0.5px;
-
-    line-height: 1;
+    letter-spacing: -0.7px;
 }
 
 
-/* =========================================
-   NAVIGATION
-   ========================================= */
+/* =========================================================
+   RIGHT SIDE
+========================================================= */
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 28px;
+
+    min-width: 0;
+}
+
+
+/* =========================================================
+   NAVIGATION LINKS
+========================================================= */
 
 .navbar-links {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
 
-    gap: 30px;
+    gap: 28px;
 }
 
-
 .navbar-links a {
-    position: relative;
-
     color: #164f38;
-
     text-decoration: none;
 
-    font-family: "DM Sans", Arial, sans-serif;
-
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
+
+    white-space: nowrap;
 
     transition:
         color 0.2s ease,
         opacity 0.2s ease;
 }
 
-
 .navbar-links a:hover {
-    color: #0d3d2c;
+    color: #df633c;
 }
 
 
-/* =========================================
-   ACTIVE / UNDERLINE EFFECT
-   ========================================= */
+/* =========================================================
+   LANGUAGE PICKER
+========================================================= */
 
-.navbar-links a::after {
-    content: "";
+.language-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-    position: absolute;
+    padding: 8px 10px 8px 14px;
 
-    left: 0;
-    bottom: -8px;
+    background: #ffffff;
 
-    width: 0;
-    height: 2px;
+    border: 1px solid rgba(22, 79, 56, 0.12);
+    border-radius: 999px;
 
-    background: #d5b63c;
+    box-shadow: 0 4px 14px rgba(22, 79, 56, 0.06);
 
-    border-radius: 2px;
+    flex-shrink: 0;
+}
 
-    transition: width 0.2s ease;
+.language-picker-label {
+    color: #164f38;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.language-select {
+    appearance: auto;
+
+    min-width: 92px;
+
+    padding: 5px 7px;
+
+    border: 1px solid rgba(22, 79, 56, 0.18);
+    border-radius: 6px;
+
+    background: #ffffff;
+    color: #164f38;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    outline: none;
+}
+
+.language-select:focus {
+    border-color: #164f38;
 }
 
 
-.navbar-links a:hover::after {
-    width: 100%;
-}
-
-
-/* =========================================
+/* =========================================================
    TABLET
-   ========================================= */
+========================================================= */
 
 @media (max-width: 900px) {
 
     .navbar-container {
         width: min(100% - 32px, 1200px);
 
+        min-height: 76px;
+
         gap: 20px;
     }
 
+    .navbar-brand-name {
+        font-size: 23px;
+    }
+
+    .navbar-logo {
+        width: 43px;
+        height: 43px;
+    }
+
+    .navbar-right {
+        gap: 18px;
+    }
+
     .navbar-links {
-        gap: 20px;
+        gap: 18px;
     }
 
     .navbar-links a {
         font-size: 14px;
     }
 
+    .language-picker {
+        padding: 7px 8px 7px 11px;
+        gap: 5px;
+    }
+
+    .language-picker-label {
+        font-size: 13px;
+    }
+
+    .language-select {
+        min-width: 82px;
+        font-size: 13px;
+    }
 }
 
 
-/* =========================================
+/* =========================================================
    MOBILE
-   ========================================= */
+========================================================= */
 
-@media (max-width: 650px) {
-
-    .navbar {
-        height: auto;
-        min-height: 70px;
-    }
+@media (max-width: 700px) {
 
     .navbar-container {
         width: calc(100% - 24px);
 
-        min-height: 70px;
+        min-height: auto;
 
-        gap: 14px;
+        padding: 12px 0;
+
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .navbar-brand {
+        gap: 9px;
     }
 
     .navbar-logo {
-        width: 42px;
-        height: 42px;
+        width: 38px;
+        height: 38px;
     }
 
     .navbar-brand-name {
         font-size: 21px;
     }
 
+    .navbar-right {
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+    }
+
     .navbar-links {
-        gap: 12px;
+        flex: 1;
+
+        display: flex;
+        align-items: center;
+
+        gap: 14px;
+
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .navbar-links::-webkit-scrollbar {
+        display: none;
+    }
+
+    .navbar-links a {
+        font-size: 13px;
+    }
+
+    .language-picker {
+        padding: 6px 7px 6px 9px;
+        gap: 4px;
+
+        border-radius: 999px;
+    }
+
+    .language-picker-label {
+        display: none;
+    }
+
+    .language-select {
+        min-width: 78px;
+
+        padding: 4px 5px;
+
+        font-size: 12px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 430px) {
+
+    .navbar-container {
+        width: calc(100% - 20px);
+    }
+
+    .navbar-brand-name {
+        font-size: 19px;
+    }
+
+    .navbar-logo {
+        width: 35px;
+        height: 35px;
+    }
+
+    .navbar-right {
+        gap: 7px;
+    }
+
+    .navbar-links {
+        gap: 11px;
     }
 
     .navbar-links a {
         font-size: 12px;
     }
 
-}
-
-
-/* =========================================
-   VERY SMALL SCREENS
-   ========================================= */
-
-@media (max-width: 450px) {
-
-    .navbar-brand-name {
-        display: none;
-    }
-
-    .navbar-links {
-        gap: 10px;
-    }
-
-    .navbar-links a {
-        font-size: 11px;
-    }
-
-}
-.navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-/* =========================================
-   LANGUAGE PICKER
-   ========================================= */
-
-.language-picker {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-
-    min-width: 106px;
-    height: 44px;
-
-    padding: 0 12px;
-
-    gap: 7px;
-
-    background: #ffffff;
-
-    border: 1px solid rgba(22, 79, 56, 0.12);
-
-    border-radius: 22px;
-
-    box-shadow: 0 4px 14px rgba(22, 79, 56, 0.06);
-}
-
-
-.language-picker-icon {
-    flex-shrink: 0;
-
-    color: #164f38;
-
-    pointer-events: none;
-}
-
-
-.language-select {
-    appearance: none;
-    -webkit-appearance: none;
-
-    width: 100%;
-
-    padding: 0 20px 0 0;
-
-    border: none;
-    outline: none;
-
-    background: transparent;
-
-    color: #164f38;
-
-    font-family: var(--body);
-
-    font-size: 14px;
-    font-weight: 600;
-
-    cursor: pointer;
-}
-
-
-.language-picker-chevron {
-    position: absolute;
-
-    right: 9px;
-
-    color: #164f38;
-
-    pointer-events: none;
-}
-
-
-/* Focus */
-
-.language-picker:focus-within {
-    border-color: rgba(22, 79, 56, 0.35);
-
-    box-shadow:
-        0 0 0 3px rgba(213, 182, 60, 0.16);
-}
-
-
-/* Mobile */
-
-@media (max-width: 700px) {
-
-    .language-picker {
-        min-width: 44px;
-
-        width: 44px;
-
-        justify-content: center;
-
-        padding: 0;
-    }
-
     .language-select {
-        position: absolute;
-
-        inset: 0;
-
-        width: 100%;
-
-        padding: 0;
-
-        opacity: 0;
-
-        cursor: pointer;
+        min-width: 72px;
+        max-width: 82px;
     }
-
-    .language-picker-chevron {
-        display: none;
-    }
-
 }

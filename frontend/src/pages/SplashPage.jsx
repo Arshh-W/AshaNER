@@ -10,12 +10,15 @@ import {
     UsersRound,
     Check
 } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 
 import Logo from "../components/common/Logo";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function SplashPage() {
     const navigate = useNavigate();
+    const { t } = useLanguage();
 
     const goToLogin = () => {
         navigate("/login");
@@ -29,49 +32,10 @@ export default function SplashPage() {
         <main className="splash-page">
 
             {/* =========================================
-                NAVBAR
-            ========================================= */}
-            <header className="splash-nav">
-                <div className="splash-container splash-nav-inner">
-
-                    <button
-                        className="splash-brand"
-                        type="button"
-                        onClick={() => navigate("/")}
-                        aria-label="AshaNER home"
-                    >
-                        <Logo />
-                        <span className="splash-brand-name">
-                            AshaNER
-                        </span>
-                    </button>
-
-                    <nav className="splash-nav-actions">
-                        <button
-                            type="button"
-                            className="splash-login-btn"
-                            onClick={goToLogin}
-                        >
-                            Log In
-                        </button>
-
-                        <button
-                            type="button"
-                            className="splash-primary-btn splash-nav-cta"
-                            onClick={goToRegister}
-                        >
-                            Get Started
-                            <ArrowRight size={18} />
-                        </button>
-                    </nav>
-
-                </div>
-            </header>
-
-
-            {/* =========================================
                 HERO
+                Navbar is handled globally
             ========================================= */}
+
             <section className="splash-hero">
 
                 <div className="splash-container splash-hero-grid">
@@ -80,21 +44,38 @@ export default function SplashPage() {
 
                         <div className="splash-eyebrow">
                             <span className="splash-eyebrow-dot" />
-                            COGNITIVE CARE & MEMORY ASSISTANCE
+                            {t(
+                                "splash.cognitiveCare",
+                                "COGNITIVE CARE & MEMORY ASSISTANCE"
+                            )}
                         </div>
 
                         <h1 className="splash-hero-title">
-                            Helping memories
+                            {t(
+                                "splash.helpingMemories",
+                                "Helping memories"
+                            )}
+
                             <br />
-                            stay{" "}
-                            <span>connected.</span>
+
+                            {t(
+                                "splash.stay",
+                                "stay"
+                            )}{" "}
+
+                            <span>
+                                {t(
+                                    "splash.connected",
+                                    "connected."
+                                )}
+                            </span>
                         </h1>
 
                         <p className="splash-hero-description">
-                            AshaNER brings gentle memory activities,
-                            familiar routines, meaningful moments,
-                            and caregiver support together in one
-                            calm and accessible place.
+                            {t(
+                                "splash.description",
+                                "AshaNER brings gentle memory activities, familiar routines, meaningful moments, and caregiver support together in one calm and accessible place."
+                            )}
                         </p>
 
                         <div className="splash-hero-actions">
@@ -104,7 +85,11 @@ export default function SplashPage() {
                                 className="splash-primary-btn splash-large-btn"
                                 onClick={goToLogin}
                             >
-                                Get Started
+                                {t(
+                                    "splash.getStarted",
+                                    "Get Started"
+                                )}
+
                                 <ArrowRight size={20} />
                             </button>
 
@@ -114,7 +99,11 @@ export default function SplashPage() {
                                 onClick={goToLogin}
                             >
                                 <UsersRound size={19} />
-                                I'm a Caregiver
+
+                                {t(
+                                    "splash.caregiver",
+                                    "I'm a Caregiver"
+                                )}
                             </button>
 
                         </div>
@@ -123,15 +112,23 @@ export default function SplashPage() {
 
                             <div>
                                 <ShieldCheck size={17} />
+
                                 <span>
-                                    Designed for everyday care
+                                    {t(
+                                        "splash.designedForEverydayCare",
+                                        "Designed for everyday care"
+                                    )}
                                 </span>
                             </div>
 
                             <div>
                                 <HeartHandshake size={17} />
+
                                 <span>
-                                    Gentle by design
+                                    {t(
+                                        "splash.gentleByDesign",
+                                        "Gentle by design"
+                                    )}
                                 </span>
                             </div>
 
@@ -141,6 +138,7 @@ export default function SplashPage() {
 
 
                     {/* HERO PRODUCT VISUAL */}
+
                     <div className="splash-hero-visual">
 
                         <div className="splash-glow splash-glow-one" />
@@ -151,117 +149,195 @@ export default function SplashPage() {
                             <div className="splash-card-top">
 
                                 <div className="splash-card-brand">
+
                                     <div className="splash-static-logo">
                                         <Logo />
                                     </div>
 
                                     <div>
-                                        <strong>AshaNER</strong>
+                                        <strong>
+                                            AshaNER
+                                        </strong>
+
                                         <span>
-                                            Cognitive Care
+                                            {t(
+                                                "splash.cognitiveCare",
+                                                "Cognitive Care"
+                                            )}
                                         </span>
                                     </div>
+
                                 </div>
 
                                 <span className="splash-status">
-                                    Care today
+                                    {t(
+                                        "splash.careToday",
+                                        "Care today"
+                                    )}
                                 </span>
 
                             </div>
 
 
                             <div className="splash-card-heading">
+
                                 <span>
-                                    A calmer day,
+                                    {t(
+                                        "splash.calmerDay",
+                                        "A calmer day,"
+                                    )}
                                 </span>
 
                                 <strong>
-                                    one moment at a time.
+                                    {t(
+                                        "splash.oneMomentAtATime",
+                                        "one moment at a time."
+                                    )}
                                 </strong>
+
                             </div>
 
 
                             <div className="splash-mini-cards">
 
                                 <div className="splash-mini-card memory">
+
                                     <div className="splash-mini-icon">
                                         <Brain size={21} />
                                     </div>
 
                                     <div>
                                         <strong>
-                                            Gentle Recall
+                                            {t(
+                                                "splash.gentleRecall",
+                                                "Gentle Recall"
+                                            )}
                                         </strong>
 
                                         <span>
-                                            Memory activities
+                                            {t(
+                                                "splash.memoryActivities",
+                                                "Memory activities"
+                                            )}
                                         </span>
                                     </div>
+
                                 </div>
 
 
                                 <div className="splash-mini-card routine">
+
                                     <div className="splash-mini-icon">
                                         <CalendarCheck2 size={21} />
                                     </div>
 
                                     <div>
                                         <strong>
-                                            Daily Routine
+                                            {t(
+                                                "splash.dailyRoutine",
+                                                "Daily Routine"
+                                            )}
                                         </strong>
 
                                         <span>
-                                            Familiar activities
+                                            {t(
+                                                "splash.familiarActivities",
+                                                "Familiar activities"
+                                            )}
                                         </span>
                                     </div>
+
                                 </div>
 
 
                                 <div className="splash-mini-card family">
+
                                     <div className="splash-mini-icon">
                                         <HeartHandshake size={21} />
                                     </div>
 
                                     <div>
                                         <strong>
-                                            Connected Care
+                                            {t(
+                                                "splash.connectedCare",
+                                                "Connected Care"
+                                            )}
                                         </strong>
 
                                         <span>
-                                            Family support
+                                            {t(
+                                                "splash.familySupport",
+                                                "Family support"
+                                            )}
                                         </span>
                                     </div>
+
                                 </div>
 
                             </div>
 
 
                             <div className="splash-card-footer">
+
                                 <span>
-                                    Today feels familiar.
+                                    {t(
+                                        "splash.todayFeelsFamiliar",
+                                        "Today feels familiar."
+                                    )}
                                 </span>
 
                                 <div className="splash-progress">
                                     <span />
                                 </div>
+
                             </div>
 
                         </div>
+
 
                         <div className="splash-floating-card splash-floating-top">
+
                             <Brain size={18} />
+
                             <div>
-                                <strong>Memory</strong>
-                                <span>Gentle activities</span>
+                                <strong>
+                                    {t(
+                                        "splash.memory",
+                                        "Memory"
+                                    )}
+                                </strong>
+
+                                <span>
+                                    {t(
+                                        "splash.gentleActivities",
+                                        "Gentle activities"
+                                    )}
+                                </span>
                             </div>
+
                         </div>
 
+
                         <div className="splash-floating-card splash-floating-bottom">
+
                             <HeartHandshake size={18} />
+
                             <div>
-                                <strong>Connected Care</strong>
-                                <span>Family support</span>
+                                <strong>
+                                    {t(
+                                        "splash.connectedCare",
+                                        "Connected Care"
+                                    )}
+                                </strong>
+
+                                <span>
+                                    {t(
+                                        "splash.familySupport",
+                                        "Family support"
+                                    )}
+                                </span>
                             </div>
+
                         </div>
 
                     </div>
@@ -274,6 +350,7 @@ export default function SplashPage() {
             {/* =========================================
                 FEATURES
             ========================================= */}
+
             <section className="splash-section splash-features">
 
                 <div className="splash-container">
@@ -282,18 +359,32 @@ export default function SplashPage() {
 
                         <div className="splash-eyebrow">
                             <span className="splash-eyebrow-dot" />
-                            ONE CALMER PLACE FOR CARE
+
+                            {t(
+                                "splash.oneCalmerPlace",
+                                "ONE CALMER PLACE FOR CARE"
+                            )}
                         </div>
 
                         <h2>
-                            Built around the moments
+                            {t(
+                                "splash.builtAroundMoments",
+                                "Built around the moments"
+                            )}
+
                             <br />
-                            that matter every day.
+
+                            {t(
+                                "splash.thatMatter",
+                                "that matter every day."
+                            )}
                         </h2>
 
                         <p>
-                            Simple tools that support memory,
-                            routines, connection, and independence.
+                            {t(
+                                "splash.simpleTools",
+                                "Simple tools that support memory, routines, connection, and independence."
+                            )}
                         </p>
 
                     </div>
@@ -308,18 +399,24 @@ export default function SplashPage() {
                             </div>
 
                             <span className="splash-feature-label">
-                                MEMORY
+                                {t(
+                                    "splash.memory",
+                                    "MEMORY"
+                                )}
                             </span>
 
                             <h3>
-                                Gentle Memory Activities
+                                {t(
+                                    "splash.gentleMemoryActivities",
+                                    "Gentle Memory Activities"
+                                )}
                             </h3>
 
                             <p>
-                                Play relaxed recall activities
-                                using familiar places, objects,
-                                sounds, patterns, and everyday
-                                memories.
+                                {t(
+                                    "splash.gentleMemoryDescription",
+                                    "Play relaxed recall activities using familiar places, objects, sounds, patterns, and everyday memories."
+                                )}
                             </p>
 
                         </article>
@@ -332,17 +429,24 @@ export default function SplashPage() {
                             </div>
 
                             <span className="splash-feature-label">
-                                ROUTINES
+                                {t(
+                                    "splash.routines",
+                                    "ROUTINES"
+                                )}
                             </span>
 
                             <h3>
-                                Familiar Daily Routines
+                                {t(
+                                    "splash.familiarDailyRoutines",
+                                    "Familiar Daily Routines"
+                                )}
                             </h3>
 
                             <p>
-                                Keep important activities,
-                                hydration, appointments, and
-                                everyday routines easy to follow.
+                                {t(
+                                    "splash.familiarDailyDescription",
+                                    "Keep important activities, hydration, appointments, and everyday routines easy to follow."
+                                )}
                             </p>
 
                         </article>
@@ -355,17 +459,24 @@ export default function SplashPage() {
                             </div>
 
                             <span className="splash-feature-label">
-                                FAMILY
+                                {t(
+                                    "splash.family",
+                                    "FAMILY"
+                                )}
                             </span>
 
                             <h3>
-                                Stay Connected
+                                {t(
+                                    "splash.stayConnected",
+                                    "Stay Connected"
+                                )}
                             </h3>
 
                             <p>
-                                Give caregivers a clearer picture
-                                of daily progress while keeping
-                                family members connected.
+                                {t(
+                                    "splash.stayConnectedDescription",
+                                    "Give caregivers a clearer picture of daily progress while keeping family members connected."
+                                )}
                             </p>
 
                         </article>
@@ -380,6 +491,7 @@ export default function SplashPage() {
             {/* =========================================
                 TWO VIEWS
             ========================================= */}
+
             <section className="splash-section splash-views">
 
                 <div className="splash-container">
@@ -388,19 +500,32 @@ export default function SplashPage() {
 
                         <div className="splash-eyebrow">
                             <span className="splash-eyebrow-dot" />
-                            DESIGNED FOR BOTH SIDES OF CARE
+
+                            {t(
+                                "splash.designedForBothSides",
+                                "DESIGNED FOR BOTH SIDES OF CARE"
+                            )}
                         </div>
 
                         <h2>
-                            One experience.
+                            {t(
+                                "splash.oneExperience",
+                                "One experience."
+                            )}
+
                             <br />
-                            Two helpful views.
+
+                            {t(
+                                "splash.twoHelpfulViews",
+                                "Two helpful views."
+                            )}
                         </h2>
 
                         <p>
-                            AshaNER keeps the patient experience
-                            simple while giving caregivers the
-                            information they need.
+                            {t(
+                                "splash.description",
+                                "AshaNER keeps the patient experience simple while giving caregivers the information they need."
+                            )}
                         </p>
 
                     </div>
@@ -409,12 +534,16 @@ export default function SplashPage() {
                     <div className="splash-view-grid">
 
                         {/* PATIENT */}
+
                         <article className="splash-view-card patient">
 
                             <div className="splash-view-card-top">
 
                                 <span className="splash-view-pill green-pill">
-                                    PATIENT VIEW
+                                    {t(
+                                        "splash.patientView",
+                                        "PATIENT VIEW"
+                                    )}
                                 </span>
 
                                 <Brain size={26} />
@@ -422,15 +551,19 @@ export default function SplashPage() {
                             </div>
 
                             <h3>
-                                A calm space for the person
-                                receiving care.
+                                {t(
+                                    "splash.patientTitle",
+                                    "A calm space for the person receiving care."
+                                )}
                             </h3>
 
                             <p>
-                                Large, simple actions help make
-                                everyday activities and cognitive
-                                exercises easier to understand.
+                                {t(
+                                    "splash.patientDescription",
+                                    "Large, simple actions help make everyday activities and cognitive exercises easier to understand."
+                                )}
                             </p>
+
 
                             <div className="splash-check-grid">
 
@@ -438,28 +571,44 @@ export default function SplashPage() {
                                     <span>
                                         <Check size={13} />
                                     </span>
-                                    Simple daily schedule
+
+                                    {t(
+                                        "splash.simpleDailySchedule",
+                                        "Simple daily schedule"
+                                    )}
                                 </div>
 
                                 <div>
                                     <span>
                                         <Check size={13} />
                                     </span>
-                                    Gentle brain games
+
+                                    {t(
+                                        "splash.gentleBrainGames",
+                                        "Gentle brain games"
+                                    )}
                                 </div>
 
                                 <div>
                                     <span>
                                         <Check size={13} />
                                     </span>
-                                    Voice assistance
+
+                                    {t(
+                                        "splash.voiceAssistance",
+                                        "Voice assistance"
+                                    )}
                                 </div>
 
                                 <div>
                                     <span>
                                         <Check size={13} />
                                     </span>
-                                    One-touch family contact
+
+                                    {t(
+                                        "splash.oneTouchFamilyContact",
+                                        "One-touch family contact"
+                                    )}
                                 </div>
 
                             </div>
@@ -468,12 +617,16 @@ export default function SplashPage() {
 
 
                         {/* CAREGIVER */}
+
                         <article className="splash-view-card caregiver">
 
                             <div className="splash-view-card-top">
 
                                 <span className="splash-view-pill coral-pill">
-                                    CAREGIVER VIEW
+                                    {t(
+                                        "splash.caregiverView",
+                                        "CAREGIVER VIEW"
+                                    )}
                                 </span>
 
                                 <HeartHandshake size={26} />
@@ -481,15 +634,19 @@ export default function SplashPage() {
                             </div>
 
                             <h3>
-                                A clearer picture of everyday
-                                wellbeing.
+                                {t(
+                                    "splash.caregiverTitle",
+                                    "A clearer picture of everyday wellbeing."
+                                )}
                             </h3>
 
                             <p>
-                                Caregivers can stay informed about
-                                routines, activities, appointments,
-                                and meaningful changes.
+                                {t(
+                                    "splash.caregiverDescription",
+                                    "Caregivers can stay informed about routines, activities, appointments, and meaningful changes."
+                                )}
                             </p>
+
 
                             <div className="splash-check-grid">
 
@@ -497,28 +654,44 @@ export default function SplashPage() {
                                     <span>
                                         <Check size={13} />
                                     </span>
-                                    Daily care overview
+
+                                    {t(
+                                        "splash.dailyCareOverview",
+                                        "Daily care overview"
+                                    )}
                                 </div>
 
                                 <div>
                                     <span>
                                         <Check size={13} />
                                     </span>
-                                    Cognitive progress
+
+                                    {t(
+                                        "splash.cognitiveProgress",
+                                        "Cognitive progress"
+                                    )}
                                 </div>
 
                                 <div>
                                     <span>
                                         <Check size={13} />
                                     </span>
-                                    Routine tracking
+
+                                    {t(
+                                        "splash.routineTracking",
+                                        "Routine tracking"
+                                    )}
                                 </div>
 
                                 <div>
                                     <span>
                                         <Check size={13} />
                                     </span>
-                                    Safety information
+
+                                    {t(
+                                        "splash.safetyInformation",
+                                        "Safety information"
+                                    )}
                                 </div>
 
                             </div>
@@ -535,6 +708,7 @@ export default function SplashPage() {
             {/* =========================================
                 ACCESSIBILITY
             ========================================= */}
+
             <section className="splash-section splash-simple">
 
                 <div className="splash-container">
@@ -542,14 +716,28 @@ export default function SplashPage() {
                     <div className="splash-section-heading">
 
                         <div className="splash-eyebrow">
+
                             <span className="splash-eyebrow-dot" />
-                            MADE FOR REAL-WORLD USE
+
+                            {t(
+                                "splash.madeForRealWorld",
+                                "MADE FOR REAL-WORLD USE"
+                            )}
+
                         </div>
 
                         <h2>
-                            Simple when things
+                            {t(
+                                "splash.simpleWhenThings",
+                                "Simple when things"
+                            )}
+
                             <br />
-                            need to be simple.
+
+                            {t(
+                                "splash.needToBeSimple",
+                                "need to be simple."
+                            )}
                         </h2>
 
                     </div>
@@ -564,13 +752,21 @@ export default function SplashPage() {
                             </div>
 
                             <div>
+
                                 <h3>
-                                    Voice Assistance
+                                    {t(
+                                        "splash.voiceAssistance",
+                                        "Voice Assistance"
+                                    )}
                                 </h3>
 
                                 <p>
-                                    Listen and interact naturally
+                                    {t(
+                                        "splash.listenNaturally",
+                                        "Listen and interact naturally"
+                                    )}
                                 </p>
+
                             </div>
 
                         </div>
@@ -583,13 +779,21 @@ export default function SplashPage() {
                             </div>
 
                             <div>
+
                                 <h3>
-                                    Gentle Activities
+                                    {t(
+                                        "splash.gentleActivities",
+                                        "Gentle Activities"
+                                    )}
                                 </h3>
 
                                 <p>
-                                    No-pressure cognitive exercises
+                                    {t(
+                                        "splash.noPressure",
+                                        "No-pressure cognitive exercises"
+                                    )}
                                 </p>
+
                             </div>
 
                         </div>
@@ -602,13 +806,21 @@ export default function SplashPage() {
                             </div>
 
                             <div>
+
                                 <h3>
-                                    Offline Friendly
+                                    {t(
+                                        "splash.offlineFriendly",
+                                        "Offline Friendly"
+                                    )}
                                 </h3>
 
                                 <p>
-                                    Important features remain available
+                                    {t(
+                                        "splash.importantFeatures",
+                                        "Important features remain available"
+                                    )}
                                 </p>
+
                             </div>
 
                         </div>
@@ -623,6 +835,7 @@ export default function SplashPage() {
             {/* =========================================
                 FINAL CTA
             ========================================= */}
+
             <section className="splash-final">
 
                 <div className="splash-container">
@@ -632,28 +845,50 @@ export default function SplashPage() {
                         <div>
 
                             <div className="splash-eyebrow">
+
                                 <span className="splash-eyebrow-dot" />
-                                A CALMER APPROACH TO COGNITIVE CARE
+
+                                {t(
+                                    "splash.calmerApproach",
+                                    "A CALMER APPROACH TO COGNITIVE CARE"
+                                )}
+
                             </div>
 
                             <h2>
-                                Care that feels{" "}
-                                <span>familiar.</span>
+                                {t(
+                                    "splash.careThatFeels",
+                                    "Care that feels"
+                                )}{" "}
+
+                                <span>
+                                    {t(
+                                        "splash.familiar",
+                                        "familiar."
+                                    )}
+                                </span>
                             </h2>
 
                             <p>
-                                Begin your AshaNER journey and keep
-                                the important moments connected.
+                                {t(
+                                    "splash.journey",
+                                    "Begin your AshaNER journey and keep the important moments connected."
+                                )}
                             </p>
 
                         </div>
+
 
                         <button
                             type="button"
                             className="splash-primary-btn splash-final-btn"
                             onClick={goToLogin}
                         >
-                            Get Started
+                            {t(
+                                "splash.getStarted",
+                                "Get Started"
+                            )}
+
                             <ArrowRight size={20} />
                         </button>
 
@@ -667,6 +902,7 @@ export default function SplashPage() {
             {/* =========================================
                 FOOTER
             ========================================= */}
+
             <footer className="splash-footer">
 
                 <div className="splash-container splash-footer-inner">
@@ -678,16 +914,27 @@ export default function SplashPage() {
                         </div>
 
                         <div>
-                            <strong>AshaNER</strong>
+
+                            <strong>
+                                AshaNER
+                            </strong>
+
                             <span>
-                                Cognitive Care & Memory Assistance
+                                {t(
+                                    "splash.cognitiveCare",
+                                    "Cognitive Care & Memory Assistance"
+                                )}
                             </span>
+
                         </div>
 
                     </div>
 
                     <span className="splash-footer-copy">
-                        Built with care.
+                        {t(
+                            "splash.builtWithCare",
+                            "Built with care."
+                        )}
                     </span>
 
                 </div>

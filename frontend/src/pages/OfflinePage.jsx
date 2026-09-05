@@ -1,4 +1,8 @@
+import { useLanguage } from "../context/LanguageContext";
+
 export default function OfflinePage() {
+    const { t } = useLanguage();
+
     const handleContinue = () => {
         window.location.href = "/patient";
     };
@@ -6,11 +10,15 @@ export default function OfflinePage() {
     return (
         <div className="center-page">
             <div className="login-card">
-                <h1>You’re offline</h1>
+                <h1>
+                    {t("offline.title", "You’re offline")}
+                </h1>
 
                 <p>
-                    Your saved routines and games remain
-                    available on this device.
+                    {t(
+                        "offline.description",
+                        "Your saved routines and games remain available on this device."
+                    )}
                 </p>
 
                 <button
@@ -18,7 +26,10 @@ export default function OfflinePage() {
                     className="large-btn green"
                     onClick={handleContinue}
                 >
-                    Continue Offline
+                    {t(
+                        "offline.continue",
+                        "Continue Offline"
+                    )}
                 </button>
             </div>
         </div>

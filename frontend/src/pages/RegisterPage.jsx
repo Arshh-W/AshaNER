@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import Logo from "../components/common/Logo";
 
 import "../assets/styles/register-page.css";
@@ -17,6 +18,8 @@ export default function RegisterPage() {
     const navigate = useNavigate();
 
     const auth = useAuth();
+
+    const { t } = useLanguage();
 
 
     /* =====================================================
@@ -38,12 +41,17 @@ export default function RegisterPage() {
                         <div className="register-heading">
 
                             <h1>
-                                Authentication unavailable.
+                                {t(
+                                    "register.authenticationUnavailable",
+                                    "Authentication unavailable."
+                                )}
                             </h1>
 
                             <p>
-                                The authentication provider is not
-                                available. Please refresh the page.
+                                {t(
+                                    "register.authenticationUnavailableDescription",
+                                    "The authentication provider is not available. Please refresh the page."
+                                )}
                             </p>
 
                         </div>
@@ -55,7 +63,10 @@ export default function RegisterPage() {
                                 window.location.reload()
                             }
                         >
-                            Refresh
+                            {t(
+                                "register.refresh",
+                                "Refresh"
+                            )}
                         </button>
 
                     </div>
@@ -125,12 +136,17 @@ export default function RegisterPage() {
                         <div className="register-heading">
 
                             <h1>
-                                Invalid registration type.
+                                {t(
+                                    "register.invalidRegistrationType",
+                                    "Invalid registration type."
+                                )}
                             </h1>
 
                             <p>
-                                Please choose whether you want
-                                to register as a patient or caregiver.
+                                {t(
+                                    "register.invalidRegistrationDescription",
+                                    "Please choose whether you want to register as a patient or caregiver."
+                                )}
                             </p>
 
                         </div>
@@ -142,7 +158,10 @@ export default function RegisterPage() {
                                 navigate("/register")
                             }
                         >
-                            Back to registration
+                            {t(
+                                "register.backToRegistration",
+                                "Back to registration"
+                            )}
                         </button>
 
                     </div>
@@ -173,7 +192,10 @@ export default function RegisterPage() {
         ) {
 
             setError(
-                "Please fill in all fields."
+                t(
+                    "register.fillAllFields",
+                    "Please fill in all fields."
+                )
             );
 
             return;
@@ -183,7 +205,10 @@ export default function RegisterPage() {
         if (password !== confirmPassword) {
 
             setError(
-                "Passwords do not match."
+                t(
+                    "register.passwordMismatch",
+                    "Passwords do not match."
+                )
             );
 
             return;
@@ -193,7 +218,10 @@ export default function RegisterPage() {
         if (password.length < 8) {
 
             setError(
-                "Password must be at least 8 characters."
+                t(
+                    "register.passwordTooShort",
+                    "Password must be at least 8 characters."
+                )
             );
 
             return;
@@ -203,7 +231,10 @@ export default function RegisterPage() {
         if (typeof register !== "function") {
 
             setError(
-                "Registration service is unavailable. Please refresh the page."
+                t(
+                    "register.registrationUnavailable",
+                    "Registration service is unavailable. Please refresh the page."
+                )
             );
 
             return;
@@ -260,8 +291,14 @@ export default function RegisterPage() {
                     }
                     disabled={isRegistering}
                 >
-                    <span>←</span>
-                    Back
+                    <span aria-hidden="true">
+                        ←
+                    </span>
+
+                    {t(
+                        "register.back",
+                        "Back"
+                    )}
                 </button>
 
 
@@ -290,21 +327,35 @@ export default function RegisterPage() {
                             }
                         >
                             {isPatient
-                                ? "PATIENT VIEW"
-                                : "CAREGIVER VIEW"}
+                                ? t(
+                                    "register.patientView",
+                                    "PATIENT VIEW"
+                                )
+                                : t(
+                                    "register.caregiverView",
+                                    "CAREGIVER VIEW"
+                                )}
                         </span>
 
 
                         <h1>
-                            Create your account.
+                            {t(
+                                "register.createAccount",
+                                "Create your account."
+                            )}
                         </h1>
 
 
                         <p>
                             {isPatient
-                                ? "Set up your personal AshaNER care space."
-                                : "Set up your connected caregiver account."
-                            }
+                                ? t(
+                                    "register.patientDescription",
+                                    "Set up your personal AshaNER care space."
+                                )
+                                : t(
+                                    "register.caregiverDescription",
+                                    "Set up your connected caregiver account."
+                                )}
                         </p>
 
                     </div>
@@ -322,7 +373,10 @@ export default function RegisterPage() {
                         <div className="form-field">
 
                             <label htmlFor="name">
-                                Full name
+                                {t(
+                                    "register.fullName",
+                                    "Full name"
+                                )}
                             </label>
 
                             <input
@@ -334,7 +388,10 @@ export default function RegisterPage() {
                                         event.target.value
                                     )
                                 }
-                                placeholder="Your name"
+                                placeholder={t(
+                                    "register.namePlaceholder",
+                                    "Your name"
+                                )}
                                 autoComplete="name"
                                 required
                                 disabled={isRegistering}
@@ -348,7 +405,10 @@ export default function RegisterPage() {
                         <div className="form-field">
 
                             <label htmlFor="email">
-                                Email address
+                                {t(
+                                    "register.email",
+                                    "Email address"
+                                )}
                             </label>
 
                             <input
@@ -360,7 +420,10 @@ export default function RegisterPage() {
                                         event.target.value
                                     )
                                 }
-                                placeholder="you@example.com"
+                                placeholder={t(
+                                    "register.emailPlaceholder",
+                                    "you@example.com"
+                                )}
                                 autoComplete="email"
                                 required
                                 disabled={isRegistering}
@@ -374,7 +437,10 @@ export default function RegisterPage() {
                         <div className="form-field">
 
                             <label htmlFor="password">
-                                Password
+                                {t(
+                                    "register.password",
+                                    "Password"
+                                )}
                             </label>
 
                             <input
@@ -386,7 +452,10 @@ export default function RegisterPage() {
                                         event.target.value
                                     )
                                 }
-                                placeholder="Create a password"
+                                placeholder={t(
+                                    "register.passwordPlaceholder",
+                                    "Create a password"
+                                )}
                                 autoComplete="new-password"
                                 required
                                 disabled={isRegistering}
@@ -400,7 +469,10 @@ export default function RegisterPage() {
                         <div className="form-field">
 
                             <label htmlFor="confirm-password">
-                                Confirm password
+                                {t(
+                                    "register.confirmPassword",
+                                    "Confirm password"
+                                )}
                             </label>
 
                             <input
@@ -412,7 +484,10 @@ export default function RegisterPage() {
                                         event.target.value
                                     )
                                 }
-                                placeholder="Repeat your password"
+                                placeholder={t(
+                                    "register.confirmPasswordPlaceholder",
+                                    "Repeat your password"
+                                )}
                                 autoComplete="new-password"
                                 required
                                 disabled={isRegistering}
@@ -450,14 +525,24 @@ export default function RegisterPage() {
                         >
 
                             {isRegistering
-                                ? "Creating account..."
+                                ? t(
+                                    "register.creatingAccount",
+                                    "Creating account..."
+                                )
                                 : isPatient
-                                    ? "Create Patient Account"
-                                    : "Create Caregiver Account"
-                            }
+                                    ? t(
+                                        "register.createPatientAccount",
+                                        "Create Patient Account"
+                                    )
+                                    : t(
+                                        "register.createCaregiverAccount",
+                                        "Create Caregiver Account"
+                                    )}
 
                             {!isRegistering && (
-                                <span>→</span>
+                                <span aria-hidden="true">
+                                    →
+                                </span>
                             )}
 
                         </button>
@@ -470,7 +555,11 @@ export default function RegisterPage() {
                     <div className="register-footer">
 
                         <p>
-                            Already have an account?{" "}
+
+                            {t(
+                                "register.alreadyHaveAccount",
+                                "Already have an account?"
+                            )}{" "}
 
                             <button
                                 type="button"
@@ -481,12 +570,20 @@ export default function RegisterPage() {
                                 }
                                 disabled={isRegistering}
                             >
-                                Log in
+                                {t(
+                                    "register.logIn",
+                                    "Log in"
+                                )}
                             </button>
+
                         </p>
 
+
                         <span>
-                            Your information is kept private and secure.
+                            {t(
+                                "register.privateSecure",
+                                "Your information is kept private and secure."
+                            )}
                         </span>
 
                     </div>

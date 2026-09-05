@@ -13,20 +13,21 @@ import Navbar from "./components/common/Navbar";
 
 
 export default function App() {
+    const isSplashPage =
+        window.location.pathname === "/" ||
+        window.location.pathname === "";
 
-    const [startupStage, setStartupStage] =
-        useState("logo");
-
+    const [startupStage, setStartupStage] = useState(
+        isSplashPage ? "logo" : "ready"
+    );
 
     const handleLogoComplete = useCallback(() => {
         setStartupStage("loading");
     }, []);
 
-
     const handleLoadingComplete = useCallback(() => {
         setStartupStage("ready");
     }, []);
-
 
     return (
         <AuthProvider>
@@ -38,38 +39,37 @@ export default function App() {
                     <GameSessionProvider>
 
                         {/* =================================================
-                            STARTUP LOGO
+                            STARTUP ANIMATION
+                            Only runs on "/"
                            ================================================= */}
 
-                        {startupStage === "logo" && (
+                        {isSplashPage && startupStage === "logo" && (
                             <AshaNERLogoAnimation
-                                onComplete={
-                                    handleLogoComplete
-                                }
+                                onComplete={handleLogoComplete}
                             />
                         )}
 
 
                         {/* =================================================
                             LOADING SCREEN
+                            Only runs on "/"
                            ================================================= */}
 
-                        {startupStage === "loading" && (
+                        {isSplashPage && startupStage === "loading" && (
                             <LoadingScreen
                                 duration={1200}
                                 message="Preparing AshaNER..."
-                                onComplete={
-                                    handleLoadingComplete
-                                }
+                                onComplete={handleLoadingComplete}
                             />
                         )}
 
 
                         {/* =================================================
                             APPLICATION
+                            Immediately available on every other route
                            ================================================= */}
 
-                        {startupStage === "ready" && (
+                        {(!isSplashPage || startupStage === "ready") && (
                             <>
                                 <Navbar />
                                 <AppRoutes />

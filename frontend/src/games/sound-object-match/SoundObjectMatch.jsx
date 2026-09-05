@@ -1,14 +1,15 @@
-// src/games/sound-object-match/SoundObjectMatch.jsx
-
 import React, { useState } from "react";
 import { useGameSession } from "../../context/GameSessionContext";
+import { useLanguage } from "../../context/LanguageContext";
 import { soundMatches } from "./soundObjectMatchData";
 import "./soundObjectMatch.css";
 
 const SoundObjectMatch = () => {
     const [questionIndex, setQuestionIndex] = useState(0);
     const [feedback, setFeedback] = useState("");
+
     const { record } = useGameSession();
+    const { t } = useLanguage();
 
     const question = soundMatches[questionIndex];
 
@@ -18,10 +19,15 @@ const SoundObjectMatch = () => {
             setFeedback("correct");
 
             setTimeout(() => {
-                if (questionIndex === soundMatches.length - 1) {
+                if (
+                    questionIndex ===
+                    soundMatches.length - 1
+                ) {
                     setFeedback("complete");
                 } else {
-                    setQuestionIndex((previous) => previous + 1);
+                    setQuestionIndex(
+                        (previous) => previous + 1
+                    );
                     setFeedback("");
                 }
             }, 1000);
@@ -38,7 +44,9 @@ const SoundObjectMatch = () => {
     const playSound = () => {
         // Audio will be connected here when local audio
         // files are added.
-        console.log(`Playing sound: ${question.soundName}`);
+        console.log(
+            `Playing sound: ${question.soundName}`
+        );
     };
 
     const restartGame = () => {
@@ -50,22 +58,36 @@ const SoundObjectMatch = () => {
         return (
             <div className="sound-match">
                 <div className="sound-complete">
+
                     <div className="sound-complete-icon">
                         🎵
                     </div>
 
-                    <h2>Wonderful!</h2>
+                    <h2>
+                        {t(
+                            "games.wonderful",
+                            "Wonderful!"
+                        )}
+                    </h2>
 
                     <p>
-                        You matched all the sounds.
+                        {t(
+                            "games.matchedAllSounds",
+                            "You matched all the sounds."
+                        )}
                     </p>
 
                     <button
+                        type="button"
                         className="sound-button"
                         onClick={restartGame}
                     >
-                        Play Again
+                        {t(
+                            "games.playAgain",
+                            "Play Again"
+                        )}
                     </button>
+
                 </div>
             </div>
         );
@@ -77,17 +99,33 @@ const SoundObjectMatch = () => {
             <div className="sound-header">
 
                 <p className="sound-label">
-                    SOUND & OBJECT MATCH
+                    {t(
+                        "games.soundObjectMatch",
+                        "SOUND & OBJECT MATCH"
+                    )}
                 </p>
 
-                <h2>Listen carefully</h2>
+                <h2>
+                    {t(
+                        "games.listenCarefully",
+                        "Listen carefully"
+                    )}
+                </h2>
 
                 <p>
-                    Which picture matches the sound?
+                    {t(
+                        "games.whichPictureMatchesSound",
+                        "Which picture matches the sound?"
+                    )}
                 </p>
 
                 <div className="sound-progress">
-                    {questionIndex + 1} of {soundMatches.length}
+                    {questionIndex + 1}{" "}
+                    {t(
+                        "common.of",
+                        "of"
+                    )}{" "}
+                    {soundMatches.length}
                 </div>
 
             </div>
@@ -95,24 +133,34 @@ const SoundObjectMatch = () => {
             <div className="sound-player">
 
                 <button
+                    type="button"
                     className="sound-play-button"
                     onClick={playSound}
-                    aria-label="Play sound"
+                    aria-label={t(
+                        "games.playSound",
+                        "Play sound"
+                    )}
                 >
                     🔊
                 </button>
 
-                <h3>{question.soundName}</h3>
+                <h3>
+                    {question.soundName}
+                </h3>
 
                 <p>
                     {question.description}
                 </p>
 
                 <button
+                    type="button"
                     className="sound-button"
                     onClick={playSound}
                 >
-                    Play Sound
+                    {t(
+                        "games.playSound",
+                        "Play Sound"
+                    )}
                 </button>
 
             </div>
@@ -121,9 +169,12 @@ const SoundObjectMatch = () => {
 
                 {question.options.map((option) => (
                     <button
+                        type="button"
                         key={option.id}
                         className="sound-option"
-                        onClick={() => handleOptionClick(option)}
+                        onClick={() =>
+                            handleOptionClick(option)
+                        }
                     >
                         <span className="sound-option-emoji">
                             {option.emoji}
@@ -139,13 +190,20 @@ const SoundObjectMatch = () => {
 
             {feedback === "correct" && (
                 <div className="sound-feedback feedback-correct">
-                    ✓ That's right!
+                    ✓{" "}
+                    {t(
+                        "games.thatsRight",
+                        "That's right!"
+                    )}
                 </div>
             )}
 
             {feedback === "try-again" && (
                 <div className="sound-feedback feedback-wrong">
-                    That's okay. Listen again.
+                    {t(
+                        "games.listenAgain",
+                        "That's okay. Listen again."
+                    )}
                 </div>
             )}
 

@@ -19,7 +19,6 @@ import { useLanguage } from "../context/LanguageContext";
 
 
 export default function PatientDashboard() {
-
     const { t } = useLanguage();
     const navigate = useNavigate();
 
@@ -28,12 +27,7 @@ export default function PatientDashboard() {
 
     /* =====================================================
        TRANSLATION HELPER
-
-       If a translation key does not exist yet,
-       show the English fallback instead of:
-
-       dashboard.someKey
-       ===================================================== */
+    ===================================================== */
 
     const translate = (key, fallback) => {
         const translated = t(key);
@@ -48,18 +42,20 @@ export default function PatientDashboard() {
 
     /* =====================================================
        ROUTINE DATA
-       ===================================================== */
+    ===================================================== */
 
     const [items, setItems] = useState(
         mockRoutines.map((routine) => ({
             ...routine,
             status: "pending",
+
             time:
                 routine.id === "routine-001"
                     ? "10:30 AM"
                     : routine.id === "routine-002"
                         ? "11:00 AM"
                         : "8:30 PM",
+
             detail: routine.description
         }))
     );
@@ -67,17 +63,16 @@ export default function PatientDashboard() {
 
     /* =====================================================
        WATER TRACKER
-       ===================================================== */
+    ===================================================== */
 
     const [water, setWater] = useState(3);
 
 
     /* =====================================================
        MARK ROUTINE AS TAKEN
-       ===================================================== */
+    ===================================================== */
 
     const take = (id) => {
-
         setItems((currentItems) =>
             currentItems.map((item) =>
                 item.id === id
@@ -88,7 +83,6 @@ export default function PatientDashboard() {
                     : item
             )
         );
-
     };
 
 
@@ -97,7 +91,7 @@ export default function PatientDashboard() {
 
             {/* =================================================
                 MORNING ORIENTATION
-               ================================================= */}
+            ================================================= */}
 
             <section className="orientation card">
 
@@ -105,7 +99,9 @@ export default function PatientDashboard() {
 
                     <span className="eyebrow">
 
-                        <Sun size={15} />
+                        <span>
+                            <Sun size={15} />
+                        </span>
 
                         {translate(
                             "dashboard.weather",
@@ -123,12 +119,10 @@ export default function PatientDashboard() {
                         )}
 
                         <em>
-
                             {translate(
                                 "dashboard.assameseGreeting",
                                 "(শুভ বাতিপুৱা)"
                             )}
-
                         </em>
 
                     </h1>
@@ -141,12 +135,10 @@ export default function PatientDashboard() {
                         </strong>
 
                         <span>
-
                             {translate(
                                 "dashboard.date",
                                 "Wednesday, 4 October"
                             )}
-
                         </span>
 
                     </div>
@@ -155,12 +147,10 @@ export default function PatientDashboard() {
 
 
                 <AudioPrompt>
-
                     {translate(
                         "dashboard.morningBriefing",
                         "Listen to Morning Briefing"
                     )}
-
                 </AudioPrompt>
 
             </section>
@@ -168,17 +158,15 @@ export default function PatientDashboard() {
 
             {/* =================================================
                 CARE SCHEDULE
-               ================================================= */}
+            ================================================= */}
 
             <div className="section-heading">
 
                 <h2>
-
                     {translate(
                         "dashboard.careSchedule",
                         "Today's Care Schedule"
                     )}
-
                 </h2>
 
 
@@ -203,11 +191,13 @@ export default function PatientDashboard() {
             </div>
 
 
+            {/* =================================================
+                ROUTINE CARDS
+            ================================================= */}
+
             <section className="routine-grid">
 
-                {/* =============================================
-                    MORNING ROUTINE
-                   ============================================= */}
+                {/* MORNING ROUTINE */}
 
                 <RoutineCard
                     item={items[0]}
@@ -218,9 +208,7 @@ export default function PatientDashboard() {
                 />
 
 
-                {/* =============================================
-                    WATER TRACKER
-                   ============================================= */}
+                {/* WATER TRACKER */}
 
                 <WaterCard
                     value={water}
@@ -237,9 +225,7 @@ export default function PatientDashboard() {
                 />
 
 
-                {/* =============================================
-                    FAMILY VISIT
-                   ============================================= */}
+                {/* FAMILY VISIT */}
 
                 <FamilyCard
                     translate={translate}
@@ -250,7 +236,7 @@ export default function PatientDashboard() {
 
             {/* =================================================
                 BRAIN GAME
-               ================================================= */}
+            ================================================= */}
 
             <section className="brain-hero card">
 
@@ -269,12 +255,10 @@ export default function PatientDashboard() {
 
 
                     <small>
-
                         {translate(
                             "dashboard.dailyGentleRecall",
                             "Daily Gentle Recall"
                         )}
-
                     </small>
 
 
@@ -303,12 +287,10 @@ export default function PatientDashboard() {
 
 
                     <p>
-
                         {translate(
                             "dashboard.brainDescription",
                             "Gentle 5-minute memory exercise to stimulate recall. Match serene regional flora, birds, and tea plantation memories. No rush, take all the time you need."
                         )}
-
                     </p>
 
 
@@ -393,8 +375,8 @@ export default function PatientDashboard() {
 
 
             {/* =================================================
-                HELP
-               ================================================= */}
+                EMERGENCY HELP
+            ================================================= */}
 
             <section className="help-card card">
 
@@ -406,34 +388,28 @@ export default function PatientDashboard() {
                 <div>
 
                     <b>
-
                         {translate(
                             "dashboard.needHelp",
                             "Need help right away?"
                         )}
-
                     </b>
 
 
                     <p>
-
                         {translate(
                             "dashboard.helpDescription",
                             "One tap connects directly to Daughter Ananya or a local ASHA Health Worker Bina Gogoi."
                         )}
-
                     </p>
 
                 </div>
 
 
                 <AudioPrompt>
-
                     {translate(
                         "dashboard.sayHeyAsha",
                         "Say “Hey Asha”"
                     )}
-
                 </AudioPrompt>
 
 
@@ -464,7 +440,7 @@ export default function PatientDashboard() {
 
             {/* =================================================
                 VOICE HELP
-               ================================================= */}
+            ================================================= */}
 
             <VoiceHelp
                 text={translate(
@@ -480,7 +456,7 @@ export default function PatientDashboard() {
 
 /* =========================================================
    ROUTINE CARD
-   ========================================================= */
+========================================================= */
 
 function RoutineCard({
     item,
@@ -491,6 +467,67 @@ function RoutineCard({
     if (!item) {
         return null;
     }
+
+
+    /*
+       Translate routine content by ID instead of displaying
+       the English strings directly from mockRoutines.
+    */
+
+    const routineContent = {
+
+        "routine-001": {
+
+            title: translate(
+                "dashboard.morningRoutine",
+                "Morning Routine"
+            ),
+
+            detail: translate(
+                "dashboard.morningRoutineDescription",
+                "A simple sequence of familiar activities to begin the day."
+            )
+
+        },
+
+
+        "routine-002": {
+
+            title: translate(
+                "dashboard.warmWaterGlass",
+                "Warm Water Glass"
+            ),
+
+            detail: translate(
+                "dashboard.hydrationDescription",
+                "Stay hydrated for healthy blood flow. Aim for 6 glasses today."
+            )
+
+        },
+
+
+        "routine-003": {
+
+            title: translate(
+                "dashboard.familyVisit",
+                "Family Visit"
+            ),
+
+            detail: translate(
+                "dashboard.familyVisitDescription",
+                "Visiting home today with fresh Assam pitha snacks"
+            )
+
+        }
+
+    };
+
+
+    const content =
+        routineContent[item.id] || {
+            title: item.title,
+            detail: item.detail
+        };
 
 
     return (
@@ -518,19 +555,17 @@ function RoutineCard({
 
 
             <div className="photo-placeholder tea-table">
-
                 🫖🌿
-
             </div>
 
 
             <h3>
-                {item.title}
+                {content.title}
             </h3>
 
 
             <p>
-                {item.detail}
+                {content.detail}
             </p>
 
 
@@ -545,7 +580,6 @@ function RoutineCard({
             >
 
                 <CheckCircle2 />
-
 
                 {item.status === "done"
                     ? translate(
@@ -566,7 +600,7 @@ function RoutineCard({
 
 /* =========================================================
    WATER CARD
-   ========================================================= */
+========================================================= */
 
 function WaterCard({
     value,
@@ -599,34 +633,28 @@ function WaterCard({
 
 
             <h3>
-
                 {translate(
                     "dashboard.warmWaterGlass",
                     "Warm Water Glass"
                 )}
-
             </h3>
 
 
             <p>
-
                 {translate(
                     "dashboard.hydrationDescription",
                     "Stay hydrated for healthy blood flow. Aim for 6 glasses today."
                 )}
-
             </p>
 
 
             <div className="progress-label">
 
                 <span>
-
                     {translate(
                         "dashboard.hydrationTracker",
                         "Hydration Tracker"
                     )}
-
                 </span>
 
 
@@ -707,7 +735,7 @@ function WaterCard({
 
 /* =========================================================
    FAMILY CARD
-   ========================================================= */
+========================================================= */
 
 function FamilyCard({
     translate
@@ -747,27 +775,26 @@ function FamilyCard({
                 <div>
 
                     <small>
-
                         {translate(
                             "dashboard.daughter",
                             "DAUGHTER"
                         )}
-
                     </small>
 
 
                     <h3>
-                        Ananya Barua
+                        {translate(
+                            "dashboard.ananyaBarua",
+                            "Ananya Barua"
+                        )}
                     </h3>
 
 
                     <p>
-
                         {translate(
                             "dashboard.familyVisitDescription",
                             "Visiting home today with fresh Assam pitha snacks"
                         )}
-
                     </p>
 
                 </div>

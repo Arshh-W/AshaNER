@@ -1,31 +1,18 @@
 import {
     createContext,
     useContext,
+    useEffect,
     useMemo,
     useState
 } from "react";
 
 import translations from "../locales/translations";
 
-const Ctx = createContext(null);
+const LanguageContext = createContext(null);
 
-/*
-|--------------------------------------------------------------------------
-| Languages
-|--------------------------------------------------------------------------
-| These names MUST match the top-level keys in translations.json.
-|
-| Current translations.json contains:
-| English
-| Assamese
-| Bengali
-| Manipuri
-| Mizo
-| Bodo
-|--------------------------------------------------------------------------
-*/
+const STORAGE_KEY = "ashaNER-language";
 
-const languages = [
+const LANGUAGES = [
     {
         code: "English",
         name: "English"
@@ -52,217 +39,181 @@ const languages = [
     }
 ];
 
-const DEFAULT_LANGUAGE = "English";
-const STORAGE_KEY = "language";
-
-
-export function LanguageProvider({ children }) {
-
-    /*
-    |--------------------------------------------------------------------------
-    | Current language
-    |--------------------------------------------------------------------------
-    */
-
-    const [language, setLanguageState] = useState(() => {
-
+function getInitialLanguage() {
+    try {
         const savedLanguage =
             localStorage.getItem(STORAGE_KEY);
 
-        /*
-        | Make sure an invalid old value cannot break
-        | the application.
-        */
-
-        const exists = languages.some(
-            (item) => item.code === savedLanguage
+        if (
+            savedLanguage &&
+            LANGUAGES.some(
+                (item) =>
+                    item.code === savedLanguage
+            )
+        ) {
+            return savedLanguage;
+        }
+    } catch (error) {
+        console.warn(
+            "Unable to read saved language:",
+            error
         );
+    }
 
-        return exists
-            ? savedLanguage
-            : DEFAULT_LANGUAGE;
-    });
+    return "English";
+}
 
+function getNestedValue(object, key) {
+    if (!object || !key) {
+        return undefined;
+    }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Change language
-    |--------------------------------------------------------------------------
-    */
+    return key
+        .split(".")
+        .reduce(
+            (current, part) => {
+                if (
+                    current === undefined ||
+                    current === null
+                ) {
+                    return undefined;
+                }
 
-    const changeLanguage = (newLanguage) => {
-
-        const exists = languages.some(
-            (item) => item.code === newLanguage
+                return current[part];
+            },
+            object
         );
+}
 
-        if (!exists) {
+export function LanguageProvider({
+    children
+}) {
+    const [
+        language,
+        setLanguageState
+    ] = useState(
+        getInitialLanguage
+    );
+
+    const changeLanguage = (
+        newLanguage
+    ) => {
+        const languageExists =
+            LANGUAGES.some(
+                (item) =>
+                    item.code === newLanguage
+            );
+
+        if (!languageExists) {
             console.warn(
                 `Unsupported language: ${newLanguage}`
             );
-
             return;
         }
 
         setLanguageState(newLanguage);
 
-        localStorage.setItem(
-            STORAGE_KEY,
-            newLanguage
-        );
+        try {
+            localStorage.setItem(
+                STORAGE_KEY,
+                newLanguage
+            );
+        } catch (error) {
+            console.warn(
+                "Unable to save language:",
+                error
+            );
+        }
     };
 
+    useEffect(() => {
+        const languageMap = {
+            English: "en",
+            Assamese: "as",
+            Bengali: "bn",
+            Manipuri: "mni",
+            Mizo: "lus",
+            Bodo: "brx"
+        };
 
-    /*
-    |--------------------------------------------------------------------------
-    | Translation function
-    |--------------------------------------------------------------------------
-    |
-    | Example:
-    |
-    | t("navbar.home")
-    | t("login.welcome")
-    | t("settings.language")
-    |
-    |--------------------------------------------------------------------------
-    */
+        document.documentElement.lang =
+            languageMap[language] ||
+            "en";
+    }, [language]);
 
     const t = useMemo(() => {
-
-        return (key) => {
-
+        return (
+            key,
+            fallback
+        ) => {
             if (!key) {
                 return "";
             }
 
-            /*
-            | Get translations for current language
-            */
+            const translatedValue =
+                getNestedValue(
+                    translations[
+                        language
+                    ],
+                    key
+                );
 
-            const currentTranslations =
-                translations?.[language];
-
-            /*
-            | Split nested key
-            |
-            | "navbar.home"
-            | becomes:
-            | ["navbar", "home"]
-            */
-
-            const parts = key.split(".");
-
-            let value =
-                currentTranslations;
-
-            for (const part of parts) {
-
-                if (
-                    value === undefined ||
-                    value === null
-                ) {
-                    break;
-                }
-
-                value = value[part];
+            if (
+                typeof translatedValue ===
+                    "string" &&
+                translatedValue.trim() !== ""
+            ) {
+                return translatedValue;
             }
 
-            /*
-            | If translation exists, return it.
-            */
+            const englishValue =
+                getNestedValue(
+                    translations.English,
+                    key
+                );
 
-            if (typeof value === "string") {
-                return value;
+            if (
+                typeof englishValue ===
+                    "string" &&
+                englishValue.trim() !== ""
+            ) {
+                return englishValue;
             }
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | English fallback
-            |--------------------------------------------------------------------------
-            */
-
-            let fallback =
-                translations?.[DEFAULT_LANGUAGE];
-
-            for (const part of parts) {
-
-                if (
-                    fallback === undefined ||
-                    fallback === null
-                ) {
-                    break;
-                }
-
-                fallback = fallback[part];
-            }
-
-            if (typeof fallback === "string") {
+            if (
+                typeof fallback ===
+                    "string" &&
+                fallback.trim() !== ""
+            ) {
                 return fallback;
             }
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | Last fallback
-            |--------------------------------------------------------------------------
-            |
-            | If a translation key doesn't exist anywhere,
-            | show the key instead of crashing.
-            |--------------------------------------------------------------------------
-            */
-
-            console.warn(
-                `Missing translation: ${language}.${key}`
-            );
-
             return key;
         };
-
     }, [language]);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Context value
-    |--------------------------------------------------------------------------
-    */
 
     const value = {
         language,
-
-        /*
-        | setLanguage is kept for compatibility with
-        | existing components.
-        */
-
+        languages: LANGUAGES,
         setLanguage: changeLanguage,
-
         changeLanguage,
-
-        languages,
-
         t
     };
 
-
     return (
-        <Ctx.Provider value={value}>
+        <LanguageContext.Provider
+            value={value}
+        >
             {children}
-        </Ctx.Provider>
+        </LanguageContext.Provider>
     );
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| Hook
-|--------------------------------------------------------------------------
-*/
-
-export const useLanguage = () => {
-
-    const context = useContext(Ctx);
+export function useLanguage() {
+    const context =
+        useContext(
+            LanguageContext
+        );
 
     if (!context) {
         throw new Error(
@@ -271,4 +222,6 @@ export const useLanguage = () => {
     }
 
     return context;
-};
+}
+
+export default LanguageContext;
