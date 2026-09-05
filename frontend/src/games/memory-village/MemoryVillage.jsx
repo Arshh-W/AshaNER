@@ -1,6 +1,4 @@
-// src/games/memory-village/MemoryVillage.jsx
-
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useGameSession } from "../../context/GameSessionContext";
 import { useLanguage } from "../../context/LanguageContext";
 import {
@@ -17,11 +15,31 @@ const MemoryVillage = () => {
     const { record } = useGameSession();
     const { t } = useLanguage();
 
+    // Stores the time at which the current task became available.
+    const taskStartedAtRef = useRef(performance.now());
+
     const task = villageTasks[currentTask];
 
     const handleItemClick = (item) => {
-        if (item.id === task.targetId) {
-            record({ correct: true });
+        const now = performance.now();
+
+        // Measure how long the player took to answer.
+        const latencyMs = Math.max(
+            0,
+            Math.round(
+                now - taskStartedAtRef.current
+            )
+        );
+
+        const isCorrect =
+            item.id === task.targetId;
+
+        record({
+            correct: isCorrect,
+            latencyMs
+        });
+
+        if (isCorrect) {
             setFeedback("correct");
 
             setTimeout(() => {
@@ -30,19 +48,30 @@ const MemoryVillage = () => {
                     villageTasks.length - 1
                 ) {
                     setCompleted(true);
+                    taskStartedAtRef.current = null;
                 } else {
                     setCurrentTask(
                         (previous) => previous + 1
                     );
+
                     setFeedback("");
+
+                    // Start timing the next task only after
+                    // it becomes available.
+                    taskStartedAtRef.current =
+                        performance.now();
                 }
             }, 1000);
         } else {
-            record({ correct: false });
             setFeedback("try-again");
 
             setTimeout(() => {
                 setFeedback("");
+
+                // Start a fresh measurement after the
+                // wrong-answer feedback disappears.
+                taskStartedAtRef.current =
+                    performance.now();
             }, 1200);
         }
     };
@@ -51,6 +80,10 @@ const MemoryVillage = () => {
         setCurrentTask(0);
         setFeedback("");
         setCompleted(false);
+
+        // Restart reaction-time tracking.
+        taskStartedAtRef.current =
+            performance.now();
     };
 
     if (completed) {

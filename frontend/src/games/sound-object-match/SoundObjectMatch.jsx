@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useGameSession } from "../../context/GameSessionContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { soundMatches } from "./soundObjectMatchData";
@@ -11,11 +11,31 @@ const SoundObjectMatch = () => {
     const { record } = useGameSession();
     const { t } = useLanguage();
 
+    // Stores when the current question became available.
+    const questionStartedAtRef = useRef(performance.now());
+
     const question = soundMatches[questionIndex];
 
     const handleOptionClick = (option) => {
-        if (option.id === question.id) {
-            record({ correct: true });
+        // Calculate the player's response time.
+        const now = performance.now();
+
+        const latencyMs = Math.max(
+            0,
+            Math.round(
+                now - questionStartedAtRef.current
+            )
+        );
+
+        const isCorrect =
+            option.id === question.id;
+
+        record({
+            correct: isCorrect,
+            latencyMs
+        });
+
+        if (isCorrect) {
             setFeedback("correct");
 
             setTimeout(() => {
@@ -24,19 +44,31 @@ const SoundObjectMatch = () => {
                     soundMatches.length - 1
                 ) {
                     setFeedback("complete");
+
+                    questionStartedAtRef.current =
+                        null;
                 } else {
                     setQuestionIndex(
                         (previous) => previous + 1
                     );
+
                     setFeedback("");
+
+                    // Start timing the next question.
+                    questionStartedAtRef.current =
+                        performance.now();
                 }
             }, 1000);
         } else {
-            record({ correct: false });
             setFeedback("try-again");
 
             setTimeout(() => {
                 setFeedback("");
+
+                // Reset the timer after the wrong-answer
+                // feedback disappears.
+                questionStartedAtRef.current =
+                    performance.now();
             }, 1200);
         }
     };
@@ -52,6 +84,10 @@ const SoundObjectMatch = () => {
     const restartGame = () => {
         setQuestionIndex(0);
         setFeedback("");
+
+        // Restart reaction-time tracking.
+        questionStartedAtRef.current =
+            performance.now();
     };
 
     if (feedback === "complete") {

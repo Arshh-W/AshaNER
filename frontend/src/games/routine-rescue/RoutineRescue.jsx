@@ -1,6 +1,4 @@
-// src/games/routine-rescue/RoutineRescue.jsx
-
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useGameSession } from "../../context/GameSessionContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { routines } from "./routineRescueData";
@@ -15,6 +13,9 @@ const RoutineRescue = () => {
     const { record } = useGameSession();
     const { t } = useLanguage();
 
+    // Stores when the current routine step became available.
+    const stepStartedAtRef = useRef(performance.now());
+
     const routine = routines[routineIndex];
 
     const handleStepClick = (step) => {
@@ -22,35 +23,83 @@ const RoutineRescue = () => {
 
         const correctStep = routine.steps[nextStep];
 
-        if (step.id === correctStep.id) {
-            const updatedSteps = [...selectedSteps, step];
+        // Measure how long the player took to choose
+        // the current step.
+        const now = performance.now();
+
+        const latencyMs = Math.max(
+            0,
+            Math.round(
+                now - stepStartedAtRef.current
+            )
+        );
+
+        const isCorrect = step.id === correctStep.id;
+
+        record({
+            correct: isCorrect,
+            latencyMs
+        });
+
+        if (isCorrect) {
+            const updatedSteps = [
+                ...selectedSteps,
+                step
+            ];
 
             setSelectedSteps(updatedSteps);
             setFeedback("correct");
 
-            record({ correct: true });
-
             setTimeout(() => {
-                if (nextStep === routine.steps.length - 1) {
-                    if (routineIndex === routines.length - 1) {
+                if (
+                    nextStep ===
+                    routine.steps.length - 1
+                ) {
+                    if (
+                        routineIndex ===
+                        routines.length - 1
+                    ) {
                         setFeedback("complete");
+                        stepStartedAtRef.current = null;
                     } else {
-                        setRoutineIndex((previous) => previous + 1);
+                        setRoutineIndex(
+                            (previous) =>
+                                previous + 1
+                        );
+
                         setNextStep(0);
                         setSelectedSteps([]);
                         setFeedback("");
+
+                        // Start measuring the first step
+                        // of the next routine.
+                        stepStartedAtRef.current =
+                            performance.now();
                     }
                 } else {
-                    setNextStep((previous) => previous + 1);
+                    setNextStep(
+                        (previous) => previous + 1
+                    );
+
                     setFeedback("");
+
+                    // Start a fresh measurement for the
+                    // next step.
+                    stepStartedAtRef.current =
+                        performance.now();
                 }
             }, 900);
         } else {
-            record({ correct: false });
             setFeedback("try-again");
 
             setTimeout(() => {
                 setFeedback("");
+
+                // Do not count the feedback display time.
+                // Start measuring again when the player
+                // can make another attempt.
+                stepStartedAtRef.current =
+                    performance.now();
             }, 1200);
         }
     };
@@ -60,6 +109,10 @@ const RoutineRescue = () => {
         setNextStep(0);
         setSelectedSteps([]);
         setFeedback("");
+
+        // Restart reaction-time tracking.
+        stepStartedAtRef.current =
+            performance.now();
     };
 
     if (feedback === "complete") {
@@ -137,20 +190,23 @@ const RoutineRescue = () => {
             {selectedSteps.length > 0 && (
                 <div className="selected-steps">
 
-                    {selectedSteps.map((step, index) => (
-                        <div
-                            className="selected-step"
-                            key={step.id}
-                        >
-                            <span className="step-number">
-                                {index + 1}
-                            </span>
+                    {selectedSteps.map(
+                        (step, index) => (
+                            <div
+                                className="selected-step"
+                                key={step.id}
+                            >
+                                <span className="step-number">
+                                    {index + 1}
+                                </span>
 
-                            <span>
-                                {step.emoji} {step.text}
-                            </span>
-                        </div>
-                    ))}
+                                <span>
+                                    {step.emoji}{" "}
+                                    {step.text}
+                                </span>
+                            </div>
+                        )
+                    )}
 
                 </div>
             )}
@@ -162,7 +218,8 @@ const RoutineRescue = () => {
                     const alreadySelected =
                         selectedSteps.some(
                             (selected) =>
-                                selected.id === step.id
+                                selected.id ===
+                                step.id
                         );
 
                     return (
@@ -174,14 +231,19 @@ const RoutineRescue = () => {
                                     ? "already-selected"
                                     : ""
                             } ${
-                                feedback === "try-again"
+                                feedback ===
+                                "try-again"
                                     ? "option-shake"
                                     : ""
                             }`}
                             onClick={() =>
-                                handleStepClick(step)
+                                handleStepClick(
+                                    step
+                                )
                             }
-                            disabled={alreadySelected}
+                            disabled={
+                                alreadySelected
+                            }
                         >
                             <span className="routine-emoji">
                                 {step.emoji}

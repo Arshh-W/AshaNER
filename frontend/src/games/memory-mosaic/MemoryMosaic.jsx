@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useGameSession } from "../../context/GameSessionContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { mosaicImages } from "./memoryMosaicData";
@@ -18,18 +18,40 @@ const MemoryMosaic = () => {
     const { record } = useGameSession();
     const { t } = useLanguage();
 
+    // Tracks when the player is allowed to start solving
+    // the current mosaic.
+    const puzzleStartedAtRef = useRef(null);
+
     const image = mosaicImages[imageIndex];
 
     const startPuzzle = () => {
         setTiles(shuffle(image.tiles));
         setSelectedTiles([]);
+        setFeedback("");
         setPhase("puzzle");
+
+        // Start reaction-time measurement when the
+        // puzzle becomes available.
+        puzzleStartedAtRef.current = performance.now();
     };
 
     const handleTileClick = (tile, index) => {
         if (selectedTiles.length >= image.tiles.length) {
             return;
         }
+
+        // Calculate how long the player took to make
+        // this selection.
+        const now = performance.now();
+
+        const latencyMs = puzzleStartedAtRef.current
+            ? Math.max(
+                  0,
+                  Math.round(
+                      now - puzzleStartedAtRef.current
+                  )
+              )
+            : 0;
 
         const newSelection = [
             ...selectedTiles,
@@ -45,31 +67,63 @@ const MemoryMosaic = () => {
             tile === image.tiles[selectedTiles.length];
 
         if (!isCorrect) {
-            record({ correct: false });
+            record({
+                correct: false,
+                latencyMs,
+            });
+
             setFeedback("wrong");
 
             setTimeout(() => {
                 setSelectedTiles([]);
                 setFeedback("");
+
+                // Start measuring again after the player
+                // is allowed to try the sequence again.
+                puzzleStartedAtRef.current =
+                    performance.now();
             }, 900);
 
             return;
         }
 
+        record({
+            correct: true,
+            latencyMs,
+        });
+
         setFeedback("correct");
-        record({ correct: true });
 
         setTimeout(() => {
             setFeedback("");
 
-            if (newSelection.length === image.tiles.length) {
-                if (imageIndex === mosaicImages.length - 1) {
+            if (
+                newSelection.length ===
+                image.tiles.length
+            ) {
+                if (
+                    imageIndex ===
+                    mosaicImages.length - 1
+                ) {
                     setPhase("complete");
+                    puzzleStartedAtRef.current = null;
                 } else {
-                    setImageIndex((previous) => previous + 1);
+                    setImageIndex(
+                        (previous) => previous + 1
+                    );
+
                     setPhase("remember");
                     setSelectedTiles([]);
+
+                    // The next measurement begins only when
+                    // the player presses "I Remember It".
+                    puzzleStartedAtRef.current = null;
                 }
+            } else {
+                // Continue measuring from this selection so
+                // the next tile's response time is captured.
+                puzzleStartedAtRef.current =
+                    performance.now();
             }
         }, 600);
     };
@@ -80,6 +134,7 @@ const MemoryMosaic = () => {
         setTiles([]);
         setSelectedTiles([]);
         setFeedback("");
+        puzzleStartedAtRef.current = null;
     };
 
     if (phase === "complete") {
@@ -189,14 +244,16 @@ const MemoryMosaic = () => {
                 <>
                     <div className="mosaic-result">
 
-                        {selectedTiles.map((tile, index) => (
-                            <div
-                                key={index}
-                                className="result-tile"
-                            >
-                                {tile.value}
-                            </div>
-                        ))}
+                        {selectedTiles.map(
+                            (tile, index) => (
+                                <div
+                                    key={index}
+                                    className="result-tile"
+                                >
+                                    {tile.value}
+                                </div>
+                            )
+                        )}
 
                         {Array.from({
                             length:
@@ -216,10 +273,12 @@ const MemoryMosaic = () => {
                     <div className="mosaic-options">
 
                         {tiles.map((tile, index) => {
-                            const used = selectedTiles.some(
-                                (selected) =>
-                                    selected.index === index
-                            );
+                            const used =
+                                selectedTiles.some(
+                                    (selected) =>
+                                        selected.index ===
+                                        index
+                                );
 
                             return (
                                 <button

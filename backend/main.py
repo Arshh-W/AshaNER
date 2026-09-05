@@ -339,6 +339,163 @@ def sync_offline_game_sessions(
         synced_session_ids=synced_ids
     )
 
+
+# --- Patient Game Statistics Route ---
+@app.get("/api/v1/patients/me/game-stats", tags=["Game Processing"])
+def get_my_game_stats(current_user: dict = Depends(get_current_user)):
+    """
+    Return the authenticated patient's own game history and statistics.
+
+    This endpoint is intentionally patient-scoped. It does not accept an
+    arbitrary patient_id, so a patient can only read their own game data.
+    """
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            "SELECT id, name, email, role FROM users WHERE email = ?",
+            (current_user["email"],)
+        )
+        user = cursor.fetchone()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        user_id, user_name, email, role = user
+
+        if role != "patient":
+            raise HTTPException(
+                status_code=403,
+                detail="This endpoint is available only to patients"
+            )
+
+        # The login/auth flow uses the user id as the patient id when a
+        # separate patients row is not present. Keep the same mapping here
+        # so the statistics match the patient_id used by game sync.
+        patient_id = user_id
+        patient_name = user_name or email.split("@", 1)[0]
+
+        cursor.execute(
+            """
+            SELECT
+                game_type,
+                COUNT(id) AS sessions,
+                AVG(score) AS average_score,
+                AVG(total_errors) AS average_errors,
+                AVG(duration_seconds) AS average_duration,
+                MAX(level_achieved) AS best_level
+            FROM game_sessions
+            WHERE patient_id = ?
+            GROUP BY game_type
+            ORDER BY sessions DESC, game_type ASC
+            """,
+            (patient_id,)
+        )
+        game_rows = cursor.fetchall()
+
+        cursor.execute(
+            """
+            SELECT
+                local_session_id,
+                game_type,
+                score,
+                duration_seconds,
+                total_errors,
+                level_achieved,
+                reaction_times_json,
+                created_at
+            FROM game_sessions
+            WHERE patient_id = ?
+            ORDER BY created_at DESC
+            LIMIT 20
+            """,
+            (patient_id,)
+        )
+        session_rows = cursor.fetchall()
+
+        cursor.execute(
+            """
+            SELECT
+                COUNT(id),
+                AVG(score),
+                AVG(total_errors),
+                AVG(duration_seconds),
+                MAX(level_achieved)
+            FROM game_sessions
+            WHERE patient_id = ?
+            """,
+            (patient_id,)
+        )
+        overall = cursor.fetchone()
+
+    finally:
+        conn.close()
+
+    total_sessions = overall[0] or 0
+    average_score = round(overall[1], 1) if overall[1] is not None else 0.0
+    average_errors = round(overall[2], 1) if overall[2] is not None else 0.0
+    average_duration = round(overall[3], 1) if overall[3] is not None else 0.0
+    best_level = overall[4] or 1
+
+    games = []
+    for row in game_rows:
+        games.append({
+            "game_type": row[0],
+            "sessions": row[1] or 0,
+            "average_score": round(row[2], 1) if row[2] is not None else 0.0,
+            "average_errors": round(row[3], 1) if row[3] is not None else 0.0,
+            "average_duration_seconds": round(row[4], 1) if row[4] is not None else 0.0,
+            "best_level": row[5] or 1,
+        })
+
+    recent_sessions = []
+    for row in session_rows:
+        reaction_times = []
+
+        try:
+            parsed_reaction_times = json.loads(row[6] or "[]")
+            if isinstance(parsed_reaction_times, list):
+                reaction_times = [
+                    float(value)
+                    for value in parsed_reaction_times
+                    if isinstance(value, (int, float))
+                ]
+        except (TypeError, ValueError, json.JSONDecodeError):
+            reaction_times = []
+
+        average_reaction_time = (
+            round(sum(reaction_times) / len(reaction_times), 1)
+            if reaction_times
+            else 0.0
+        )
+
+        recent_sessions.append({
+            "local_session_id": row[0],
+            "game_type": row[1],
+            "score": row[2] or 0,
+            "duration_seconds": round(row[3] or 0, 1),
+            "total_errors": row[4] or 0,
+            "level_achieved": row[5] or 1,
+            "average_reaction_time_ms": average_reaction_time,
+            "created_at": row[7],
+        })
+
+    return {
+        "patient_id": patient_id,
+        "patient_name": patient_name,
+        "email": email,
+        "total_sessions_completed": total_sessions,
+        "metrics": {
+            "average_score": average_score,
+            "average_errors_per_session": average_errors,
+            "average_duration_seconds": average_duration,
+            "best_level": best_level,
+        },
+        "games": games,
+        "recent_sessions": recent_sessions,
+    }
+
 # --- Dynamic Difficulty Engine (DDA) Route ---
 @app.post("/api/v1/ml/adapt", response_model=DDAEngineResponse, tags=["ML Engine"])
 def adapt_game_difficulty(data: DDAEngineRequest):

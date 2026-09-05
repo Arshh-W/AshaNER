@@ -1,6 +1,4 @@
-// src/games/memory-detective/MemoryDetective.jsx
-
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useGameSession } from "../../context/GameSessionContext";
 import { useLanguage } from "../../context/LanguageContext";
 import { detectiveScenes } from "./memoryDetectiveData";
@@ -15,38 +13,81 @@ const MemoryDetective = () => {
     const { record } = useGameSession();
     const { t } = useLanguage();
 
+    // Stores the exact time when the player enters detection mode.
+    // This lets us calculate reaction time for every answer.
+    const detectionStartedAtRef = useRef(null);
+
     const scene = detectiveScenes[sceneIndex];
 
     const handleStart = () => {
         setPhase("detect");
+
+        // Start measuring reaction time as soon as
+        // the player is allowed to answer.
+        detectionStartedAtRef.current = performance.now();
     };
 
     const handleObjectClick = (object) => {
         if (phase !== "detect") return;
 
+        // Calculate how long the player took to answer.
+        const now = performance.now();
+
+        const latencyMs = detectionStartedAtRef.current
+            ? Math.max(
+                  0,
+                  Math.round(
+                      now - detectionStartedAtRef.current
+                  )
+              )
+            : 0;
+
         setSelectedObject(object.id);
 
-        if (object.id === scene.changedObject) {
-            record({ correct: true });
+        const isCorrect =
+            object.id === scene.changedObject;
+
+        // Send the actual game interaction to the
+        // central GameSessionContext.
+        record({
+            correct: isCorrect,
+            latencyMs
+        });
+
+        if (isCorrect) {
             setFeedback("correct");
 
             setTimeout(() => {
-                if (sceneIndex === detectiveScenes.length - 1) {
+                if (
+                    sceneIndex ===
+                    detectiveScenes.length - 1
+                ) {
                     setPhase("complete");
                 } else {
-                    setSceneIndex((previous) => previous + 1);
+                    setSceneIndex(
+                        (previous) => previous + 1
+                    );
+
                     setPhase("observe");
                     setSelectedObject(null);
                     setFeedback("");
+
+                    // Clear the previous reaction-time
+                    // measurement until the next scene starts.
+                    detectionStartedAtRef.current = null;
                 }
             }, 1200);
         } else {
-            record({ correct: false });
             setFeedback("try-again");
 
             setTimeout(() => {
                 setSelectedObject(null);
                 setFeedback("");
+
+                // Start a fresh reaction-time measurement
+                // after the wrong answer feedback disappears.
+                detectionStartedAtRef.current =
+                    performance.now();
             }, 1200);
         }
     };
@@ -56,6 +97,9 @@ const MemoryDetective = () => {
         setPhase("observe");
         setSelectedObject(null);
         setFeedback("");
+
+        // Reset reaction-time tracking.
+        detectionStartedAtRef.current = null;
     };
 
     if (phase === "complete") {
