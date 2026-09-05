@@ -1,96 +1,129 @@
 import { useEffect } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-    NavLink,
-    Outlet,
-    useNavigate
-} from "react-router-dom";
-import {
-    FileText,
-    LayoutDashboard,
+    Home,
+    Users,
     LogOut,
-    Settings,
-    Users
 } from "lucide-react";
-import PageHeader from "../components/common/PageHeader";
+
+import Navbar from "../components/common/Navbar";
 import { useAuth } from "../context/AuthContext";
-import { useLanguage } from "../context/LanguageContext";
+
 
 export default function CaregiverLayout() {
+
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const { t } = useLanguage();
+
+
+    /* =====================================================
+       ROLE PROTECTION
+    ===================================================== */
 
     useEffect(() => {
-        if (!user || user.role !== "caregiver") {
+
+        if (!user) {
             navigate("/login/caregiver", { replace: true });
+            return;
         }
+
+        if (user.role !== "caregiver") {
+            navigate("/patient", { replace: true });
+        }
+
     }, [user, navigate]);
+
 
     if (!user || user.role !== "caregiver") {
         return null;
     }
 
-    const handleLogout = () => {
-        logout();
-        navigate("/login/caregiver", { replace: true });
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    const handleLogout = async () => {
+
+        try {
+            await logout();
+        } finally {
+            navigate("/login/caregiver", {
+                replace: true,
+            });
+        }
+
     };
 
+
     return (
-        <div className="app-shell caregiver-shell">
-            <PageHeader />
+        <div className="app-shell">
+
+            {/* =================================================
+                TOP NAVBAR
+            ================================================= */}
+
+            <Navbar />
+
+
+            {/* =================================================
+                PAGE CONTENT
+            ================================================= */}
+
             <main className="page-wrap">
                 <Outlet />
             </main>
 
-            <nav className="bottom-nav caregiver-bottom-nav">
-                <NavLink to="/caregiver" end>
-                    <LayoutDashboard />
+
+            {/* =================================================
+                CAREGIVER BOTTOM NAVIGATION
+            ================================================= */}
+
+            <nav className="bottom-nav">
+
+                {/* OVERVIEW */}
+
+                <NavLink
+                    to="/caregiver"
+                    end
+                >
+                    <Home size={20} />
+
                     <span>
-                        {t(
-                            "caregiverDashboard.overview",
-                            "Overview"
-                        )}
+                        Overview
                     </span>
                 </NavLink>
 
-                <NavLink to="/caregiver/patients">
-                    <Users />
+
+                {/* PATIENTS */}
+
+                <NavLink
+                    to="/caregiver/patients"
+                >
+                    <Users size={20} />
+
                     <span>
-                        {t(
-                            "caregiverDashboard.patients",
-                            "Patients"
-                        )}
+                        Patients
                     </span>
                 </NavLink>
 
-                <NavLink to="/caregiver/reports">
-                    <FileText />
-                    <span>
-                        {t(
-                            "caregiverDashboard.reports",
-                            "Reports"
-                        )}
-                    </span>
-                </NavLink>
 
-                <NavLink to="/caregiver/settings">
-                    <Settings />
-                    <span>
-                        {t("navbar.settings", "Settings")}
-                    </span>
-                </NavLink>
+                {/* LOGOUT */}
 
                 <button
                     type="button"
-                    className="bottom-nav-logout"
+                    className="logout-nav"
                     onClick={handleLogout}
                 >
-                    <LogOut />
+                    <LogOut size={20} />
+
                     <span>
-                        {t("common.logout", "Log out")}
+                        Logout
                     </span>
                 </button>
+
             </nav>
+
         </div>
     );
 }

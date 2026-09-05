@@ -57,12 +57,16 @@ export default function Navbar() {
                         aria-label="Main navigation"
                     >
 
+                        {/* PUBLIC HOME */}
+
                         <Link to="/">
                             {t("navbar.home")}
                         </Link>
 
 
-                        {/* PUBLIC */}
+                        {/* =================================================
+                            PUBLIC
+                        ================================================= */}
 
                         {!user && (
                             <>
@@ -77,7 +81,9 @@ export default function Navbar() {
                         )}
 
 
-                        {/* PATIENT */}
+                        {/* =================================================
+                            PATIENT
+                        ================================================= */}
 
                         {user?.role === "patient" && (
                             <>
@@ -100,12 +106,20 @@ export default function Navbar() {
                         )}
 
 
-                        {/* CAREGIVER */}
+                        {/* =================================================
+                            CAREGIVER
+                        ================================================= */}
 
                         {user?.role === "caregiver" && (
-                            <Link to="/caregiver">
-                                {t("navbar.dashboard")}
-                            </Link>
+                            <>
+                                <Link to="/caregiver">
+                                    {t("navbar.dashboard")}
+                                </Link>
+
+                                <Link to="/caregiver/patients">
+                                    Patients
+                                </Link>
+                            </>
                         )}
 
                     </nav>

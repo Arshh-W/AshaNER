@@ -1,96 +1,180 @@
 import { useEffect } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-    NavLink,
-    Outlet,
-    useNavigate
-} from "react-router-dom";
-import {
-    Brain,
     Home,
-    LogOut,
-    PhoneCall,
+    Brain,
+    User,
     Settings,
-    UserRound
+    PhoneCall,
+    LogOut,
 } from "lucide-react";
-import PageHeader from "../components/common/PageHeader";
+
+import Navbar from "../components/common/Navbar";
 import { useAuth } from "../context/AuthContext";
-import { useLanguage } from "../context/LanguageContext";
+
 
 export default function PatientLayout() {
+
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const { t } = useLanguage();
+
+
+    /* =====================================================
+       ROLE PROTECTION
+    ===================================================== */
 
     useEffect(() => {
-        if (!user || user.role !== "patient") {
-            navigate("/login/patient", { replace: true });
+
+        if (!user) {
+            navigate("/login/patient", {
+                replace: true,
+            });
+
+            return;
         }
+
+        if (user.role !== "patient") {
+            navigate("/caregiver", {
+                replace: true,
+            });
+        }
+
     }, [user, navigate]);
+
 
     if (!user || user.role !== "patient") {
         return null;
     }
 
-    const handleLogout = () => {
-        logout();
-        navigate("/login/patient", { replace: true });
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    const handleLogout = async () => {
+
+        try {
+            await logout();
+        } finally {
+            navigate("/login/patient", {
+                replace: true,
+            });
+        }
+
     };
 
+
     return (
-        <div className="app-shell patient-shell">
-            <PageHeader />
+        <div className="app-shell">
+
+            {/* =================================================
+                TOP NAVBAR
+            ================================================= */}
+
+            <Navbar />
+
+
+            {/* =================================================
+                PAGE CONTENT
+            ================================================= */}
+
             <main className="page-wrap">
                 <Outlet />
             </main>
 
-            <nav className="bottom-nav patient-bottom-nav">
-                <NavLink to="/patient" end>
-                    <Home />
-                    <span>{t("navbar.home", "Home")}</span>
+
+            {/* =================================================
+                PATIENT BOTTOM NAVIGATION
+            ================================================= */}
+
+            <nav className="bottom-nav">
+
+                {/* HOME */}
+
+                <NavLink
+                    to="/patient"
+                    end
+                >
+                    <Home size={20} />
+
+                    <span>
+                        Home
+                    </span>
                 </NavLink>
 
-                <NavLink to="/patient/games">
-                    <Brain />
-                    <span>{t("navbar.games", "Games")}</span>
+
+                {/* GAMES */}
+
+                <NavLink
+                    to="/patient/games"
+                >
+                    <Brain size={20} />
+
+                    <span>
+                        Games
+                    </span>
                 </NavLink>
 
-                <NavLink to="/patient/profile">
-                    <UserRound />
-                    <span>{t("navbar.profile", "Profile")}</span>
+
+                {/* PROFILE */}
+
+                <NavLink
+                    to="/patient/profile"
+                >
+                    <User size={20} />
+
+                    <span>
+                        Profile
+                    </span>
                 </NavLink>
 
-                <NavLink to="/patient/settings">
-                    <Settings />
-                    <span>{t("navbar.settings", "Settings")}</span>
+
+                {/* SETTINGS */}
+
+                <NavLink
+                    to="/patient/settings"
+                >
+                    <Settings size={20} />
+
+                    <span>
+                        Settings
+                    </span>
                 </NavLink>
+
+
+                {/* EMERGENCY */}
 
                 <button
                     type="button"
                     className="sos-nav"
                     onClick={() =>
-                        alert(
-                            t(
-                                "dashboard.emergencyCall",
-                                "Emergency call initiated. Caregiver notified."
-                            )
-                        )
+                        alert("Emergency call initiated.")
                     }
                 >
-                    <PhoneCall />
+                    <PhoneCall size={20} />
+
                     <span>
-                        {t("dashboard.emergency", "Emergency")}
+                        Emergency
                     </span>
                 </button>
 
+
+                {/* LOGOUT */}
+
                 <button
                     type="button"
-                    className="bottom-nav-logout"
+                    className="logout-nav"
                     onClick={handleLogout}
                 >
-                    <LogOut />
-                    <span>{t("common.logout", "Log out")}</span>
+                    <LogOut size={20} />
+
+                    <span>
+                        Log out
+                    </span>
                 </button>
+
             </nav>
+
         </div>
     );
 }

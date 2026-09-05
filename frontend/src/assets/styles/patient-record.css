@@ -1,0 +1,506 @@
+.patient-record-page {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 32px 48px;
+    box-sizing: border-box;
+}
+
+.patient-record-header {
+    margin-bottom: 24px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    color: #185c48;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 0;
+    margin-bottom: 18px;
+}
+
+.back-button:hover {
+    opacity: 0.75;
+}
+
+.record-header-content {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: #ffffff;
+    border: 1px solid #e5ebe7;
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 8px 28px rgba(20, 70, 55, 0.06);
+}
+
+.patient-avatar {
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8f3ee;
+    color: #185c48;
+}
+
+.patient-header-info {
+    flex: 1;
+}
+
+.record-eyebrow {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #6d8178;
+    margin-bottom: 5px;
+}
+
+.patient-header-info h1 {
+    margin: 0;
+    color: #173f33;
+    font-size: 30px;
+    line-height: 1.15;
+}
+
+.patient-header-info p {
+    margin: 7px 0 0;
+    color: #718079;
+    font-size: 14px;
+}
+
+.patient-header-info strong {
+    color: #185c48;
+}
+
+.record-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.record-refresh-button,
+.record-report-button,
+.record-primary-button,
+.record-secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.record-refresh-button {
+    width: 44px;
+    height: 44px;
+    border: 1px solid #dce6e1;
+    background: #ffffff;
+    color: #185c48;
+}
+
+.record-refresh-button:hover {
+    background: #f1f7f4;
+}
+
+.record-report-button,
+.record-primary-button {
+    border: none;
+    background: #185c48;
+    color: #ffffff;
+    padding: 12px 17px;
+}
+
+.record-report-button:hover,
+.record-primary-button:hover {
+    background: #124936;
+}
+
+.record-section {
+    background: #ffffff;
+    border: 1px solid #e5ebe7;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 28px rgba(20, 70, 55, 0.045);
+}
+
+.record-section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.section-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #e8f3ee;
+    color: #185c48;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.record-section-title h2 {
+    margin: 0;
+    color: #173f33;
+    font-size: 19px;
+}
+
+.record-section-title p {
+    margin: 4px 0 0;
+    color: #7b8983;
+    font-size: 13px;
+}
+
+.personal-details-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 16px;
+    border-radius: 14px;
+    background: #f7faf8;
+    min-width: 0;
+}
+
+.detail-item > svg {
+    flex-shrink: 0;
+    color: #185c48;
+    margin-top: 1px;
+}
+
+.detail-item span {
+    display: block;
+    color: #7a8882;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.detail-item strong {
+    display: block;
+    color: #263f36;
+    font-size: 14px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.performance-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.performance-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 18px;
+    border-radius: 15px;
+    background: #f7faf8;
+}
+
+.performance-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 12px;
+    background: #e8f3ee;
+    color: #185c48;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.performance-card span {
+    display: block;
+    color: #78867f;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.performance-card strong {
+    display: block;
+    color: #173f33;
+    font-size: 22px;
+}
+
+.game-performance-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.game-performance-row {
+    display: grid;
+    grid-template-columns: 2fr repeat(3, 1fr);
+    align-items: center;
+    gap: 16px;
+    padding: 15px 17px;
+    border: 1px solid #e6ece9;
+    border-radius: 14px;
+}
+
+.game-name {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.game-name > svg {
+    color: #185c48;
+    flex-shrink: 0;
+}
+
+.game-name strong {
+    display: block;
+    color: #29453b;
+    font-size: 14px;
+}
+
+.game-name span {
+    display: block;
+    color: #849089;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.game-stat span {
+    display: block;
+    color: #89958f;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.game-stat strong {
+    color: #29453b;
+    font-size: 14px;
+}
+
+.history-table-wrapper {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+}
+
+.history-table th {
+    text-align: left;
+    padding: 12px 14px;
+    background: #f5f8f6;
+    color: #68776f;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 800;
+}
+
+.history-table td {
+    padding: 14px;
+    border-bottom: 1px solid #edf1ef;
+    color: #52625b;
+    font-size: 13px;
+}
+
+.history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.history-table td strong {
+    color: #185c48;
+}
+
+.record-empty {
+    text-align: center;
+    padding: 42px 20px;
+    border-radius: 15px;
+    background: #f7faf8;
+    color: #718078;
+}
+
+.record-empty > svg {
+    color: #8ca39a;
+    margin-bottom: 8px;
+}
+
+.record-empty h3 {
+    margin: 0 0 6px;
+    color: #30473e;
+    font-size: 16px;
+}
+
+.record-empty p {
+    margin: 0;
+    font-size: 13px;
+}
+
+.patient-record-loading,
+.patient-record-error {
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+}
+
+.loading-spinner {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    background: #e8f3ee;
+    color: #185c48;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.loading-spinner svg {
+    animation: patientRecordSpin 1s linear infinite;
+}
+
+@keyframes patientRecordSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.patient-record-loading h2,
+.patient-record-error h2 {
+    margin: 0 0 8px;
+    color: #173f33;
+}
+
+.patient-record-loading p,
+.patient-record-error p {
+    max-width: 500px;
+    margin: 0;
+    color: #74827b;
+    line-height: 1.6;
+}
+
+.patient-record-error > svg {
+    color: #185c48;
+    margin-bottom: 15px;
+}
+
+.patient-record-error-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.record-secondary-button {
+    border: 1px solid #d9e4de;
+    background: #ffffff;
+    color: #185c48;
+    padding: 11px 16px;
+}
+
+.record-secondary-button:hover {
+    background: #f4f8f6;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1100px) {
+    .personal-details-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .performance-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .patient-record-page {
+        padding: 20px 16px 35px;
+    }
+
+    .record-header-content {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .patient-header-info {
+        min-width: calc(100% - 92px);
+    }
+
+    .record-header-actions {
+        width: 100%;
+        margin-top: 4px;
+    }
+
+    .record-report-button {
+        flex: 1;
+    }
+
+    .personal-details-grid,
+    .performance-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .game-performance-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .record-section {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .patient-header-info h1 {
+        font-size: 24px;
+    }
+
+    .patient-avatar {
+        width: 58px;
+        height: 58px;
+        min-width: 58px;
+    }
+
+    .game-performance-row {
+        grid-template-columns: 1fr;
+    }
+
+    .patient-record-error-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .record-secondary-button,
+    .record-primary-button {
+        width: 100%;
+    }
+}

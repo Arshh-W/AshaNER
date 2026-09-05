@@ -12,6 +12,8 @@ import SettingsPage from "../pages/SettingsPage";
 
 import CaregiverDashboard from "../pages/CaregiverDashboard";
 import PatientsPage from "../pages/patients";
+import PatientRecordPage from "../pages/PatientRecordPage";
+import PatientReportPage from "../pages/PatientReportPage";
 
 import OfflinePage from "../pages/OfflinePage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -147,6 +149,18 @@ export function AppRoutes() {
                 <Route
                     path="caregiver/patients"
                     element={<PatientsPage />}
+                />
+
+                {/* /caregiver/patients/:patientId */}
+                <Route
+                    path="caregiver/patients/:patientId"
+                    element={<PatientRecordPage />}
+                />
+
+                {/* /caregiver/patients/:patientId/report */}
+                <Route
+                    path="caregiver/patients/:patientId/report"
+                    element={<PatientReportPage />}
                 />
 
             </Route>

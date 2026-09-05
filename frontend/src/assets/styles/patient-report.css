@@ -1,0 +1,467 @@
+.patient-report-page {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 32px 50px;
+    box-sizing: border-box;
+}
+
+.report-page-header {
+    margin-bottom: 24px;
+}
+
+.report-back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    color: #185c48;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 6px 0;
+    margin-bottom: 18px;
+}
+
+.report-back-button:hover {
+    opacity: 0.75;
+}
+
+.report-title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #ffffff;
+    border: 1px solid #e4ebe7;
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 8px 28px rgba(20, 70, 55, 0.06);
+}
+
+.report-title-icon {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border-radius: 16px;
+    background: #e8f3ee;
+    color: #185c48;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.report-title-row > div:nth-child(2) {
+    flex: 1;
+}
+
+.report-title-row span {
+    display: block;
+    color: #74847c;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.report-title-row h1 {
+    margin: 0;
+    color: #173f33;
+    font-size: 28px;
+}
+
+.report-title-row p {
+    margin: 6px 0 0;
+    color: #7a8982;
+    font-size: 13px;
+}
+
+.download-report-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 12px;
+    background: #185c48;
+    color: #ffffff;
+    padding: 12px 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.download-report-button:hover {
+    background: #124936;
+}
+
+.report-card {
+    background: #ffffff;
+    border: 1px solid #e4ebe7;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 28px rgba(20, 70, 55, 0.045);
+}
+
+.report-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 22px;
+}
+
+.report-card-heading > svg {
+    color: #185c48;
+}
+
+.report-card-heading h2 {
+    margin: 0;
+    color: #173f33;
+    font-size: 19px;
+}
+
+.report-card-heading p {
+    margin: 4px 0 0;
+    color: #7c8983;
+    font-size: 13px;
+}
+
+.report-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.report-info-grid > div {
+    background: #f7faf8;
+    border-radius: 13px;
+    padding: 15px;
+}
+
+.report-info-grid span,
+.report-game-row span {
+    display: block;
+    color: #7c8983;
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.report-info-grid strong {
+    display: block;
+    color: #29453b;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.report-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.report-summary-item {
+    background: #f7faf8;
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.report-summary-item > svg {
+    color: #185c48;
+    margin-bottom: 12px;
+}
+
+.report-summary-item span {
+    display: block;
+    color: #7b8982;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.report-summary-item strong {
+    color: #173f33;
+    font-size: 23px;
+}
+
+.report-game-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.report-game-row {
+    display: grid;
+    grid-template-columns: 2fr repeat(3, 1fr);
+    align-items: center;
+    gap: 16px;
+    padding: 15px 17px;
+    border: 1px solid #e6ece9;
+    border-radius: 13px;
+}
+
+.report-game-row strong {
+    color: #29453b;
+    font-size: 14px;
+}
+
+.report-game-row > div:first-child strong {
+    display: block;
+}
+
+.report-game-row > div:first-child span {
+    margin-top: 4px;
+}
+
+.report-history-wrapper {
+    overflow-x: auto;
+}
+
+.report-history-table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+}
+
+.report-history-table th {
+    text-align: left;
+    padding: 12px 14px;
+    background: #f5f8f6;
+    color: #697770;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.report-history-table td {
+    padding: 14px;
+    border-bottom: 1px solid #edf1ef;
+    color: #52625b;
+    font-size: 13px;
+}
+
+.report-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.report-history-table td:nth-child(3) {
+    color: #185c48;
+    font-weight: 800;
+}
+
+.report-empty {
+    text-align: center;
+    padding: 36px;
+    background: #f7faf8;
+    border-radius: 14px;
+    color: #7b8982;
+    font-size: 13px;
+}
+
+.report-footer {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 18px 4px;
+    color: #78867f;
+}
+
+.report-footer svg {
+    color: #185c48;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.report-footer p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.report-state {
+    min-height: 450px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.report-loading-icon,
+.report-error-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    background: #e8f3ee;
+    color: #185c48;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.report-loading-icon svg {
+    animation: reportSpin 1s linear infinite;
+}
+
+@keyframes reportSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.report-state h2 {
+    margin: 0 0 8px;
+    color: #173f33;
+}
+
+.report-state p {
+    max-width: 500px;
+    margin: 0;
+    color: #75837c;
+    line-height: 1.6;
+}
+
+.report-state-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.report-primary-button,
+.report-secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 11px;
+    padding: 11px 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.report-primary-button {
+    border: none;
+    background: #185c48;
+    color: #ffffff;
+}
+
+.report-secondary-button {
+    border: 1px solid #d9e4de;
+    background: #ffffff;
+    color: #185c48;
+}
+
+.report-primary-button:hover {
+    background: #124936;
+}
+
+.report-secondary-button:hover {
+    background: #f4f8f6;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1050px) {
+    .report-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .report-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 760px) {
+    .patient-report-page {
+        padding: 20px 16px 40px;
+    }
+
+    .report-title-row {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .report-title-row > div:nth-child(2) {
+        min-width: calc(100% - 76px);
+    }
+
+    .download-report-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .report-info-grid,
+    .report-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .report-game-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .report-card {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .report-title-row h1 {
+        font-size: 23px;
+    }
+
+    .report-title-icon {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+    }
+
+    .report-game-row {
+        grid-template-columns: 1fr;
+    }
+
+    .report-state-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .report-primary-button,
+    .report-secondary-button {
+        width: 100%;
+    }
+}
+
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+
+@media print {
+    .patient-report-page {
+        max-width: none;
+        padding: 0;
+    }
+
+    .report-back-button,
+    .download-report-button {
+        display: none;
+    }
+
+    .report-card,
+    .report-title-row {
+        box-shadow: none;
+        break-inside: avoid;
+    }
+
+    .report-page-header {
+        margin-bottom: 16px;
+    }
+
+    .report-footer {
+        margin-top: 20px;
+    }
+}
