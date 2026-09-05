@@ -9,11 +9,14 @@ import {
 
 import { useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
+import { useAuth } from "../context/AuthContext";
 
 
 export default function CaregiverDashboard() {
     const [sent, setSent] = useState(false);
     const { t } = useLanguage();
+    const { user } = useAuth();
+    const patientName = user?.patientName || "Patient";
 
     return (
         <div className="caregiver-page">
@@ -36,8 +39,8 @@ export default function CaregiverDashboard() {
                     </span>
 
                     <h1>
-                        Grandfather Biren{" "}
-                        <small>(82 yrs)</small>
+                        {patientName}{" "}
+                        {user?.patientId && <small>(ID {user.patientId})</small>}
                     </h1>
 
                     <p className="coral-text">

@@ -16,17 +16,27 @@ import AudioPrompt from "../components/common/AudioPrompt";
 
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
+import { useAuth } from "../context/AuthContext";
 
 
 export default function PatientDashboard() {
     const { t } = useLanguage();
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const patientName = user?.patientName || user?.name || user?.fullName || user?.displayName || user?.username || "Patient";
+    const contactName = user?.contactName || "Ananya";
+
+    const replacePatientName = (value) =>
+        value.replace(/Kangkan|Biren|Patient|\{name\}/g, patientName);
+
+    const replaceContactName = (value) =>
+        value.replace(/Ananya|\{contactName\}/g, contactName);
 
     useWebSpeech();
 
 
     /* =====================================================
-       TRANSLATION HELPER
+        TRANSLATION HELPER
     ===================================================== */
 
     const translate = (key, fallback) => {
@@ -41,7 +51,7 @@ export default function PatientDashboard() {
 
 
     /* =====================================================
-       ROUTINE DATA
+        ROUTINE DATA
     ===================================================== */
 
     const [items, setItems] = useState(
@@ -62,14 +72,14 @@ export default function PatientDashboard() {
 
 
     /* =====================================================
-       WATER TRACKER
+        WATER TRACKER
     ===================================================== */
 
     const [water, setWater] = useState(3);
 
 
     /* =====================================================
-       MARK ROUTINE AS TAKEN
+        MARK ROUTINE AS TAKEN
     ===================================================== */
 
     const take = (id) => {
@@ -113,9 +123,11 @@ export default function PatientDashboard() {
 
                     <h1>
 
-                        {translate(
-                            "dashboard.goodMorning",
-                            "Good Morning, Kangkan!"
+                        {replacePatientName(
+                            translate(
+                                "dashboard.goodMorning",
+                                `Good Morning, ${patientName}!`
+                            )
                         )}
 
                         <em>
@@ -228,6 +240,9 @@ export default function PatientDashboard() {
                 {/* FAMILY VISIT */}
 
                 <FamilyCard
+                    user={user}
+                    patientName={patientName}
+                    replaceContactName={replaceContactName}
                     translate={translate}
                 />
 
@@ -398,7 +413,7 @@ export default function PatientDashboard() {
                     <p>
                         {translate(
                             "dashboard.helpDescription",
-                            "One tap connects directly to Daughter Ananya or a local ASHA Health Worker Bina Gogoi."
+                            `One tap connects directly to ${contactName} or a local ASHA Health Worker Bina Gogoi.`
                         )}
                     </p>
 
@@ -418,9 +433,11 @@ export default function PatientDashboard() {
                     className="coral-btn"
                     onClick={() =>
                         alert(
-                            translate(
-                                "dashboard.callingAnanya",
-                                "Calling Ananya Barua…"
+                            replaceContactName(
+                                translate(
+                                    "dashboard.callingAsha",
+                                    `Calling ASHA Bina Gogoi on behalf of ${patientName}...`
+                                )
                             )
                         )
                     }
@@ -443,9 +460,11 @@ export default function PatientDashboard() {
             ================================================= */}
 
             <VoiceHelp
-                text={translate(
-                    "dashboard.voiceHelp",
-                    "Would you like to search for the Bamboo Jaapi hat, Biren?"
+                text={replacePatientName(
+                    translate(
+                        "dashboard.voiceHelp",
+                        `Would you like to search for the Bamboo Jaapi hat, ${patientName}?`
+                    )
                 )}
             />
 
@@ -455,7 +474,7 @@ export default function PatientDashboard() {
 
 
 /* =========================================================
-   ROUTINE CARD
+    ROUTINE CARD
 ========================================================= */
 
 function RoutineCard({
@@ -470,8 +489,8 @@ function RoutineCard({
 
 
     /*
-       Translate routine content by ID instead of displaying
-       the English strings directly from mockRoutines.
+        Translate routine content by ID instead of displaying
+        the English strings directly from mockRoutines.
     */
 
     const routineContent = {
@@ -599,7 +618,7 @@ function RoutineCard({
 
 
 /* =========================================================
-   WATER CARD
+    WATER CARD
 ========================================================= */
 
 function WaterCard({
@@ -734,12 +753,17 @@ function WaterCard({
 
 
 /* =========================================================
-   FAMILY CARD
+    FAMILY CARD
 ========================================================= */
 
 function FamilyCard({
+    user,
+    patientName,
+    replaceContactName,
     translate
 }) {
+
+    const familyContactName = user?.contactName || "Ananya";
 
     return (
         <article className="routine-card card">
@@ -782,12 +806,7 @@ function FamilyCard({
                     </small>
 
 
-                    <h3>
-                        {translate(
-                            "dashboard.ananyaBarua",
-                            "Ananya Barua"
-                        )}
-                    </h3>
+                    <h3>{familyContactName}</h3>
 
 
                     <p>
@@ -819,9 +838,11 @@ function FamilyCard({
                 className="coral-btn"
                 onClick={() =>
                     alert(
-                        translate(
-                            "dashboard.callingAnanya",
-                            "Calling Ananya Barua…"
+                        replaceContactName(
+                            translate(
+                                "dashboard.callingAnanya",
+                                `Calling ${familyContactName} for ${patientName}...`
+                            )
                         )
                     )
                 }
@@ -831,7 +852,7 @@ function FamilyCard({
 
                 {translate(
                     "dashboard.callAnanya",
-                    "Call Ananya (One-Touch)"
+                    `Call ${familyContactName} (One-Touch)`
                 )}
 
             </button>

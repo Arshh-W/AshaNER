@@ -7,6 +7,15 @@ class UserRegister(BaseModel):
     email: EmailStr
     password: str
     role: str = "caregiver"
+    name: Optional[str] = None
+
+class UserProfile(BaseModel):
+    id: int
+    name: Optional[str] = None
+    email: EmailStr
+    role: str
+    patient_id: Optional[int] = None
+    patient_name: Optional[str] = None
 
 # Patient Schemas
 class PatientCreate(BaseModel):

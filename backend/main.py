@@ -9,6 +9,7 @@ from auth import hash_password, verify_password, create_access_token, get_curren
 from database import init_db, DB_NAME
 from schemas import (
     UserRegister, PatientCreate, PatientResponse,
+    UserProfile,
     SyncBatchRequest, SyncBatchResponse,
     DDAEngineRequest, DDAEngineResponse, GameTypeEnum,
     ReminderConfirmation, VoiceCheckInRequest,
@@ -84,8 +85,8 @@ def register_user(user: UserRegister):
 
     hashed_pwd = hash_password(user.password)
     cursor.execute(
-        "INSERT INTO users (email, hashed_password, role) VALUES (?, ?, ?)",
-        (user.email, hashed_pwd, user.role)
+        "INSERT INTO users (email, hashed_password, role, name) VALUES (?, ?, ?, ?)",
+        (user.email, hashed_pwd, user.role, user.name)
     )
     conn.commit()
     conn.close()
@@ -95,15 +96,86 @@ def register_user(user: UserRegister):
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT hashed_password, role FROM users WHERE email = ?", (form_data.username,))
+    cursor.execute(
+        """
+        SELECT u.id, u.hashed_password, u.role, u.name,
+               p.id, p.full_name
+        FROM users u
+        LEFT JOIN patients p ON p.caregiver_id = u.id
+        WHERE u.email = ?
+        ORDER BY p.id
+        LIMIT 1
+        """,
+        (form_data.username,),
+    )
     row = cursor.fetchone()
     conn.close()
 
-    if not row or not verify_password(form_data.password, row[0]):
+    if not row or not verify_password(form_data.password, row[1]):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
 
-    access_token = create_access_token(data={"sub": form_data.username, "role": row[1]})
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token(data={"sub": form_data.username, "role": row[2]})
+    display_name = row[3] or row[5] or form_data.username.split("@", 1)[0]
+    patient_id = row[4] if row[4] is not None else (row[0] if row[2] == "patient" else None)
+    patient_name = row[5] if row[5] is not None else (display_name if row[2] == "patient" else None)
+
+    if row[3] is None:
+        conn = sqlite3.connect(DB_NAME)
+        conn.execute("UPDATE users SET name = ? WHERE id = ?", (display_name, row[0]))
+        conn.commit()
+        conn.close()
+
+    return {
+        "access_token": access_token,
+        "token": access_token,
+        "token_type": "bearer",
+        "id": row[0],
+        "name": display_name,
+        "patientName": patient_name,
+        "patient_id": patient_id,
+        "role": row[2],
+        "email": form_data.username,
+    }
+
+@app.get("/api/v1/auth/me", response_model=UserProfile, tags=["Authentication"])
+def current_user_profile(current_user: dict = Depends(get_current_user)):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        SELECT u.id, u.name, u.email, u.role,
+               p.id, p.full_name
+        FROM users u
+        LEFT JOIN patients p ON p.caregiver_id = u.id
+        WHERE u.email = ?
+        ORDER BY p.id
+        LIMIT 1
+        """,
+        (current_user["email"],),
+    )
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    display_name = row[1] or row[5] or row[2].split("@", 1)[0]
+    patient_id = row[4] if row[4] is not None else (row[0] if row[3] == "patient" else None)
+    patient_name = row[5] if row[5] is not None else (display_name if row[3] == "patient" else None)
+
+    if row[1] is None:
+        conn = sqlite3.connect(DB_NAME)
+        conn.execute("UPDATE users SET name = ? WHERE id = ?", (display_name, row[0]))
+        conn.commit()
+        conn.close()
+
+    return UserProfile(
+        id=row[0],
+        name=display_name,
+        email=row[2],
+        role=row[3],
+        patient_id=patient_id,
+        patient_name=patient_name,
+    )
 
 # --- Patient Management Routes ---
 @app.post("/api/v1/patients", response_model=PatientResponse, status_code=status.HTTP_201_CREATED, tags=["Patients"])

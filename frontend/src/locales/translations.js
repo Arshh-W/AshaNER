@@ -178,7 +178,7 @@ const english = {
             "Choose a gentle activity and take your time. There is no rush here.",
 
         greeting:
-            "Good morning, Kangkan",
+            "Good morning, {name}",
 
         activityReady:
             "Your 5-minute brain activity is ready.",
@@ -294,7 +294,7 @@ const english = {
             "Sunny in Jorhat, 24°C • Pleasant day for tea",
 
         goodMorning:
-            "Good Morning, Kangkan!",
+            "Good Morning, {name}!",
 
         assameseGreeting:
             "(শুভ বাতিপুৱা)",
@@ -1094,7 +1094,7 @@ const assamese = {
             "এটা সহজ কাৰ্যকলাপ বাছনি কৰক আৰু নিজৰ সময় লওক। ইয়াত কোনো খৰখেদা নাই।",
 
         greeting:
-            "শুভ পুৱা, Kangkan",
+            "শুভ পুৱা, {name}",
 
         activityReady:
             "আপোনাৰ ৫ মিনিটৰ মগজুৰ কাৰ্যকলাপ সাজু।",
@@ -1210,7 +1210,7 @@ const assamese = {
             "যোৰহাটত ৰ'দঘাই, ২৪°C • চাহৰ বাবে মনোৰম দিন",
 
         goodMorning:
-            "শুভ পুৱা, Kangkan!",
+            "শুভ পুৱা, {name}!",
 
         assameseGreeting:
             "(শুভ বাতিপুৱা)",
@@ -2010,7 +2010,7 @@ const bengali = {
             "একটি সহজ কার্যকলাপ বেছে নিন এবং নিজের সময় নিন। এখানে কোনো তাড়া নেই।",
 
         greeting:
-            "সুপ্রভাত, Kangkan",
+            "সুপ্রভাত, {name}",
 
         activityReady:
             "আপনার ৫ মিনিটের মস্তিষ্কের কার্যকলাপ প্রস্তুত।",
@@ -2126,7 +2126,7 @@ const bengali = {
             "যোরহাটে রৌদ্রোজ্জ্বল, ২৪°C • চায়ের জন্য মনোরম দিন",
 
         goodMorning:
-            "সুপ্রভাত, Kangkan!",
+            "সুপ্রভাত, {name}!",
 
         assameseGreeting:
             "(শুভ বাতিপুৱা)",
@@ -2927,7 +2927,7 @@ const manipuri = {
             "ꯁꯦꯡꯕꯥ ꯑꯃꯥ ꯈꯅꯕꯤꯌꯨ ꯑꯃꯁꯨꯡ ꯅꯍꯥꯛꯀꯤ ꯃꯇꯝ ꯂꯣꯏꯅꯥ ꯁꯤꯖꯤꯟꯅꯕꯤꯌꯨ꯫",
 
         greeting:
-            "ꯌꯥꯝꯅꯥ ꯐꯖꯕꯥ ꯅꯨꯃꯤꯠ, Kangkan",
+            "ꯌꯥꯝꯅꯥ ꯐꯖꯕꯥ ꯅꯨꯃꯤꯠ, {name}",
 
         activityReady:
             "ꯅꯍꯥꯛꯀꯤ ꯵ ꯃꯤꯅꯤꯠꯀꯤ ꯕ꯭ꯔꯦꯟ ꯑꯦꯛꯇꯤꯕꯤꯇꯤ ꯁꯦꯝꯁꯤꯜꯂꯦ꯫",
@@ -3043,7 +3043,7 @@ const manipuri = {
             "ꯖꯣꯔꯍꯥꯠꯇꯥ ꯁꯥꯡꯂꯣꯏ, ꯲꯴°C • ꯇꯤ ꯒꯥꯔꯗꯦꯅꯒꯤ ꯌꯥꯝꯅꯥ ꯐꯖꯕꯥ ꯅꯨꯃꯤꯠ",
 
         goodMorning:
-            "ꯌꯥꯝꯅꯥ ꯐꯖꯕꯥ ꯅꯨꯃꯤꯠ, Kangkan!",
+            "ꯌꯥꯝꯅꯥ ꯐꯖꯕꯥ ꯅꯨꯃꯤꯠ, {name}!",
 
         assameseGreeting:
             "(শুভ বাতিপুৱা)",
@@ -3844,7 +3844,7 @@ const mizo = {
             "Activity awlsam pakhat thlang la, i hun duh zat hmang rawh. Hetah hian tih turin tihbuaihna a awm lo.",
 
         greeting:
-            "Tukchhuah tha tak, Kangkan",
+            "Tukchhuah tha tak, {name}",
 
         activityReady:
             "I minute 5 brain activity chu a inpeih tawh.",
@@ -3960,7 +3960,7 @@ const mizo = {
             "Jorhat-ah ni a var, 24°C • Tea atan ni tha tak",
 
         goodMorning:
-            "Tukchhuah tha, Kangkan!",
+            "Tukchhuah tha, {name}!",
 
         assameseGreeting:
             "(Tukchhuah tha)",
@@ -4764,7 +4764,7 @@ const bodo = {
             "मोनसे गोरलै एक्टिभिटि सायख आरो नोंनि सम होनायखौ बाहाय। बेयाव जोंगोन नङा।",
 
         greeting:
-            "फैबाय फिसा, Kangkan",
+            "फैबाय फिसा, {name}",
 
         activityReady:
             "नोंनि 5 मिनिटनि ब्रेन एक्टिभिटि फोसाब जाबाय।",
@@ -4880,7 +4880,7 @@ const bodo = {
             "जोरहाटाव फुं फुं, 24°C • चा थाखाय मोजां दिन",
 
         goodMorning:
-            "फैबाय फिसा, Kangkan!",
+            "फैबाय फिसा, {name}!",
 
         assameseGreeting:
             "(फैबाय फिसा)",

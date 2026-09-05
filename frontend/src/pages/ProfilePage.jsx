@@ -1,7 +1,9 @@
 import { useLanguage } from "../context/LanguageContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function ProfilePage() {
     const { t } = useLanguage();
+    const { user } = useAuth();
 
     return (
         <section className="simple-page">
@@ -11,13 +13,13 @@ export default function ProfilePage() {
 
             <div className="card">
                 <h2>
-                    {t("profile.name", "Grandfather Biren")}
+                    {user?.patientName || user?.name || t("profile.name", "Profile")}
                 </h2>
 
                 <p>
                     {t(
                         "profile.details",
-                        "82 years • Grandfather • Guwahati, Assam"
+                        `${user?.role || ""}${user?.id ? ` • ID ${user.id}` : ""}`
                     )}
                 </p>
             </div>

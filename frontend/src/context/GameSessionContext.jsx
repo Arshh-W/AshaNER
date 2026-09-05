@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 import { queueOperation } from "../services/syncService";
 import { adaptGameDifficulty } from "../services/engineApi";
+import { useAuth } from "./AuthContext";
 
 const Ctx = createContext(null);
 
@@ -14,6 +15,7 @@ export function GameSessionProvider({ children }) {
 	const [engineError, setEngineError] = useState(null);
 	const [isAdapting, setIsAdapting] = useState(false);
 	const sessionRef = useRef(null);
+	const { user } = useAuth();
 
 	const start = useCallback((gameId) => {
 		const nextSession = {
@@ -69,7 +71,8 @@ export function GameSessionProvider({ children }) {
 
 	const complete = useCallback(async () => {
 		const current = sessionRef.current;
-		if (!current || current.completed) return;
+		const patientId = user?.patientId ?? user?.id;
+		if (!current || current.completed || patientId == null) return;
 
 		const completed = {
 			...current,
@@ -84,7 +87,7 @@ export function GameSessionProvider({ children }) {
 			data: {
 				sessions: [{
 					local_session_id: current.local_session_id,
-					patient_id: Number(localStorage.getItem("patientId") || 1),
+					patient_id: Number(patientId),
 					game_type: gameTypeForApi(current.gameId),
 					score: current.score,
 					duration_seconds: (Date.now() - current.startedAt) / 1000,
@@ -95,7 +98,7 @@ export function GameSessionProvider({ children }) {
 				}]
 			}
 		});
-	}, []);
+	}, [user?.patientId, user?.id]);
 
 	const reset = useCallback(() => {
 		sessionRef.current = null;

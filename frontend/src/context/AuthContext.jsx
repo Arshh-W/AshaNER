@@ -1,11 +1,13 @@
 import {
     createContext,
     useContext,
+    useEffect,
     useState
 } from "react";
 
 import api from "../services/api";
 import {
+    getCurrentUser,
     register as registerUser
 } from "../services/authApi";
 
@@ -13,6 +15,20 @@ import {
 const Ctx = createContext(null);
 
 const TOKEN_KEY = "token";
+
+const saveUser = (nextUser) => {
+    localStorage.setItem("user", JSON.stringify(nextUser));
+};
+
+const normalizeUser = (data, fallbackRole = "patient", fallbackEmail = "") => ({
+    id: data?.id ?? data?.user_id ?? null,
+    name: data?.name || data?.patientName || data?.patient_name || data?.fullName || data?.displayName || data?.username || fallbackEmail.split("@", 1)[0] || "Patient",
+    email: data?.email || fallbackEmail,
+    role: data?.role || fallbackRole,
+    patientId: data?.patientId ?? data?.patient_id ?? (data?.role === "patient" ? data?.id : null),
+    patientName: data?.patientName || data?.patient_name || data?.name || data?.fullName || data?.displayName || data?.username || fallbackEmail.split("@", 1)[0] || "Patient",
+    contactName: data?.contactName || data?.contact_name || null
+});
 
 
 /* =========================================================
@@ -22,8 +38,12 @@ const TOKEN_KEY = "token";
 const createUser = (
     role,
     email,
-    name = null
+    name = null,
+    id = null,
+    patientId = null,
+    patientName = null
 ) => ({
+    id,
     name:
         name ||
         (
@@ -36,7 +56,8 @@ const createUser = (
 
     role,
 
-    patientName: "Demo_Patient"
+    patientId,
+    patientName
 });
 
 
@@ -51,6 +72,14 @@ export function AuthProvider({ children }) {
        ===================================================== */
 
     const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem("user");
+        if (savedUser) {
+            try {
+                return JSON.parse(savedUser);
+            } catch {
+                localStorage.removeItem("user");
+            }
+        }
 
         const token =
             localStorage.getItem(TOKEN_KEY);
@@ -74,9 +103,36 @@ export function AuthProvider({ children }) {
         return createUser(
             role,
             email,
-            name
+            name,
+            localStorage.getItem("userId"),
+            localStorage.getItem("patientId"),
+            localStorage.getItem("patientName")
         );
     });
+
+    useEffect(() => {
+        if (!localStorage.getItem(TOKEN_KEY)) return;
+
+        getCurrentUser()
+            .then((profile) => {
+                const nextUser = normalizeUser(profile);
+                setUser(nextUser);
+                saveUser(nextUser);
+                localStorage.setItem("userId", String(profile.id));
+                localStorage.setItem("role", profile.role);
+                localStorage.setItem("email", profile.email);
+                if (profile.name) localStorage.setItem("name", profile.name);
+                if (profile.patient_id != null) {
+                    localStorage.setItem("patientId", String(profile.patient_id));
+                }
+                if (profile.patient_name) {
+                    localStorage.setItem("patientName", profile.patient_name);
+                }
+            })
+            .catch(() => {
+                // Keep the locally restored session when the profile endpoint is unavailable.
+            });
+    }, []);
 
 
     /* =====================================================
@@ -179,6 +235,15 @@ export function AuthProvider({ children }) {
                 data.access_token
             );
 
+            const nextUser = normalizeUser(
+                data,
+                selectedRole,
+                cleanEmail
+            );
+
+            setUser(nextUser);
+            saveUser(nextUser);
+
 
             /*
              * The backend JWT contains the user's actual role.
@@ -199,23 +264,10 @@ export function AuthProvider({ children }) {
             );
 
 
-            localStorage.setItem(
-                "patientId",
-                "1"
-            );
-
 
             /* =================================================
                UPDATE AUTH STATE
                ================================================= */
-
-            setUser(
-                createUser(
-                    selectedRole,
-                    cleanEmail
-                )
-            );
-
 
             return true;
 
@@ -312,7 +364,8 @@ export function AuthProvider({ children }) {
                 await registerUser({
                     email: cleanEmail,
                     password,
-                    role
+                    role,
+                    name: cleanName
                 });
 
 
@@ -371,6 +424,18 @@ export function AuthProvider({ children }) {
 
         localStorage.removeItem(
             "patientId"
+        );
+
+        localStorage.removeItem(
+            "patientName"
+        );
+
+        localStorage.removeItem(
+            "userId"
+        );
+
+        localStorage.removeItem(
+            "user"
         );
 
 

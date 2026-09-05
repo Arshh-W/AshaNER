@@ -159,6 +159,9 @@ def init_db():
     _ensure_columns(cursor, "daily_adherence", {
         "client_event_id": "TEXT",
     })
+    _ensure_columns(cursor, "users", {
+        "name": "TEXT",
+    })
 
     conn.commit()
     conn.close()
