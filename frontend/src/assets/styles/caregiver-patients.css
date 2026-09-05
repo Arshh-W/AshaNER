@@ -1,0 +1,634 @@
+.caregiver-patients-page {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.caregiver-patients-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.caregiver-patients-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 9px;
+
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.caregiver-patients-header h1 {
+    margin: 0;
+
+    font-size: clamp(30px, 4vw, 44px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+}
+
+.caregiver-patients-header p {
+    max-width: 650px;
+    margin: 10px 0 0;
+
+    font-size: 15px;
+    line-height: 1.65;
+    opacity: 0.7;
+}
+
+.caregiver-patients-refresh {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 42px;
+    padding: 0 16px;
+
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+
+    background: transparent;
+
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition:
+        background 160ms ease,
+        transform 160ms ease;
+}
+
+.caregiver-patients-refresh:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.caregiver-patients-refresh:active {
+    transform: translateY(1px);
+}
+
+.caregiver-patients-refresh:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.caregiver-patients-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.caregiver-patients-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 17px 18px;
+
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.caregiver-patients-summary-icon {
+    display: grid;
+    place-items: center;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 11px;
+
+    background: rgba(0, 0, 0, 0.045);
+}
+
+.caregiver-patients-summary-card span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+.caregiver-patients-summary-card strong {
+    display: block;
+
+    font-size: 22px;
+    line-height: 1.1;
+}
+
+
+/* =========================================================
+   TOOLBAR / SEARCH
+   ========================================================= */
+
+.caregiver-patients-toolbar {
+    margin-bottom: 22px;
+}
+
+.caregiver-patients-search {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    min-height: 50px;
+
+    padding: 0 14px;
+
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 13px;
+
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.caregiver-patients-search > svg {
+    flex: 0 0 auto;
+    opacity: 0.5;
+}
+
+.caregiver-patients-search input {
+    width: 100%;
+
+    border: 0;
+    outline: 0;
+    background: transparent;
+
+    font: inherit;
+    font-size: 14px;
+}
+
+.caregiver-patients-search input::placeholder {
+    opacity: 0.5;
+}
+
+.caregiver-patients-search button {
+    flex: 0 0 auto;
+
+    width: 28px;
+    height: 28px;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.06);
+
+    font-size: 20px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.caregiver-patients-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+
+/* =========================================================
+   PATIENT CARD
+   ========================================================= */
+
+.caregiver-patient-card {
+    overflow: hidden;
+
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.035);
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.caregiver-patient-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.07);
+
+    border-color: rgba(0, 0, 0, 0.13);
+}
+
+.caregiver-patient-card-top {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 20px 20px 17px;
+}
+
+.caregiver-patient-avatar {
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    width: 54px;
+    height: 54px;
+
+    border-radius: 15px;
+
+    background: rgba(0, 0, 0, 0.055);
+}
+
+.caregiver-patient-identity {
+    min-width: 0;
+    flex: 1;
+}
+
+.caregiver-patient-identity h2 {
+    overflow: hidden;
+
+    margin: 0 0 4px;
+
+    font-size: 18px;
+    line-height: 1.2;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.caregiver-patient-identity span {
+    font-size: 12px;
+    opacity: 0.55;
+}
+
+.caregiver-patient-status {
+    flex: 0 0 auto;
+
+    padding: 5px 8px;
+
+    border-radius: 999px;
+
+    background: rgba(70, 145, 95, 0.1);
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   DETAILS
+   ========================================================= */
+
+.caregiver-patient-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+
+    padding: 0 20px 17px;
+}
+
+.caregiver-patient-detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+
+    min-width: 0;
+
+    padding: 11px;
+
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.035);
+}
+
+.caregiver-patient-detail > svg {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    opacity: 0.55;
+}
+
+.caregiver-patient-detail div {
+    min-width: 0;
+}
+
+.caregiver-patient-detail span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+.caregiver-patient-detail strong {
+    display: block;
+
+    overflow: hidden;
+
+    font-size: 13px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   RELATIONSHIP
+   ========================================================= */
+
+.caregiver-patient-relationship {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin: 0 20px 17px;
+    padding-top: 13px;
+
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+
+    font-size: 12px;
+}
+
+.caregiver-patient-relationship span {
+    opacity: 0.55;
+}
+
+.caregiver-patient-relationship strong {
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   VIEW BUTTON
+   ========================================================= */
+
+.caregiver-patient-view-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+
+    padding: 14px 20px;
+
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+
+    background: transparent;
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition: background 160ms ease;
+}
+
+.caregiver-patient-view-button:hover {
+    background: rgba(0, 0, 0, 0.035);
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.caregiver-patients-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+
+    margin-bottom: 20px;
+    padding: 17px 18px;
+
+    border: 1px solid rgba(180, 70, 60, 0.18);
+    border-radius: 14px;
+
+    background: rgba(180, 70, 60, 0.055);
+}
+
+.caregiver-patients-error > svg {
+    flex: 0 0 auto;
+    margin-top: 1px;
+}
+
+.caregiver-patients-error strong {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.caregiver-patients-error p {
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.5;
+    opacity: 0.7;
+}
+
+.caregiver-patients-error button {
+    margin-top: 9px;
+
+    padding: 0;
+
+    border: 0;
+    background: transparent;
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: underline;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.caregiver-patients-empty {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    padding: 60px 24px;
+
+    border: 1px dashed rgba(0, 0, 0, 0.14);
+    border-radius: 18px;
+
+    text-align: center;
+}
+
+.caregiver-patients-empty-icon {
+    display: grid;
+    place-items: center;
+
+    width: 60px;
+    height: 60px;
+
+    margin-bottom: 15px;
+
+    border-radius: 17px;
+
+    background: rgba(0, 0, 0, 0.045);
+}
+
+.caregiver-patients-empty h2 {
+    margin: 0 0 8px;
+
+    font-size: 20px;
+}
+
+.caregiver-patients-empty p {
+    max-width: 500px;
+
+    margin: 0;
+
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0.65;
+}
+
+.caregiver-patients-empty button {
+    margin-top: 16px;
+
+    padding: 9px 14px;
+
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 9px;
+
+    background: transparent;
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   SKELETON
+   ========================================================= */
+
+.caregiver-patient-skeleton {
+    display: flex;
+    gap: 13px;
+
+    padding: 20px;
+}
+
+.skeleton-avatar {
+    flex: 0 0 auto;
+
+    width: 54px;
+    height: 54px;
+
+    border-radius: 15px;
+
+    background: rgba(0, 0, 0, 0.07);
+}
+
+.skeleton-content {
+    flex: 1;
+}
+
+.skeleton-line {
+    width: 75%;
+    height: 10px;
+
+    margin-bottom: 10px;
+
+    border-radius: 999px;
+
+    background: rgba(0, 0, 0, 0.07);
+}
+
+.skeleton-line-title {
+    width: 45%;
+    height: 14px;
+}
+
+.skeleton-line-short {
+    width: 35%;
+}
+
+.caregiver-patients-spinning {
+    animation: caregiver-patients-spin 0.8s linear infinite;
+}
+
+@keyframes caregiver-patients-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+    .caregiver-patients-page {
+        padding: 24px 16px 40px;
+    }
+
+    .caregiver-patients-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .caregiver-patients-refresh {
+        width: 100%;
+    }
+
+    .caregiver-patients-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .caregiver-patients-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .caregiver-patient-details {
+        grid-template-columns: 1fr;
+    }
+
+    .caregiver-patient-status {
+        display: none;
+    }
+}

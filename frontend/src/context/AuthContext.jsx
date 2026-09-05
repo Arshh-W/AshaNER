@@ -12,331 +12,187 @@ import {
     register as registerUser
 } from "../services/authApi";
 
-
 const Ctx = createContext(null);
-
 const TOKEN_KEY = "token";
 
-
-/* =========================================================
-   SAVE USER
-   ========================================================= */
-
-const saveUser = (nextUser) => {
-    localStorage.setItem(
-        "user",
-        JSON.stringify(nextUser)
-    );
+const clearStoredAuth = () => {
+    [
+        TOKEN_KEY,
+        "role",
+        "email",
+        "name",
+        "patientId",
+        "patientName",
+        "patientCode",
+        "caregiverCode",
+        "userId",
+        "user"
+    ].forEach((key) => localStorage.removeItem(key));
 };
 
+const saveUser = (nextUser) => {
+    if (!nextUser) {
+        localStorage.removeItem("user");
+        return;
+    }
 
-/* =========================================================
-   NORMALIZE USER
-   ========================================================= */
+    localStorage.setItem("user", JSON.stringify(nextUser));
+
+    if (nextUser.id != null) {
+        localStorage.setItem("userId", String(nextUser.id));
+    }
+
+    if (nextUser.role) {
+        localStorage.setItem("role", nextUser.role);
+    }
+
+    if (nextUser.email) {
+        localStorage.setItem("email", nextUser.email);
+    }
+
+    if (nextUser.name) {
+        localStorage.setItem("name", nextUser.name);
+    }
+
+    if (nextUser.patientId != null) {
+        localStorage.setItem("patientId", String(nextUser.patientId));
+    } else {
+        localStorage.removeItem("patientId");
+    }
+
+    if (nextUser.patientName) {
+        localStorage.setItem("patientName", nextUser.patientName);
+    } else {
+        localStorage.removeItem("patientName");
+    }
+
+    if (nextUser.patientCode) {
+        localStorage.setItem("patientCode", nextUser.patientCode);
+    } else {
+        localStorage.removeItem("patientCode");
+    }
+
+    if (nextUser.caregiverCode) {
+        localStorage.setItem("caregiverCode", nextUser.caregiverCode);
+    } else {
+        localStorage.removeItem("caregiverCode");
+    }
+};
 
 const normalizeUser = (
     data,
     fallbackRole = "patient",
     fallbackEmail = ""
-) => ({
-    id:
-        data?.id ??
-        data?.user_id ??
-        null,
+) => {
+    const role = data?.role || fallbackRole;
 
-    name:
-        data?.name ||
-        data?.patientName ||
-        data?.patient_name ||
-        data?.fullName ||
-        data?.displayName ||
-        data?.username ||
-        fallbackEmail.split("@", 1)[0] ||
-        "Patient",
-
-    email:
-        data?.email ||
-        fallbackEmail,
-
-    role:
-        data?.role ||
-        fallbackRole,
-
-    patientId:
+    const patientId =
         data?.patientId ??
         data?.patient_id ??
-        (
-            data?.role === "patient"
-                ? data?.id
-                : null
-        ),
+        null;
 
-    patientName:
+    const name =
+        data?.name ||
         data?.patientName ||
         data?.patient_name ||
-        data?.name ||
         data?.fullName ||
         data?.displayName ||
         data?.username ||
-        fallbackEmail.split("@", 1)[0] ||
-        "Patient",
+        fallbackEmail.split("@")[0] ||
+        (role === "caregiver" ? "Caregiver" : "Patient");
 
-    contactName:
-        data?.contactName ||
-        data?.contact_name ||
-        null
-});
+    return {
+        id: data?.id ?? data?.user_id ?? null,
+        name,
+        email: data?.email || fallbackEmail,
+        role,
 
+        // IMPORTANT:
+        // patientId comes from the backend patient record.
+        // Never fall back to user id.
+        patientId,
 
-/* =========================================================
-   CREATE USER
-   ========================================================= */
+        patientName:
+            data?.patientName ||
+            data?.patient_name ||
+            (role === "patient" ? name : null),
 
-const createUser = (
-    role,
-    email,
-    name = null,
-    id = null,
-    patientId = null,
-    patientName = null
-) => ({
-    id,
+        patientCode:
+            data?.patientCode ||
+            data?.patient_code ||
+            null,
 
-    name:
-        name ||
-        (
-            role === "caregiver"
-                ? "Caregiver"
-                : "Patient"
-        ),
+        caregiverCode:
+            data?.caregiverCode ||
+            data?.caregiver_code ||
+            null
+    };
+};
 
-    email,
+const createUserFromStorage = () => {
+    const savedUser = localStorage.getItem("user");
 
-    role,
+    if (savedUser) {
+        try {
+            return JSON.parse(savedUser);
+        } catch {
+            localStorage.removeItem("user");
+        }
+    }
 
-    patientId,
+    const token = localStorage.getItem(TOKEN_KEY);
 
-    patientName
-});
+    if (!token) {
+        return null;
+    }
 
+    const role = localStorage.getItem("role") || "patient";
+    const email = localStorage.getItem("email") || "";
+    const name = localStorage.getItem("name") || null;
 
-/* =========================================================
-   AUTH PROVIDER
-   ========================================================= */
+    return normalizeUser(
+        {
+            id: localStorage.getItem("userId"),
+            name,
+            email,
+            role,
+            patient_id: localStorage.getItem("patientId"),
+            patient_name: localStorage.getItem("patientName"),
+            patient_code: localStorage.getItem("patientCode"),
+            caregiver_code: localStorage.getItem("caregiverCode")
+        },
+        role,
+        email
+    );
+};
 
 export function AuthProvider({ children }) {
+    const [user, setUser] = useState(createUserFromStorage);
 
-    /* =====================================================
-       RESTORE LOGIN SESSION
-       ===================================================== */
-
-    const [user, setUser] = useState(() => {
-
-        const savedUser =
-            localStorage.getItem("user");
-
-        if (savedUser) {
-            try {
-                return JSON.parse(savedUser);
-            } catch {
-                localStorage.removeItem("user");
-            }
-        }
-
-        const token =
-            localStorage.getItem(TOKEN_KEY);
-
-        if (!token) {
-            return null;
-        }
-
-        const role =
-            localStorage.getItem("role") ||
-            "patient";
-
-        const email =
-            localStorage.getItem("email") ||
-            "";
-
-        const name =
-            localStorage.getItem("name") ||
-            null;
-
-        return createUser(
-            role,
-            email,
-            name,
-            localStorage.getItem("userId"),
-            localStorage.getItem("patientId"),
-            localStorage.getItem("patientName")
-        );
-    });
-
-
-    /* =====================================================
-       RESTORE CURRENT USER FROM BACKEND
-       ===================================================== */
-
-    useEffect(() => {
-
-        if (!localStorage.getItem(TOKEN_KEY)) {
-            return;
-        }
-
-        getCurrentUser()
-            .then((profile) => {
-
-                const nextUser =
-                    normalizeUser(profile);
-
-                setUser(nextUser);
-                saveUser(nextUser);
-
-                if (profile.id != null) {
-                    localStorage.setItem(
-                        "userId",
-                        String(profile.id)
-                    );
-                }
-
-                if (profile.role) {
-                    localStorage.setItem(
-                        "role",
-                        profile.role
-                    );
-                }
-
-                if (profile.email) {
-                    localStorage.setItem(
-                        "email",
-                        profile.email
-                    );
-                }
-
-                if (profile.name) {
-                    localStorage.setItem(
-                        "name",
-                        profile.name
-                    );
-                }
-
-                if (profile.patient_id != null) {
-                    localStorage.setItem(
-                        "patientId",
-                        String(profile.patient_id)
-                    );
-                }
-
-                if (profile.patient_name) {
-                    localStorage.setItem(
-                        "patientName",
-                        profile.patient_name
-                    );
-                }
-
-            })
-            .catch((error) => {
-
-                console.warn(
-                    "Unable to restore current user:",
-                    error
-                );
-
-                /*
-                 * Keep the locally restored session.
-                 * This is important for offline usage.
-                 */
-            });
-
-    }, []);
-
-
-    /* =====================================================
-       STATE
-       ===================================================== */
-
-    const [authError, setAuthError] =
-        useState(null);
-
-    const [isLoggingIn, setIsLoggingIn] =
-        useState(false);
-
-    const [isRegistering, setIsRegistering] =
-        useState(false);
-
-
-    /* =====================================================
-       UPDATE USER FROM BACKEND
-       ===================================================== */
+    const [authError, setAuthError] = useState(null);
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
+    const [isRegistering, setIsRegistering] = useState(false);
 
     const refreshUserProfile = async (
-        fallbackRole = "patient",
-        fallbackEmail = ""
+        fallbackRole = user?.role || "patient",
+        fallbackEmail = user?.email || ""
     ) => {
-
         try {
+            const profile = await getCurrentUser();
 
-            const profile =
-                await getCurrentUser();
-
-            const nextUser =
-                normalizeUser(
-                    profile,
-                    fallbackRole,
-                    fallbackEmail
-                );
+            const nextUser = normalizeUser(
+                profile,
+                fallbackRole,
+                fallbackEmail
+            );
 
             setUser(nextUser);
             saveUser(nextUser);
 
-            if (profile.id != null) {
-                localStorage.setItem(
-                    "userId",
-                    String(profile.id)
-                );
-            }
-
-            if (profile.role) {
-                localStorage.setItem(
-                    "role",
-                    profile.role
-                );
-            }
-
-            if (profile.email) {
-                localStorage.setItem(
-                    "email",
-                    profile.email
-                );
-            }
-
-            if (profile.name) {
-                localStorage.setItem(
-                    "name",
-                    profile.name
-                );
-            }
-
-            if (profile.patient_id != null) {
-                localStorage.setItem(
-                    "patientId",
-                    String(profile.patient_id)
-                );
-            }
-
-            if (profile.patient_name) {
-                localStorage.setItem(
-                    "patientName",
-                    profile.patient_name
-                );
-            }
-
             return nextUser;
-
         } catch (error) {
-
             console.warn(
-                "Unable to fetch current user profile:",
+                "Unable to fetch current AshaNER user profile:",
                 error
             );
 
@@ -344,25 +200,29 @@ export function AuthProvider({ children }) {
         }
     };
 
+    useEffect(() => {
+        if (!localStorage.getItem(TOKEN_KEY)) {
+            return;
+        }
 
-    /* =====================================================
-       LOGIN
-       ===================================================== */
+        refreshUserProfile(
+            localStorage.getItem("role") || "patient",
+            localStorage.getItem("email") || ""
+        );
+        // Restore only once when AuthProvider mounts.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const login = async (
         email,
         password,
         selectedRole
     ) => {
-
         setIsLoggingIn(true);
         setAuthError(null);
 
         try {
-
-            const cleanEmail =
-                email.trim().toLowerCase();
-
+            const cleanEmail = email.trim().toLowerCase();
 
             if (!cleanEmail || !password) {
                 throw new Error(
@@ -370,47 +230,26 @@ export function AuthProvider({ children }) {
                 );
             }
 
+            if (
+                selectedRole !== "patient" &&
+                selectedRole !== "caregiver"
+            ) {
+                throw new Error("Invalid account type.");
+            }
 
-            /*
-             * FastAPI OAuth2PasswordRequestForm
-             * requires application/x-www-form-urlencoded.
-             */
+            // Prevent stale patient/caregiver information from leaking
+            // into the next session.
+            clearStoredAuth();
 
-            const formData =
-                new URLSearchParams();
+            const formData = new URLSearchParams();
 
-            formData.append(
-                "username",
-                cleanEmail
+            formData.append("username", cleanEmail);
+            formData.append("password", password);
+
+            const data = await api.post(
+                "/auth/login",
+                formData
             );
-
-            formData.append(
-                "password",
-                password
-            );
-
-
-            console.log(
-                "Attempting AshaNER login:",
-                {
-                    email: cleanEmail,
-                    role: selectedRole
-                }
-            );
-
-
-            const data =
-                await api.post(
-                    "/auth/login",
-                    formData
-                );
-
-
-            console.log(
-                "AshaNER login response:",
-                data
-            );
-
 
             if (!data?.access_token) {
                 throw new Error(
@@ -418,279 +257,195 @@ export function AuthProvider({ children }) {
                 );
             }
 
-
-            /* =================================================
-               SAVE TOKEN
-               ================================================= */
+            // The backend is the authority for the actual role.
+            if (
+                data.role &&
+                data.role !== selectedRole
+            ) {
+                throw new Error(
+                    `This account is registered as ${data.role}, not ${selectedRole}.`
+                );
+            }
 
             localStorage.setItem(
                 TOKEN_KEY,
                 data.access_token
             );
 
-
-            /*
-             * Create a temporary local user first.
-             *
-             * The real patient ID will be retrieved from
-             * /auth/me immediately below.
-             */
-
-            const temporaryUser =
-                normalizeUser(
-                    data,
-                    selectedRole,
-                    cleanEmail
-                );
+            const temporaryUser = normalizeUser(
+                data,
+                selectedRole,
+                cleanEmail
+            );
 
             setUser(temporaryUser);
             saveUser(temporaryUser);
 
-
-            localStorage.setItem(
-                "role",
-                selectedRole
-            );
-
-            localStorage.setItem(
-                "email",
+            const profile = await refreshUserProfile(
+                selectedRole,
                 cleanEmail
             );
 
+            if (!profile) {
+                // Keep the valid authenticated session for
+                // offline-friendly behavior.
+                return true;
+            }
 
-            /* =================================================
-               FETCH ACTUAL USER PROFILE
-               ================================================= */
+            if (profile.role !== selectedRole) {
+                clearStoredAuth();
+                setUser(null);
 
-            /*
-             * IMPORTANT:
-             *
-             * The original code only called /auth/me when
-             * AuthProvider mounted.
-             *
-             * That meant a newly logged-in patient could
-             * have no patientId until the next page refresh.
-             *
-             * We now fetch /auth/me immediately after login.
-             */
-
-            const profile =
-                await refreshUserProfile(
-                    selectedRole,
-                    cleanEmail
-                );
-
-
-            /*
-             * If /auth/me succeeded, make sure we actually
-             * have the patient information before continuing.
-             */
-
-            if (profile) {
-
-                console.log(
-                    "Authenticated AshaNER user:",
-                    profile
-                );
-
-                console.log(
-                    "AshaNER patient ID:",
-                    profile.patientId
-                );
-
-            } else {
-
-                /*
-                 * Keep the login successful even if /auth/me
-                 * temporarily fails.
-                 *
-                 * This preserves offline-friendly behavior.
-                 */
-                console.warn(
-                    "Login succeeded, but the user profile could not be loaded."
+                throw new Error(
+                    `This account is registered as ${profile.role}, not ${selectedRole}.`
                 );
             }
 
-
             return true;
-
         } catch (error) {
-
             console.error(
                 "AshaNER login failed:",
                 error
             );
 
+            clearStoredAuth();
+            setUser(null);
 
-            const message =
+            setAuthError(
+                error?.response?.data?.detail ||
                 error?.message ||
-                "Incorrect email or password.";
-
-            setAuthError(message);
+                "Incorrect email or password."
+            );
 
             return false;
-
         } finally {
-
             setIsLoggingIn(false);
         }
     };
 
-
-    /* =====================================================
-       REGISTER
-       ===================================================== */
-
-    const register = async (
-        name,
-        email,
-        password,
-        role
-    ) => {
-
+    const register = async (registrationData, legacyEmail, legacyPassword, legacyRole) => {
         setIsRegistering(true);
         setAuthError(null);
 
         try {
+            let payload;
 
-            const cleanName =
-                name.trim();
-
-            const cleanEmail =
-                email.trim().toLowerCase();
-
-
-            if (!cleanName) {
-                throw new Error(
-                    "Please enter your full name."
-                );
+            // Supports the old register(name, email, password, role)
+            // signature while allowing the new detailed patient payload.
+            if (
+                registrationData &&
+                typeof registrationData === "object" &&
+                !Array.isArray(registrationData)
+            ) {
+                payload = {
+                    ...registrationData
+                };
+            } else {
+                payload = {
+                    name: String(registrationData || "").trim(),
+                    email: String(legacyEmail || "").trim().toLowerCase(),
+                    password: legacyPassword,
+                    role: legacyRole
+                };
             }
 
+            payload.name = String(payload.name || "").trim();
+            payload.email = String(payload.email || "")
+                .trim()
+                .toLowerCase();
 
-            if (!cleanEmail) {
+            if (!payload.name) {
+                throw new Error("Please enter your full name.");
+            }
+
+            if (!payload.email) {
                 throw new Error(
                     "Please enter your email address."
                 );
             }
 
+            if (!payload.password) {
+                throw new Error("Please enter a password.");
+            }
 
-            if (!password) {
+            if (
+                payload.role !== "patient" &&
+                payload.role !== "caregiver"
+            ) {
+                throw new Error("Invalid account type.");
+            }
+
+            if (payload.password.length < 8) {
                 throw new Error(
-                    "Please enter a password."
+                    "Password must be at least 8 characters."
                 );
             }
 
+            if (payload.role === "patient") {
+                const requiredPatientFields = [
+                    ["date_of_birth", "date of birth"],
+                    ["gender", "gender"],
+                    ["phone", "phone number"],
+                    ["address", "address"],
+                    ["city", "city"],
+                    ["district", "district"],
+                    ["state", "state"],
+                    ["preferred_language", "preferred language"]
+                ];
 
-            /*
-             * Keep the existing registration behavior.
-             *
-             * The backend's important authentication fields
-             * are email, password and role.
-             */
+                const missing = requiredPatientFields.find(
+                    ([key]) => !String(payload[key] || "").trim()
+                );
 
-            const data =
-                await registerUser({
-                    email: cleanEmail,
-                    password,
-                    role,
-                    name: cleanName
-                });
+                if (missing) {
+                    throw new Error(
+                        `Please provide your ${missing[1]}.`
+                    );
+                }
+            }
 
+            const data = await registerUser(payload);
 
             console.log(
                 "AshaNER registration successful:",
                 data
             );
 
-
             return true;
-
         } catch (error) {
-
             console.error(
                 "AshaNER registration failed:",
                 error
             );
 
-
             setAuthError(
+                error?.response?.data?.detail ||
                 error?.message ||
                 "Unable to create your account. Please try again."
             );
 
             return false;
-
         } finally {
-
             setIsRegistering(false);
         }
     };
 
-
-    /* =====================================================
-       LOGOUT
-       ===================================================== */
-
     const logout = () => {
-
-        localStorage.removeItem(
-            TOKEN_KEY
-        );
-
-        localStorage.removeItem(
-            "role"
-        );
-
-        localStorage.removeItem(
-            "email"
-        );
-
-        localStorage.removeItem(
-            "name"
-        );
-
-        localStorage.removeItem(
-            "patientId"
-        );
-
-        localStorage.removeItem(
-            "patientName"
-        );
-
-        localStorage.removeItem(
-            "userId"
-        );
-
-        localStorage.removeItem(
-            "user"
-        );
-
+        clearStoredAuth();
         setUser(null);
         setAuthError(null);
     };
-
-
-    /* =====================================================
-       PROVIDER
-       ===================================================== */
 
     return (
         <Ctx.Provider
             value={{
                 user,
-
                 login,
-
                 register,
-
                 logout,
-
                 authError,
-
                 isLoggingIn,
-
                 isRegistering,
-
                 refreshUserProfile
             }}
         >
@@ -699,10 +454,4 @@ export function AuthProvider({ children }) {
     );
 }
 
-
-/* =========================================================
-   USE AUTH
-   ========================================================= */
-
-export const useAuth = () =>
-    useContext(Ctx);
+export const useAuth = () => useContext(Ctx);

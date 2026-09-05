@@ -1,7 +1,7 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { AppRoutes } from "./routes/AppRoutes";
-
 import { AuthProvider } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { OfflineProvider } from "./context/OfflineContext";
@@ -9,17 +9,22 @@ import { GameSessionProvider } from "./context/GameSessionContext";
 
 import AshaNERLogoAnimation from "./components/common/AshaNERLogoAnimation";
 import LoadingScreen from "./components/common/LoadingScreen";
-import Navbar from "./components/common/Navbar";
-
 
 export default function App() {
-    const isSplashPage =
-        window.location.pathname === "/" ||
-        window.location.pathname === "";
+    const { pathname } = useLocation();
+    const isSplashPage = pathname === "/";
 
     const [startupStage, setStartupStage] = useState(
         isSplashPage ? "logo" : "ready"
     );
+
+    useEffect(() => {
+        if (isSplashPage) {
+            setStartupStage("logo");
+        } else {
+            setStartupStage("ready");
+        }
+    }, [isSplashPage]);
 
     const handleLogoComplete = useCallback(() => {
         setStartupStage("loading");
@@ -31,29 +36,14 @@ export default function App() {
 
     return (
         <AuthProvider>
-
             <LanguageProvider>
-
                 <OfflineProvider>
-
                     <GameSessionProvider>
-
-                        {/* =================================================
-                            STARTUP ANIMATION
-                            Only runs on "/"
-                           ================================================= */}
-
                         {isSplashPage && startupStage === "logo" && (
                             <AshaNERLogoAnimation
                                 onComplete={handleLogoComplete}
                             />
                         )}
-
-
-                        {/* =================================================
-                            LOADING SCREEN
-                            Only runs on "/"
-                           ================================================= */}
 
                         {isSplashPage && startupStage === "loading" && (
                             <LoadingScreen
@@ -63,25 +53,13 @@ export default function App() {
                             />
                         )}
 
-
-                        {/* =================================================
-                            APPLICATION
-                            Immediately available on every other route
-                           ================================================= */}
-
-                        {(!isSplashPage || startupStage === "ready") && (
-                            <>
-                                <Navbar />
-                                <AppRoutes />
-                            </>
+                        {(!isSplashPage ||
+                            startupStage === "ready") && (
+                            <AppRoutes />
                         )}
-
                     </GameSessionProvider>
-
                 </OfflineProvider>
-
             </LanguageProvider>
-
         </AuthProvider>
     );
 }

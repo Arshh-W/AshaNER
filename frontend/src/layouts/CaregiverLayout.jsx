@@ -1,1 +1,96 @@
-import {Outlet} from "react-router-dom";import PageHeader from "../components/common/PageHeader";import {NavLink} from "react-router-dom";import {Home,Brain,Users,PhoneCall} from "lucide-react";export default function CaregiverLayout(){return <div className="app-shell"><PageHeader/><main className="page-wrap"><Outlet/></main><nav className="bottom-nav"><NavLink to="/patient"><Home/>Home & Routine</NavLink><NavLink to="/patient/games"><Brain/>Brain Games</NavLink><NavLink className="active" to="/caregiver"><Users/>Caregiver Hub</NavLink><button className="sos-nav" onClick={()=>alert("Emergency call initiated.")}><PhoneCall/>Emergency SOS</button></nav></div>}
+import { useEffect } from "react";
+import {
+    NavLink,
+    Outlet,
+    useNavigate
+} from "react-router-dom";
+import {
+    FileText,
+    LayoutDashboard,
+    LogOut,
+    Settings,
+    Users
+} from "lucide-react";
+import PageHeader from "../components/common/PageHeader";
+import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
+
+export default function CaregiverLayout() {
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
+    const { t } = useLanguage();
+
+    useEffect(() => {
+        if (!user || user.role !== "caregiver") {
+            navigate("/login/caregiver", { replace: true });
+        }
+    }, [user, navigate]);
+
+    if (!user || user.role !== "caregiver") {
+        return null;
+    }
+
+    const handleLogout = () => {
+        logout();
+        navigate("/login/caregiver", { replace: true });
+    };
+
+    return (
+        <div className="app-shell caregiver-shell">
+            <PageHeader />
+            <main className="page-wrap">
+                <Outlet />
+            </main>
+
+            <nav className="bottom-nav caregiver-bottom-nav">
+                <NavLink to="/caregiver" end>
+                    <LayoutDashboard />
+                    <span>
+                        {t(
+                            "caregiverDashboard.overview",
+                            "Overview"
+                        )}
+                    </span>
+                </NavLink>
+
+                <NavLink to="/caregiver/patients">
+                    <Users />
+                    <span>
+                        {t(
+                            "caregiverDashboard.patients",
+                            "Patients"
+                        )}
+                    </span>
+                </NavLink>
+
+                <NavLink to="/caregiver/reports">
+                    <FileText />
+                    <span>
+                        {t(
+                            "caregiverDashboard.reports",
+                            "Reports"
+                        )}
+                    </span>
+                </NavLink>
+
+                <NavLink to="/caregiver/settings">
+                    <Settings />
+                    <span>
+                        {t("navbar.settings", "Settings")}
+                    </span>
+                </NavLink>
+
+                <button
+                    type="button"
+                    className="bottom-nav-logout"
+                    onClick={handleLogout}
+                >
+                    <LogOut />
+                    <span>
+                        {t("common.logout", "Log out")}
+                    </span>
+                </button>
+            </nav>
+        </div>
+    );
+}

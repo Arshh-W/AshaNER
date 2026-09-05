@@ -11,6 +11,7 @@ import ProfilePage from "../pages/ProfilePage";
 import SettingsPage from "../pages/SettingsPage";
 
 import CaregiverDashboard from "../pages/CaregiverDashboard";
+import PatientsPage from "../pages/patients";
 
 import OfflinePage from "../pages/OfflinePage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -79,12 +80,12 @@ export function AppRoutes() {
 
             {/* =====================================================
                 PATIENT AREA
-                DEVELOPMENT BYPASS ENABLED
+                PATIENT ROLE ONLY
             ===================================================== */}
 
             <Route
                 element={
-                    <ProtectedRoute devBypass={true}>
+                    <ProtectedRoute role="patient">
                         <PatientLayout />
                     </ProtectedRoute>
                 }
@@ -125,23 +126,27 @@ export function AppRoutes() {
 
             {/* =====================================================
                 CAREGIVER AREA
-                DEVELOPMENT BYPASS ENABLED
+                CAREGIVER ROLE ONLY
             ===================================================== */}
 
             <Route
                 element={
-                    <ProtectedRoute
-                        role="caregiver"
-                        devBypass={true}
-                    >
+                    <ProtectedRoute role="caregiver">
                         <CaregiverLayout />
                     </ProtectedRoute>
                 }
             >
 
+                {/* /caregiver */}
                 <Route
                     path="caregiver"
                     element={<CaregiverDashboard />}
+                />
+
+                {/* /caregiver/patients */}
+                <Route
+                    path="caregiver/patients"
+                    element={<PatientsPage />}
                 />
 
             </Route>
