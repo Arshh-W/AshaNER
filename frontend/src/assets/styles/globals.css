@@ -4220,6 +4220,75 @@ button:active {
         display: none;
     }
 }
+.navbar {
+    width: 100%;
+    position: relative;
+    z-index: 1000;
+    background: #f8f4ed;
+    border-bottom: 1px solid rgba(22, 79, 56, 0.12);
+}
+
+.navbar-container {
+    width: min(1200px, calc(100% - 40px));
+    min-height: 76px;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.navbar-brand img {
+    width: auto;
+    height: 48px;
+    display: block;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.navbar-links a {
+    color: #164f38;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    transition: opacity 0.2s ease;
+}
+
+.navbar-links a:hover {
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .navbar-container {
+        width: min(100% - 24px, 1200px);
+        min-height: 68px;
+        gap: 16px;
+    }
+
+    .navbar-brand img {
+        height: 40px;
+    }
+
+    .navbar-links {
+        gap: 14px;
+    }
+
+    .navbar-links a {
+        font-size: 13px;
+    }
+}
 
 
 /* =========================================================

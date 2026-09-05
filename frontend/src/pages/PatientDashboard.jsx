@@ -1,8 +1,8 @@
 import { useState } from "react";
+
 import {
     CheckCircle2,
     Droplets,
-    Heart,
     PhoneCall,
     Brain,
     Sun
@@ -15,100 +15,200 @@ import VoiceHelp from "../components/common/VoiceHelp";
 import AudioPrompt from "../components/common/AudioPrompt";
 
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
+
 
 export default function PatientDashboard() {
+    const { t } = useLanguage();
+    const navigate = useNavigate();
+
+    useWebSpeech();
+
+
+    /* =====================================================
+       TRANSLATION HELPER
+    ===================================================== */
+
+    const translate = (key, fallback) => {
+        const translated = t(key);
+
+        if (!translated || translated === key) {
+            return fallback;
+        }
+
+        return translated;
+    };
+
+
+    /* =====================================================
+       ROUTINE DATA
+    ===================================================== */
+
     const [items, setItems] = useState(
         mockRoutines.map((routine) => ({
             ...routine,
             status: "pending",
+
             time:
                 routine.id === "routine-001"
                     ? "10:30 AM"
                     : routine.id === "routine-002"
                         ? "11:00 AM"
                         : "8:30 PM",
+
             detail: routine.description
         }))
     );
 
+
+    /* =====================================================
+       WATER TRACKER
+    ===================================================== */
+
     const [water, setWater] = useState(3);
 
-    const navigate = useNavigate();
 
-    const { speak } = useWebSpeech();
+    /* =====================================================
+       MARK ROUTINE AS TAKEN
+    ===================================================== */
 
     const take = (id) => {
         setItems((currentItems) =>
             currentItems.map((item) =>
                 item.id === id
                     ? {
-                          ...item,
-                          status: "done"
-                      }
+                        ...item,
+                        status: "done"
+                    }
                     : item
             )
         );
     };
 
+
     return (
         <div className="patient">
 
-            {/* MORNING ORIENTATION */}
+            {/* =================================================
+                MORNING ORIENTATION
+            ================================================= */}
+
             <section className="orientation card">
+
                 <div>
+
                     <span className="eyebrow">
-                        <Sun size={15} />
-                        Sunny in Jorhat, 24°C • Pleasant day for tea
+
+                        <span>
+                            <Sun size={15} />
+                        </span>
+
+                        {translate(
+                            "dashboard.weather",
+                            "Sunny in Jorhat, 24°C • Pleasant day for tea"
+                        )}
+
                     </span>
 
+
                     <h1>
-                        Good Morning, Kangkan!
+
+                        {translate(
+                            "dashboard.goodMorning",
+                            "Good Morning, Kangkan!"
+                        )}
+
                         <em>
-                            (শুভ বাতিপুৱা)
+                            {translate(
+                                "dashboard.assameseGreeting",
+                                "(শুভ বাতিপুৱা)"
+                            )}
                         </em>
+
                     </h1>
 
+
                     <div className="time-line">
+
                         <strong>
                             10:15 AM
                         </strong>
 
                         <span>
-                            Wednesday, 4 October
+                            {translate(
+                                "dashboard.date",
+                                "Wednesday, 4 October"
+                            )}
                         </span>
+
                     </div>
+
                 </div>
 
+
                 <AudioPrompt>
-                    Listen to Morning Briefing
+                    {translate(
+                        "dashboard.morningBriefing",
+                        "Listen to Morning Briefing"
+                    )}
                 </AudioPrompt>
+
             </section>
 
-            {/* CARE SCHEDULE */}
+
+            {/* =================================================
+                CARE SCHEDULE
+            ================================================= */}
+
             <div className="section-heading">
+
                 <h2>
-                    Today's Care Schedule
+                    {translate(
+                        "dashboard.careSchedule",
+                        "Today's Care Schedule"
+                    )}
                 </h2>
 
+
                 <span className="count-chip">
+
                     {
                         items.filter(
                             (item) =>
                                 item.status !== "done"
                         ).length
-                    }{" "}
-                    Actions Pending
+                    }
+
+                    {" "}
+
+                    {translate(
+                        "dashboard.actionsPending",
+                        "Actions Pending"
+                    )}
+
                 </span>
+
             </div>
 
+
+            {/* =================================================
+                ROUTINE CARDS
+            ================================================= */}
+
             <section className="routine-grid">
+
+                {/* MORNING ROUTINE */}
 
                 <RoutineCard
                     item={items[0]}
                     onTake={() =>
                         take(items[0]?.id)
                     }
+                    translate={translate}
                 />
+
+
+                {/* WATER TRACKER */}
 
                 <WaterCard
                     value={water}
@@ -121,61 +221,134 @@ export default function PatientDashboard() {
                                 )
                         )
                     }
+                    translate={translate}
                 />
 
-                <FamilyCard />
+
+                {/* FAMILY VISIT */}
+
+                <FamilyCard
+                    translate={translate}
+                />
 
             </section>
 
-            {/* BRAIN GAME */}
+
+            {/* =================================================
+                BRAIN GAME
+            ================================================= */}
+
             <section className="brain-hero card">
 
                 <div>
+
                     <span className="streak">
-                        ✦ Streak: 4 Days Active
+
+                        ✦{" "}
+
+                        {translate(
+                            "dashboard.streak",
+                            "Streak: 4 Days Active"
+                        )}
+
                     </span>
 
+
                     <small>
-                        Daily Gentle Recall
+                        {translate(
+                            "dashboard.dailyGentleRecall",
+                            "Daily Gentle Recall"
+                        )}
                     </small>
 
+
                     <h2>
-                        Today's Brain Puzzle:
-                        Kaziranga & Tea Garden
-                        Pattern Match
+
+                        {translate(
+                            "dashboard.brainPuzzle",
+                            "Today's Brain Puzzle:"
+                        )}
+
+                        {" "}
+
+                        {translate(
+                            "dashboard.kazirangaTea",
+                            "Kaziranga & Tea Garden"
+                        )}
+
+                        {" "}
+
+                        {translate(
+                            "dashboard.patternMatch",
+                            "Pattern Match"
+                        )}
+
                     </h2>
 
+
                     <p>
-                        Gentle 5-minute memory
-                        exercise to stimulate recall.
-                        Match serene regional flora,
-                        birds, and tea plantation
-                        memories. No rush, take all
-                        the time you need.
+                        {translate(
+                            "dashboard.brainDescription",
+                            "Gentle 5-minute memory exercise to stimulate recall. Match serene regional flora, birds, and tea plantation memories. No rush, take all the time you need."
+                        )}
                     </p>
 
+
                     <div className="meta">
-                        <span>
-                            ◷ 5 Minutes
-                        </span>
 
                         <span>
-                            ◉ Relaxed Pace
+
+                            ◷{" "}
+
+                            {translate(
+                                "dashboard.fiveMinutes",
+                                "5 Minutes"
+                            )}
+
                         </span>
 
+
                         <span>
-                            অসমীয়া সহজ সহায়ক
+
+                            ◉{" "}
+
+                            {translate(
+                                "dashboard.relaxedPace",
+                                "Relaxed Pace"
+                            )}
+
                         </span>
+
+
+                        <span>
+
+                            {translate(
+                                "dashboard.assameseSupport",
+                                "অসমীয়া সহজ সহায়ক"
+                            )}
+
+                        </span>
+
                     </div>
+
                 </div>
+
 
                 <div className="puzzle-art">
 
                     <div className="tea-land">
+
                         🌿
+
                         <br />
-                        Tea Garden
+
+                        {translate(
+                            "dashboard.teaGarden",
+                            "Tea Garden"
+                        )}
+
                     </div>
+
 
                     <button
                         type="button"
@@ -186,56 +359,94 @@ export default function PatientDashboard() {
                             )
                         }
                     >
+
                         <Brain />
-                        Play Brain Game
+
+                        {translate(
+                            "dashboard.playBrainGame",
+                            "Play Brain Game"
+                        )}
+
                     </button>
 
                 </div>
 
             </section>
 
-            {/* HELP */}
+
+            {/* =================================================
+                EMERGENCY HELP
+            ================================================= */}
+
             <section className="help-card card">
 
                 <div className="sos-dot">
                     SOS
                 </div>
 
+
                 <div>
+
                     <b>
-                        Need help right away?
+                        {translate(
+                            "dashboard.needHelp",
+                            "Need help right away?"
+                        )}
                     </b>
 
+
                     <p>
-                        One tap connects directly
-                        to Daughter Ananya or a
-                        local ASHA Health Worker
-                        Bina Gogoi.
+                        {translate(
+                            "dashboard.helpDescription",
+                            "One tap connects directly to Daughter Ananya or a local ASHA Health Worker Bina Gogoi."
+                        )}
                     </p>
+
                 </div>
 
+
                 <AudioPrompt>
-                    Say “Hey Asha”
+                    {translate(
+                        "dashboard.sayHeyAsha",
+                        "Say “Hey Asha”"
+                    )}
                 </AudioPrompt>
+
 
                 <button
                     type="button"
                     className="coral-btn"
                     onClick={() =>
                         alert(
-                            "Calling Ananya Barua…"
+                            translate(
+                                "dashboard.callingAnanya",
+                                "Calling Ananya Barua…"
+                            )
                         )
                     }
                 >
+
                     <PhoneCall />
-                    Call ASHA Bina
+
+                    {translate(
+                        "dashboard.callAsha",
+                        "Call ASHA Bina"
+                    )}
+
                 </button>
 
             </section>
 
-            {/* VOICE HELP */}
+
+            {/* =================================================
+                VOICE HELP
+            ================================================= */}
+
             <VoiceHelp
-                text="Would you like to search for the Bamboo Jaapi hat, Biren?"
+                text={translate(
+                    "dashboard.voiceHelp",
+                    "Would you like to search for the Bamboo Jaapi hat, Biren?"
+                )}
             />
 
         </div>
@@ -243,17 +454,81 @@ export default function PatientDashboard() {
 }
 
 
-/* ============================= */
-/* ROUTINE CARD                   */
-/* ============================= */
+/* =========================================================
+   ROUTINE CARD
+========================================================= */
 
 function RoutineCard({
     item,
-    onTake
+    onTake,
+    translate
 }) {
+
     if (!item) {
         return null;
     }
+
+
+    /*
+       Translate routine content by ID instead of displaying
+       the English strings directly from mockRoutines.
+    */
+
+    const routineContent = {
+
+        "routine-001": {
+
+            title: translate(
+                "dashboard.morningRoutine",
+                "Morning Routine"
+            ),
+
+            detail: translate(
+                "dashboard.morningRoutineDescription",
+                "A simple sequence of familiar activities to begin the day."
+            )
+
+        },
+
+
+        "routine-002": {
+
+            title: translate(
+                "dashboard.warmWaterGlass",
+                "Warm Water Glass"
+            ),
+
+            detail: translate(
+                "dashboard.hydrationDescription",
+                "Stay hydrated for healthy blood flow. Aim for 6 glasses today."
+            )
+
+        },
+
+
+        "routine-003": {
+
+            title: translate(
+                "dashboard.familyVisit",
+                "Family Visit"
+            ),
+
+            detail: translate(
+                "dashboard.familyVisitDescription",
+                "Visiting home today with fresh Assam pitha snacks"
+            )
+
+        }
+
+    };
+
+
+    const content =
+        routineContent[item.id] || {
+            title: item.title,
+            detail: item.detail
+        };
+
 
     return (
         <article className="routine-card card">
@@ -261,8 +536,16 @@ function RoutineCard({
             <div className="routine-top">
 
                 <span className="tag coral-tag">
-                    ↓ Due Right Now
+
+                    ↓{" "}
+
+                    {translate(
+                        "dashboard.dueRightNow",
+                        "Due Right Now"
+                    )}
+
                 </span>
+
 
                 <b>
                     {item.time}
@@ -270,17 +553,21 @@ function RoutineCard({
 
             </div>
 
+
             <div className="photo-placeholder tea-table">
                 🫖🌿
             </div>
 
+
             <h3>
-                {item.title}
+                {content.title}
             </h3>
 
+
             <p>
-                {item.detail}
+                {content.detail}
             </p>
+
 
             <button
                 type="button"
@@ -291,11 +578,19 @@ function RoutineCard({
                 }
                 onClick={onTake}
             >
+
                 <CheckCircle2 />
 
                 {item.status === "done"
-                    ? "Taken"
-                    : "Mark Taken (নিশ্চিত)"}
+                    ? translate(
+                        "dashboard.taken",
+                        "Taken"
+                    )
+                    : translate(
+                        "dashboard.markTaken",
+                        "Mark Taken"
+                    )}
+
             </button>
 
         </article>
@@ -303,22 +598,32 @@ function RoutineCard({
 }
 
 
-/* ============================= */
-/* WATER CARD                     */
-/* ============================= */
+/* =========================================================
+   WATER CARD
+========================================================= */
 
 function WaterCard({
     value,
-    onAdd
+    onAdd,
+    translate
 }) {
+
     return (
         <article className="routine-card card">
 
             <div className="routine-top">
 
                 <span className="tag gold-tag">
-                    ● Routine Hydration
+
+                    ●{" "}
+
+                    {translate(
+                        "dashboard.routineHydration",
+                        "Routine Hydration"
+                    )}
+
                 </span>
+
 
                 <b>
                     11:00 AM
@@ -326,52 +631,101 @@ function WaterCard({
 
             </div>
 
+
             <h3>
-                Warm Water Glass
+                {translate(
+                    "dashboard.warmWaterGlass",
+                    "Warm Water Glass"
+                )}
             </h3>
 
+
             <p>
-                Stay hydrated for healthy
-                blood flow. Aim for 6 glasses
-                today.
+                {translate(
+                    "dashboard.hydrationDescription",
+                    "Stay hydrated for healthy blood flow. Aim for 6 glasses today."
+                )}
             </p>
+
 
             <div className="progress-label">
 
                 <span>
-                    Hydration Tracker
+                    {translate(
+                        "dashboard.hydrationTracker",
+                        "Hydration Tracker"
+                    )}
                 </span>
 
+
                 <b>
-                    {value} of 6
+
+                    {value}{" "}
+
+                    {translate(
+                        "dashboard.of",
+                        "of"
+                    )}
+
+                    {" "}6
+
                     <br />
-                    Glasses
+
+                    {translate(
+                        "dashboard.glasses",
+                        "Glasses"
+                    )}
+
                 </b>
 
             </div>
 
+
             <div className="progress">
+
                 <span
                     style={{
                         width: `${(value / 6) * 100}%`
                     }}
                 />
+
             </div>
 
+
             <small>
-                ♧ Morning Garden Walk
+
+                ♧{" "}
+
+                {translate(
+                    "dashboard.morningGardenWalk",
+                    "Morning Garden Walk"
+                )}
+
                 <br />
-                30 mins with daughter in
-                veranda (8:30 AM)
+
+                {translate(
+                    "dashboard.gardenWalkDescription",
+                    "30 mins with daughter in veranda (8:30 AM)"
+                )}
+
             </small>
+
 
             <button
                 type="button"
                 className="light-btn"
                 onClick={onAdd}
             >
+
                 <Droplets />
-                + Log 1 Glass Water
+
+                +{" "}
+
+                {translate(
+                    "dashboard.logWater",
+                    "Log 1 Glass Water"
+                )}
+
             </button>
 
         </article>
@@ -379,19 +733,30 @@ function WaterCard({
 }
 
 
-/* ============================= */
-/* FAMILY CARD                    */
-/* ============================= */
+/* =========================================================
+   FAMILY CARD
+========================================================= */
 
-function FamilyCard() {
+function FamilyCard({
+    translate
+}) {
+
     return (
         <article className="routine-card card">
 
             <div className="routine-top">
 
                 <span className="tag green-tag">
-                    ♡ Family Visit
+
+                    ♡{" "}
+
+                    {translate(
+                        "dashboard.familyVisit",
+                        "Family Visit"
+                    )}
+
                 </span>
+
 
                 <b>
                     4:30 PM
@@ -399,49 +764,76 @@ function FamilyCard() {
 
             </div>
 
+
             <div className="person-row">
 
                 <div className="avatar">
                     👩🏽
                 </div>
 
+
                 <div>
 
                     <small>
-                        DAUGHTER
+                        {translate(
+                            "dashboard.daughter",
+                            "DAUGHTER"
+                        )}
                     </small>
 
+
                     <h3>
-                        Ananya Barua
+                        {translate(
+                            "dashboard.ananyaBarua",
+                            "Ananya Barua"
+                        )}
                     </h3>
 
+
                     <p>
-                        Visiting home today with
-                        fresh Assam pitha snacks
+                        {translate(
+                            "dashboard.familyVisitDescription",
+                            "Visiting home today with fresh Assam pitha snacks"
+                        )}
                     </p>
 
                 </div>
 
             </div>
 
+
             <div className="note">
-                ◷ Expected at 4:30 PM. She
-                called at 9:00 AM to confirm
-                she is bringing your favorite
-                tea leaves.
+
+                ◷{" "}
+
+                {translate(
+                    "dashboard.familyVisitNote",
+                    "Expected at 4:30 PM. She called at 9:00 AM to confirm she is bringing your favorite tea leaves."
+                )}
+
             </div>
+
 
             <button
                 type="button"
                 className="coral-btn"
                 onClick={() =>
                     alert(
-                        "Calling Ananya Barua…"
+                        translate(
+                            "dashboard.callingAnanya",
+                            "Calling Ananya Barua…"
+                        )
                     )
                 }
             >
+
                 <PhoneCall />
-                Call Ananya (One-Touch)
+
+                {translate(
+                    "dashboard.callAnanya",
+                    "Call Ananya (One-Touch)"
+                )}
+
             </button>
 
         </article>

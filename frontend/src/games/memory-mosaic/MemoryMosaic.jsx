@@ -1,7 +1,6 @@
-// src/games/memory-mosaic/MemoryMosaic.jsx
-
 import React, { useState } from "react";
 import { useGameSession } from "../../context/GameSessionContext";
+import { useLanguage } from "../../context/LanguageContext";
 import { mosaicImages } from "./memoryMosaicData";
 import "./memoryMosaic.css";
 
@@ -15,7 +14,9 @@ const MemoryMosaic = () => {
     const [tiles, setTiles] = useState([]);
     const [selectedTiles, setSelectedTiles] = useState([]);
     const [feedback, setFeedback] = useState("");
+
     const { record } = useGameSession();
+    const { t } = useLanguage();
 
     const image = mosaicImages[imageIndex];
 
@@ -41,8 +42,7 @@ const MemoryMosaic = () => {
         setSelectedTiles(newSelection);
 
         const isCorrect =
-            tile ===
-            image.tiles[selectedTiles.length];
+            tile === image.tiles[selectedTiles.length];
 
         if (!isCorrect) {
             record({ correct: false });
@@ -91,17 +91,29 @@ const MemoryMosaic = () => {
                         🧩
                     </div>
 
-                    <h2>Excellent!</h2>
+                    <h2>
+                        {t(
+                            "games.excellent",
+                            "Excellent!"
+                        )}
+                    </h2>
 
                     <p>
-                        You completed all the memory pictures.
+                        {t(
+                            "games.completedAllMemoryPictures",
+                            "You completed all the memory pictures."
+                        )}
                     </p>
 
                     <button
+                        type="button"
                         className="mosaic-button"
                         onClick={restartGame}
                     >
-                        Play Again
+                        {t(
+                            "games.playAgain",
+                            "Play Again"
+                        )}
                     </button>
 
                 </div>
@@ -115,20 +127,32 @@ const MemoryMosaic = () => {
             <div className="mosaic-header">
 
                 <p className="mosaic-label">
-                    MEMORY MOSAIC
+                    {t(
+                        "games.memoryMosaic",
+                        "MEMORY MOSAIC"
+                    )}
                 </p>
 
-                <h2>{image.title}</h2>
+                <h2>
+                    {image.title}
+                </h2>
 
                 <p>
                     {phase === "remember"
                         ? image.message
-                        : "Put the picture back together."
-                    }
+                        : t(
+                            "games.putPictureBackTogether",
+                            "Put the picture back together."
+                        )}
                 </p>
 
                 <div className="mosaic-progress">
-                    {imageIndex + 1} of {mosaicImages.length}
+                    {imageIndex + 1}{" "}
+                    {t(
+                        "common.of",
+                        "of"
+                    )}{" "}
+                    {mosaicImages.length}
                 </div>
 
             </div>
@@ -150,10 +174,14 @@ const MemoryMosaic = () => {
 
             {phase === "remember" && (
                 <button
+                    type="button"
                     className="mosaic-button"
                     onClick={startPuzzle}
                 >
-                    I Remember It
+                    {t(
+                        "games.iRememberIt",
+                        "I Remember It"
+                    )}
                 </button>
             )}
 
@@ -195,6 +223,7 @@ const MemoryMosaic = () => {
 
                             return (
                                 <button
+                                    type="button"
                                     key={`${tile}-${index}`}
                                     className={`mosaic-option ${
                                         used
@@ -218,13 +247,20 @@ const MemoryMosaic = () => {
 
                     {feedback === "correct" && (
                         <div className="mosaic-feedback">
-                            ✓ Good!
+                            ✓{" "}
+                            {t(
+                                "games.good",
+                                "Good!"
+                            )}
                         </div>
                     )}
 
                     {feedback === "wrong" && (
                         <div className="mosaic-feedback">
-                            That's okay. Let's try again.
+                            {t(
+                                "games.letsTryAgain",
+                                "That's okay. Let's try again."
+                            )}
                         </div>
                     )}
                 </>

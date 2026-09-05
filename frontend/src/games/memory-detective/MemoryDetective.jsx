@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useGameSession } from "../../context/GameSessionContext";
+import { useLanguage } from "../../context/LanguageContext";
 import { detectiveScenes } from "./memoryDetectiveData";
 import "./memoryDetective.css";
 
@@ -10,7 +11,9 @@ const MemoryDetective = () => {
     const [phase, setPhase] = useState("observe");
     const [selectedObject, setSelectedObject] = useState(null);
     const [feedback, setFeedback] = useState("");
+
     const { record } = useGameSession();
+    const { t } = useLanguage();
 
     const scene = detectiveScenes[sceneIndex];
 
@@ -59,19 +62,33 @@ const MemoryDetective = () => {
         return (
             <div className="memory-detective">
                 <div className="detective-complete">
-                    <div className="detective-complete-icon">🕵️</div>
+                    <div className="detective-complete-icon">
+                        🕵️
+                    </div>
 
-                    <h2>Excellent!</h2>
+                    <h2>
+                        {t(
+                            "games.excellent",
+                            "Excellent!"
+                        )}
+                    </h2>
 
                     <p>
-                        You noticed all the changes.
+                        {t(
+                            "games.noticedAllChanges",
+                            "You noticed all the changes."
+                        )}
                     </p>
 
                     <button
+                        type="button"
                         className="detective-button"
                         onClick={restartGame}
                     >
-                        Play Again
+                        {t(
+                            "games.playAgain",
+                            "Play Again"
+                        )}
                     </button>
                 </div>
             </div>
@@ -84,20 +101,32 @@ const MemoryDetective = () => {
             <div className="detective-header">
 
                 <p className="detective-label">
-                    MEMORY DETECTIVE
+                    {t(
+                        "games.memoryDetective",
+                        "MEMORY DETECTIVE"
+                    )}
                 </p>
 
-                <h2>{scene.title}</h2>
+                <h2>
+                    {scene.title}
+                </h2>
 
                 <p className="detective-instruction">
                     {phase === "observe"
                         ? scene.instruction
-                        : "What has changed?"
-                    }
+                        : t(
+                            "games.whatHasChanged",
+                            "What has changed?"
+                        )}
                 </p>
 
                 <div className="detective-progress">
-                    {sceneIndex + 1} of {detectiveScenes.length}
+                    {sceneIndex + 1}{" "}
+                    {t(
+                        "common.of",
+                        "of"
+                    )}{" "}
+                    {detectiveScenes.length}
                 </div>
 
             </div>
@@ -106,6 +135,7 @@ const MemoryDetective = () => {
 
                 {scene.objects.map((object) => (
                     <button
+                        type="button"
                         key={object.id}
                         className={`detective-object ${
                             selectedObject === object.id
@@ -114,7 +144,9 @@ const MemoryDetective = () => {
                                     : "object-wrong"
                                 : ""
                         }`}
-                        onClick={() => handleObjectClick(object)}
+                        onClick={() =>
+                            handleObjectClick(object)
+                        }
                         disabled={phase === "observe"}
                     >
                         <span className="detective-object-emoji">
@@ -131,28 +163,42 @@ const MemoryDetective = () => {
 
             {phase === "observe" && (
                 <button
+                    type="button"
                     className="detective-button"
                     onClick={handleStart}
                 >
-                    I've Seen Everything
+                    {t(
+                        "games.iveSeenEverything",
+                        "I've Seen Everything"
+                    )}
                 </button>
             )}
 
             {phase === "detect" && (
                 <p className="detective-hint">
-                    Tap the object that has changed.
+                    {t(
+                        "games.tapChangedObject",
+                        "Tap the object that has changed."
+                    )}
                 </p>
             )}
 
             {feedback === "correct" && (
                 <div className="detective-feedback feedback-correct">
-                    ✓ That's right! Good memory.
+                    ✓{" "}
+                    {t(
+                        "games.thatsRightGoodMemory",
+                        "That's right! Good memory."
+                    )}
                 </div>
             )}
 
             {feedback === "try-again" && (
                 <div className="detective-feedback feedback-wrong">
-                    That's okay. Look carefully again.
+                    {t(
+                        "games.lookCarefullyAgain",
+                        "That's okay. Look carefully again."
+                    )}
                 </div>
             )}
 

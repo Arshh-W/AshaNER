@@ -1,78 +1,44 @@
-import { useState } from "react";
+import { useLanguage } from "../../context/LanguageContext";
 
-const languages = [
-    {
-        code: "en",
-        name: "English"
-    },
-    {
-        code: "hi",
-        name: "हिन्दी"
-    },
-    {
-        code: "as",
-        name: "অসমীয়া"
-    },
-    {
-        code: "bn",
-        name: "বাংলা"
-    },
-    {
-        code: "mn",
-        name: "মৈতৈলোন"
-    }
-];
-
-export default function LanguagePicker({
-    value,
-    onChange
-}) {
-    const [selected, setSelected] =
-        useState(
-            value ||
-            localStorage.getItem(
-                "language"
-            ) ||
-            "en"
-        );
+export default function LanguagePicker() {
+    const {
+        language,
+        languages,
+        changeLanguage,
+        t
+    } = useLanguage();
 
     const handleChange = (event) => {
-        const nextLanguage =
-            event.target.value;
-
-        setSelected(nextLanguage);
-
-        localStorage.setItem(
-            "language",
-            nextLanguage
-        );
-
-        if (onChange) {
-            onChange(nextLanguage);
-        }
+        changeLanguage(event.target.value);
     };
 
     return (
         <div className="language-picker">
-            <label htmlFor="language-select">
-                Language
+            <label
+                htmlFor="language-select"
+                className="language-picker-label"
+            >
+                {t("settings.language", "Language")}
             </label>
 
             <select
                 id="language-select"
-                value={selected}
+                className="language-select"
+                value={language}
                 onChange={handleChange}
-            >
-                {languages.map(
-                    (language) => (
-                        <option
-                            key={language.code}
-                            value={language.code}
-                        >
-                            {language.name}
-                        </option>
-                    )
+                aria-label={t(
+                    "settings.selectLanguage",
+                    "Select your language"
                 )}
+            >
+                {languages.map((item) => (
+                    <option
+                        key={item.code}
+                        value={item.code}
+                    >
+                        {item.name}
+                    </option>
+                ))}
             </select>
         </div>
     );

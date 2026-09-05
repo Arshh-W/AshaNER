@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import Logo from "../components/common/Logo";
+import { useLanguage } from "../context/LanguageContext";
 import "../assets/styles/role-register.css";
 
 export default function RoleRegisterPage() {
     const navigate = useNavigate();
+    const { t } = useLanguage();
 
     return (
         <main className="role-register-page">
@@ -17,44 +19,60 @@ export default function RoleRegisterPage() {
                     </div>
                 </div>
 
+
                 {/* Intro */}
                 <section className="role-register-intro">
 
                     <div className="role-register-eyebrow">
                         <span className="role-register-eyebrow-dot" />
-                        GET STARTED
+
+                        {t(
+                            "roleRegister.eyebrow",
+                            "YOUR CARE SPACE"
+                        )}
                     </div>
 
+
                     <h1>
-                        Create your
-                        <br />
-                        <span>AshaNER account.</span>
+                        {t(
+                            "roleRegister.title",
+                            "Create your AshaNER account."
+                        )}
                     </h1>
 
+
                     <p>
-                        Choose how you'll use AshaNER
-                        to create your care space.
+                        {t(
+                            "roleRegister.description",
+                            "Choose how you'll use AshaNER."
+                        )}
                     </p>
 
                 </section>
 
+
                 {/* Role Cards */}
                 <section className="role-register-cards">
+
 
                     {/* Patient */}
                     <button
                         type="button"
                         className="role-register-card role-register-card-patient"
-                        onClick={() => navigate("/register/patient")}
+                        onClick={() =>
+                            navigate("/register/patient")
+                        }
                     >
 
                         <div className="role-register-card-top">
 
                             <div className="role-register-icon">
+
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
                                 >
                                     <circle
                                         cx="12"
@@ -71,32 +89,50 @@ export default function RoleRegisterPage() {
                                         strokeLinecap="round"
                                     />
                                 </svg>
+
                             </div>
 
-                            <div className="role-register-arrow">
+
+                            <div
+                                className="role-register-arrow"
+                                aria-hidden="true"
+                            >
                                 →
                             </div>
 
                         </div>
 
+
                         <div className="role-register-card-content">
 
                             <span className="role-register-label">
-                                PATIENT VIEW
+                                {t(
+                                    "roleRegister.patientView",
+                                    "PATIENT VIEW"
+                                )}
                             </span>
 
+
                             <h2>
-                                Register as Patient
+                                {t(
+                                    "roleRegister.patientTitle",
+                                    "Create a Patient Account"
+                                )}
                             </h2>
 
+
                             <p>
-                                Create your personal care space
-                                with activities and memory support.
+                                {t(
+                                    "roleRegister.patientDescription",
+                                    "A gentle space for activities, routines, and memory support."
+                                )}
                             </p>
 
                         </div>
 
                     </button>
+
+
 
                     {/* Caregiver */}
                     <button
@@ -110,10 +146,12 @@ export default function RoleRegisterPage() {
                         <div className="role-register-card-top">
 
                             <div className="role-register-icon">
+
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
                                 >
                                     <circle
                                         cx="9"
@@ -145,27 +183,43 @@ export default function RoleRegisterPage() {
                                         strokeLinecap="round"
                                     />
                                 </svg>
+
                             </div>
 
-                            <div className="role-register-arrow">
+
+                            <div
+                                className="role-register-arrow"
+                                aria-hidden="true"
+                            >
                                 →
                             </div>
 
                         </div>
 
+
                         <div className="role-register-card-content">
 
                             <span className="role-register-label">
-                                CAREGIVER VIEW
+                                {t(
+                                    "roleRegister.caregiverView",
+                                    "CAREGIVER VIEW"
+                                )}
                             </span>
 
+
                             <h2>
-                                Register as Caregiver
+                                {t(
+                                    "roleRegister.caregiverTitle",
+                                    "Create a Caregiver Account"
+                                )}
                             </h2>
 
+
                             <p>
-                                Create an account to support,
-                                manage, and monitor connected care.
+                                {t(
+                                    "roleRegister.caregiverDescription",
+                                    "Stay connected with routines, progress, and everyday care."
+                                )}
                             </p>
 
                         </div>
@@ -174,18 +228,28 @@ export default function RoleRegisterPage() {
 
                 </section>
 
+
                 {/* Footer */}
                 <div className="role-register-footer">
 
                     <span>
-                        Already have an account?
+                        {t(
+                            "roleRegister.alreadyHaveAccount",
+                            "Already have an account?"
+                        )}
                     </span>
+
 
                     <button
                         type="button"
-                        onClick={() => navigate("/login")}
+                        onClick={() =>
+                            navigate("/login")
+                        }
                     >
-                        Log in
+                        {t(
+                            "roleRegister.login",
+                            "Log in"
+                        )}
                     </button>
 
                 </div>

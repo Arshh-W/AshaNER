@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import Logo from "../components/common/Logo";
+import { useLanguage } from "../context/LanguageContext";
 import "../assets/styles/login-page.css";
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const { t } = useLanguage();
 
     return (
         <main className="login-page">
@@ -20,18 +22,27 @@ export default function LoginPage() {
                 <section className="login-intro">
                     <div className="login-eyebrow">
                         <span className="login-eyebrow-dot" />
-                        YOUR CARE SPACE
+
+                        {t(
+                            "login.eyebrow",
+                            "YOUR CARE SPACE"
+                        )}
                     </div>
 
                     <h1>
-                        Welcome back
+                        {t(
+                            "login.welcome",
+                            "Welcome back."
+                        )}
                         <br />
                         <span>to AshaNER.</span>
                     </h1>
 
                     <p>
-                        Choose the view that fits how you care,
-                        connect, and spend time with AshaNER.
+                        {t(
+                            "login.description",
+                            "Choose the view that fits how you care, connect, and spend time with AshaNER."
+                        )}
                     </p>
                 </section>
 
@@ -42,7 +53,9 @@ export default function LoginPage() {
                     <button
                         type="button"
                         className="role-card role-card-patient"
-                        onClick={() => navigate("/login/patient")}
+                        onClick={() =>
+                            navigate("/login/patient")
+                        }
                     >
                         <div className="role-card-top">
 
@@ -51,6 +64,7 @@ export default function LoginPage() {
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
                                 >
                                     <circle
                                         cx="12"
@@ -73,6 +87,8 @@ export default function LoginPage() {
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
                                 >
                                     <path
                                         d="M6 12H18"
@@ -94,18 +110,28 @@ export default function LoginPage() {
                         </div>
 
                         <div className="role-card-content">
+
                             <span className="role-label">
-                                PATIENT VIEW
+                                {t(
+                                    "login.patientView",
+                                    "PATIENT VIEW"
+                                )}
                             </span>
 
                             <h2>
-                                Continue as Patient
+                                {t(
+                                    "login.continueAsPatient",
+                                    "Continue as Patient"
+                                )}
                             </h2>
 
                             <p>
-                                Gentle activities, routines,
-                                and memory support.
+                                {t(
+                                    "login.patientDescription",
+                                    "Gentle activities, routines, and memory support."
+                                )}
                             </p>
+
                         </div>
                     </button>
 
@@ -125,6 +151,7 @@ export default function LoginPage() {
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
                                 >
                                     <circle
                                         cx="9"
@@ -162,6 +189,8 @@ export default function LoginPage() {
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden="true"
                                 >
                                     <path
                                         d="M6 12H18"
@@ -183,18 +212,28 @@ export default function LoginPage() {
                         </div>
 
                         <div className="role-card-content">
+
                             <span className="role-label">
-                                CAREGIVER VIEW
+                                {t(
+                                    "login.caregiverView",
+                                    "CAREGIVER VIEW"
+                                )}
                             </span>
 
                             <h2>
-                                Continue as Caregiver
+                                {t(
+                                    "login.continueAsCaregiver",
+                                    "Continue as Caregiver"
+                                )}
                             </h2>
 
                             <p>
-                                Support, progress, routines,
-                                and connected care.
+                                {t(
+                                    "login.caregiverDescription",
+                                    "Support, progress, routines, and connected care."
+                                )}
                             </p>
+
                         </div>
                     </button>
 
