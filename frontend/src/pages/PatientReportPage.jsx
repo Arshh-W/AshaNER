@@ -66,7 +66,8 @@ export default function PatientReportPage() {
         });
     };
 
-    const metrics = report?.metrics || {};
+    const statistics = report?.statistics || report || {};
+    const metrics = statistics?.metrics || {};
 
     const patient =
         report?.patient ||
@@ -74,16 +75,19 @@ export default function PatientReportPage() {
         {};
 
     const history =
+        statistics?.history ||
         report?.history ||
         report?.game_history ||
         [];
 
     const games =
+        statistics?.games ||
         report?.games ||
         report?.game_performance ||
         [];
 
     const totalSessions =
+        statistics?.total_sessions_completed ??
         report?.total_sessions_completed ??
         metrics?.total_sessions ??
         0;
@@ -95,6 +99,7 @@ export default function PatientReportPage() {
 
     const averageErrors =
         metrics?.average_errors ??
+        metrics?.average_errors_per_session ??
         metrics?.avg_errors ??
         "—";
 
