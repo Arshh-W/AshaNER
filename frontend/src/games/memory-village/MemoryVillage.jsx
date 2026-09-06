@@ -12,7 +12,10 @@ const MemoryVillage = () => {
     const [feedback, setFeedback] = useState("");
     const [completed, setCompleted] = useState(false);
 
-    const { record } = useGameSession();
+    const {
+        record,
+        complete
+    } = useGameSession();
     const { t } = useLanguage();
 
     // Stores the time at which the current task became available.
@@ -47,7 +50,10 @@ const MemoryVillage = () => {
                     currentTask ===
                     villageTasks.length - 1
                 ) {
+                    complete().catch(() => undefined);
+
                     setCompleted(true);
+
                     taskStartedAtRef.current = null;
                 } else {
                     setCurrentTask(
@@ -162,11 +168,10 @@ const MemoryVillage = () => {
                         <div
                             className="progress-fill"
                             style={{
-                                width: `${
-                                    ((currentTask + 1) /
-                                        villageTasks.length) *
+                                width: `${((currentTask + 1) /
+                                    villageTasks.length) *
                                     100
-                                }%`,
+                                    }%`,
                             }}
                         />
 
@@ -181,12 +186,11 @@ const MemoryVillage = () => {
                     <button
                         type="button"
                         key={item.id}
-                        className={`village-item ${
-                            feedback === "correct" &&
+                        className={`village-item ${feedback === "correct" &&
                             item.id === task.targetId
-                                ? "correct"
-                                : ""
-                        }`}
+                            ? "correct"
+                            : ""
+                            }`}
                         onClick={() =>
                             handleItemClick(item)
                         }
@@ -196,9 +200,7 @@ const MemoryVillage = () => {
                             {item.emoji}
                         </span>
 
-                        <span className="item-name">
-                            {item.name}
-                        </span>
+
                     </button>
                 ))}
 
