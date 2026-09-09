@@ -676,6 +676,10 @@
     position: absolute;
     z-index: 4;
 
+    width: 245px;
+    min-width: 245px;
+    box-sizing: border-box;
+
     display: flex;
     align-items: center;
     gap: 10px;
@@ -722,14 +726,13 @@
 
 
 .splash-floating-top {
-    top: 50px;
-    left: 0;
+    top: 90px;
+    left: 475px;
 }
 
-
 .splash-floating-bottom {
-    right: -8px;
-    bottom: 45px;
+    left : -65px;
+    bottom: -35px;
 }
 
 

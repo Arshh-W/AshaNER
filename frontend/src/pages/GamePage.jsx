@@ -20,11 +20,11 @@ import SoundObjectMatch from "../games/sound-object-match/SoundObjectMatch";
 
 
 export default function GamePage() {
+
     const { gameId } = useParams();
 
     const {
         start,
-        complete,
         engineError,
         isAdapting
     } = useGameSession();
@@ -33,19 +33,22 @@ export default function GamePage() {
 
 
     /* =====================================================
-       START / COMPLETE GAME SESSION
+       START GAME SESSION
+       
+       IMPORTANT:
+       Do NOT call complete() here or in cleanup.
+
+       Each individual game calls complete() only when
+       the player actually finishes that game.
     ===================================================== */
 
     useEffect(() => {
+
         start(gameId);
 
-        return () => {
-            complete().catch(() => undefined);
-        };
     }, [
         gameId,
-        start,
-        complete
+        start
     ]);
 
 
@@ -103,7 +106,6 @@ export default function GamePage() {
                 </div>
             )}
 
-
             {engineError && (
                 <div
                     role="alert"
@@ -111,7 +113,6 @@ export default function GamePage() {
                     {engineError}
                 </div>
             )}
-
 
             {game}
 

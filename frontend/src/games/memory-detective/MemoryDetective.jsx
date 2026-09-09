@@ -10,11 +10,13 @@ const MemoryDetective = () => {
     const [selectedObject, setSelectedObject] = useState(null);
     const [feedback, setFeedback] = useState("");
 
-    const { record } = useGameSession();
+    const {
+        record,
+        complete
+    } = useGameSession();
+
     const { t } = useLanguage();
 
-    // Stores the exact time when the player enters detection mode.
-    // This lets us calculate reaction time for every answer.
     const detectionStartedAtRef = useRef(null);
 
     const scene = detectiveScenes[sceneIndex];
@@ -22,33 +24,31 @@ const MemoryDetective = () => {
     const handleStart = () => {
         setPhase("detect");
 
-        // Start measuring reaction time as soon as
-        // the player is allowed to answer.
-        detectionStartedAtRef.current = performance.now();
+        detectionStartedAtRef.current =
+            performance.now();
     };
 
     const handleObjectClick = (object) => {
         if (phase !== "detect") return;
 
-        // Calculate how long the player took to answer.
         const now = performance.now();
 
-        const latencyMs = detectionStartedAtRef.current
-            ? Math.max(
-                  0,
-                  Math.round(
-                      now - detectionStartedAtRef.current
-                  )
-              )
-            : 0;
+        const latencyMs =
+            detectionStartedAtRef.current
+                ? Math.max(
+                    0,
+                    Math.round(
+                        now -
+                        detectionStartedAtRef.current
+                    )
+                )
+                : 0;
 
         setSelectedObject(object.id);
 
         const isCorrect =
             object.id === scene.changedObject;
 
-        // Send the actual game interaction to the
-        // central GameSessionContext.
         record({
             correct: isCorrect,
             latencyMs
@@ -62,6 +62,13 @@ const MemoryDetective = () => {
                     sceneIndex ===
                     detectiveScenes.length - 1
                 ) {
+                    complete().catch((error) => {
+                        console.error(
+                            "Failed to complete game session:",
+                            error
+                        );
+                    });
+
                     setPhase("complete");
                 } else {
                     setSceneIndex(
@@ -72,9 +79,8 @@ const MemoryDetective = () => {
                     setSelectedObject(null);
                     setFeedback("");
 
-                    // Clear the previous reaction-time
-                    // measurement until the next scene starts.
-                    detectionStartedAtRef.current = null;
+                    detectionStartedAtRef.current =
+                        null;
                 }
             }, 1200);
         } else {
@@ -84,8 +90,6 @@ const MemoryDetective = () => {
                 setSelectedObject(null);
                 setFeedback("");
 
-                // Start a fresh reaction-time measurement
-                // after the wrong answer feedback disappears.
                 detectionStartedAtRef.current =
                     performance.now();
             }, 1200);
@@ -98,7 +102,6 @@ const MemoryDetective = () => {
         setSelectedObject(null);
         setFeedback("");
 
-        // Reset reaction-time tracking.
         detectionStartedAtRef.current = null;
     };
 
@@ -166,10 +169,7 @@ const MemoryDetective = () => {
 
                 <div className="detective-progress">
                     {sceneIndex + 1}{" "}
-                    {t(
-                        "common.of",
-                        "of"
-                    )}{" "}
+                    {t("common.of", "of")}{" "}
                     {detectiveScenes.length}
                 </div>
 
@@ -177,31 +177,61 @@ const MemoryDetective = () => {
 
             <div className="detective-scene">
 
-                {scene.objects.map((object) => (
-                    <button
-                        type="button"
-                        key={object.id}
-                        className={`detective-object ${
-                            selectedObject === object.id
-                                ? feedback === "correct"
-                                    ? "object-correct"
-                                    : "object-wrong"
-                                : ""
-                        }`}
-                        onClick={() =>
-                            handleObjectClick(object)
-                        }
-                        disabled={phase === "observe"}
-                    >
-                        <span className="detective-object-emoji">
-                            {object.emoji}
-                        </span>
+                {scene.objects.map((object) => {
+                    const isChangedObject =
+                        object.id ===
+                        scene.changedObject;
 
-                        <span className="detective-object-name">
-                            {object.name}
-                        </span>
-                    </button>
-                ))}
+                    const isSelected =
+                        selectedObject ===
+                        object.id;
+
+                    return (
+                        <button
+                            type="button"
+                            key={object.id}
+                            className={`detective-object ${
+                                isSelected
+                                    ? feedback === "correct"
+                                        ? "object-correct"
+                                        : "object-wrong"
+                                    : ""
+                            } ${
+                                phase === "detect" &&
+                                isChangedObject
+                                    ? "object-changed"
+                                    : ""
+                            }`}
+                            onClick={() =>
+                                handleObjectClick(
+                                    object
+                                )
+                            }
+                            disabled={
+                                phase === "observe"
+                            }
+                        >
+                            <span
+                                className="detective-object-emoji"
+                                style={
+                                    phase === "detect" &&
+                                    isChangedObject
+                                        ? {
+                                            filter:
+                                                "invert(1)"
+                                        }
+                                        : undefined
+                                }
+                            >
+                                {object.emoji}
+                            </span>
+
+                            <span className="detective-object-name">
+                                {object.name}
+                            </span>
+                        </button>
+                    );
+                })}
 
             </div>
 

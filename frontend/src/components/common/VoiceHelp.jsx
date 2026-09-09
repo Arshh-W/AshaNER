@@ -22,30 +22,49 @@ export default function VoiceHelp({
 
     return (
         <div className="voice-help">
-            <div className="voice-help-icon">
-                <HelpCircle size={24} />
+
+            {/* Header */}
+            <div className="voice-help-header">
+
+                <div className="voice-help-icon">
+                    <HelpCircle size={20} />
+                </div>
+
+                <div className="voice-help-heading">
+
+                    <span className="voice-help-eyebrow">
+                        ASHA ASSISTANT
+                    </span>
+
+                    <strong>
+                        Asha can help
+                    </strong>
+
+                </div>
+
             </div>
 
+
+            {/* Message + Voice button */}
             <div className="voice-help-content">
-                <strong>
-                    Asha can help
-                </strong>
 
-                <p>{text}</p>
+                <p>
+                    {text}
+                </p>
+
+                <button
+                    type="button"
+                    className={`voice-help-button ${
+                        isSpeaking ? "speaking" : ""
+                    }`}
+                    onClick={handleSpeak}
+                    aria-label="Listen to voice help"
+                >
+                    <Volume2 size={19} />
+                </button>
+
             </div>
 
-            <button
-                type="button"
-                className={`voice-help-button ${
-                    isSpeaking
-                        ? "speaking"
-                        : ""
-                }`}
-                onClick={handleSpeak}
-                aria-label="Listen to voice help"
-            >
-                <Volume2 size={20} />
-            </button>
         </div>
     );
 }

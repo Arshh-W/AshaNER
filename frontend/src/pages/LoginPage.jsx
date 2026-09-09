@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Logo from "../components/common/Logo";
+
 import { useLanguage } from "../context/LanguageContext";
 import "../assets/styles/login-page.css";
 
@@ -12,11 +12,7 @@ export default function LoginPage() {
             <div className="login-container">
 
                 {/* Logo */}
-                <div className="login-top">
-                    <div className="login-logo-wrap">
-                        <Logo className="login-logo" />
-                    </div>
-                </div>
+                
 
                 {/* Intro */}
                 <section className="login-intro">

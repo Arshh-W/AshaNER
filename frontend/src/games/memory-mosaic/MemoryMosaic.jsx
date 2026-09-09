@@ -15,7 +15,10 @@ const MemoryMosaic = () => {
     const [selectedTiles, setSelectedTiles] = useState([]);
     const [feedback, setFeedback] = useState("");
 
-    const { record } = useGameSession();
+    const {
+        record,
+        complete
+    } = useGameSession();
     const { t } = useLanguage();
 
     // Tracks when the player is allowed to start solving
@@ -46,11 +49,11 @@ const MemoryMosaic = () => {
 
         const latencyMs = puzzleStartedAtRef.current
             ? Math.max(
-                  0,
-                  Math.round(
-                      now - puzzleStartedAtRef.current
-                  )
-              )
+                0,
+                Math.round(
+                    now - puzzleStartedAtRef.current
+                )
+            )
             : 0;
 
         const newSelection = [
@@ -105,7 +108,10 @@ const MemoryMosaic = () => {
                     imageIndex ===
                     mosaicImages.length - 1
                 ) {
+                    complete().catch(() => undefined);
+
                     setPhase("complete");
+
                     puzzleStartedAtRef.current = null;
                 } else {
                     setImageIndex(
@@ -284,11 +290,10 @@ const MemoryMosaic = () => {
                                 <button
                                     type="button"
                                     key={`${tile}-${index}`}
-                                    className={`mosaic-option ${
-                                        used
+                                    className={`mosaic-option ${used
                                             ? "tile-used"
                                             : ""
-                                    }`}
+                                        }`}
                                     onClick={() =>
                                         handleTileClick(
                                             tile,
