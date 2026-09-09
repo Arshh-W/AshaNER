@@ -8,6 +8,7 @@ import {
 
 import { queueOperation } from "../services/syncService";
 import { adaptGameDifficulty } from "../services/engineApi";
+import useInGameAAMonitor from "../hooks/useInGameAAMonitor";
 import { useAuth } from "./AuthContext";
 
 const Ctx = createContext(null);
@@ -38,6 +39,10 @@ const gameTypeForApi = (gameId) => {
     return gameId.replaceAll("-", "_");
 };
 
+const average = (values) => values.length
+    ? values.reduce((total, value) => total + value, 0) / values.length
+    : 0;
+
 export function GameSessionProvider({ children }) {
     const [session, setSession] = useState(null);
     const [engineError, setEngineError] = useState(null);
@@ -56,6 +61,63 @@ export function GameSessionProvider({ children }) {
     const completingSessionRef = useRef(null);
 
     const { user } = useAuth();
+    const [liveAffect, setLiveAffect] = useState({ valence: 0, arousal: 0 });
+    const [liveCDI, setLiveCDI] = useState(0);
+
+    const handleBiomarkerUpdate = useCallback(({ type, data }) => {
+        const current = sessionRef.current;
+
+        if (type === "affect") {
+            const valence = Number(data?.valence) || 0;
+            const arousal = Number(data?.arousal) || 0;
+            setLiveAffect({
+                valence,
+                arousal
+            });
+
+            if (current && !current.completed) {
+                const valenceSamples = [
+                    ...current.valenceSamples,
+                    valence
+                ].slice(-60);
+                const arousalSamples = [
+                    ...current.arousalSamples,
+                    arousal
+                ].slice(-60);
+                const updated = {
+                    ...current,
+                    valenceSamples,
+                    arousalSamples,
+                    avgValence: average(valenceSamples),
+                    avgArousal: average(arousalSamples)
+                };
+                sessionRef.current = updated;
+                setSession(updated);
+            }
+        } else if (type === "acoustic") {
+            const cdi = Number(data?.cognitive_drift_index) || 0;
+            setLiveCDI(cdi);
+
+            if (current && !current.completed) {
+                const cdiSamples = [
+                    ...current.cdiSamples,
+                    cdi
+                ].slice(-60);
+                const updated = {
+                    ...current,
+                    cdiSamples,
+                    avgCDI: average(cdiSamples)
+                };
+                sessionRef.current = updated;
+                setSession(updated);
+            }
+        }
+    }, []);
+
+    useInGameAAMonitor(
+        Boolean(session && !session.completed),
+        handleBiomarkerUpdate
+    );
 
     /*
      * ------------------------------------------------------------
@@ -94,6 +156,12 @@ export function GameSessionProvider({ children }) {
              * [1200, 950, 2100, 3400]
              */
             reactionTimes: [],
+            valenceSamples: [],
+            arousalSamples: [],
+            cdiSamples: [],
+            avgValence: 0,
+            avgArousal: 0,
+            avgCDI: 0,
 
             /*
              * Additional frontend-only tracking.
@@ -123,6 +191,8 @@ export function GameSessionProvider({ children }) {
         completingSessionRef.current = null;
 
         setSession(nextSession);
+        setLiveAffect({ valence: 0, arousal: 0 });
+        setLiveCDI(0);
         setEngineError(null);
         setIsAdapting(false);
 
@@ -218,7 +288,14 @@ export function GameSessionProvider({ children }) {
                  * Total number of attempts.
                  */
                 totalAttempts:
-                    current.totalAttempts + 1
+                    current.totalAttempts + 1,
+
+                valenceSamples: current.valenceSamples,
+                arousalSamples: current.arousalSamples,
+                cdiSamples: current.cdiSamples,
+                avgValence: current.avgValence,
+                avgArousal: current.avgArousal,
+                avgCDI: current.avgCDI
             };
 
             sessionRef.current = next;
@@ -251,7 +328,9 @@ export function GameSessionProvider({ children }) {
                         safeLatency,
 
                     is_stalled:
-                        safeLatency > 4500
+                        safeLatency > 4500,
+                    facial_valence: liveAffect.valence,
+                    cognitive_drift_index: liveCDI
                 })
                     .then((response) => {
                         /*
@@ -288,7 +367,7 @@ export function GameSessionProvider({ children }) {
                     });
             }
         },
-        []
+        [liveAffect, liveCDI]
     );
 
     /*
@@ -404,6 +483,9 @@ export function GameSessionProvider({ children }) {
 
             reaction_times_ms:
                 current.reactionTimes,
+
+            avg_cdi: current.avgCDI,
+            avg_valence: current.avgValence,
 
             created_at_offline:
                 new Date().toISOString()

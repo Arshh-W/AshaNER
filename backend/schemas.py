@@ -112,6 +112,7 @@ class GameSessionSyncPayload(BaseModel):
     created_at_offline: str
     avg_cdi: Optional[float] = None
     avg_valence: Optional[float] = None
+    avg_arousal: Optional[float] = None
     triggered_reminiscence: Optional[bool] = False
     xai_reason: Optional[str] = None
 
@@ -234,6 +235,8 @@ class DDAEngineRequest(BaseModel):
     consecutive_errors: int
     last_action_latency_ms: float
     is_stalled: bool = False
+    facial_valence: float = 0.0
+    cognitive_drift_index: float = 0.0
 
 
 class DDAEngineResponse(BaseModel):
