@@ -12,6 +12,8 @@ import {
     useLanguage
 } from "../context/LanguageContext";
 
+import MediaDeviceStatus from "../components/common/MediaDeviceStatus";
+
 import MemoryDetective from "../games/memory-detective/MemoryDetective";
 import MemoryMosaic from "../games/memory-mosaic/MemoryMosaic";
 import MemoryVillage from "../games/memory-village/MemoryVillage";
@@ -21,20 +23,28 @@ import SoundObjectMatch from "../games/sound-object-match/SoundObjectMatch";
 
 export default function GamePage() {
 
-    const { gameId } = useParams();
+    const { gameId } =
+        useParams();
 
     const {
         start,
         engineError,
-        isAdapting
+        isAdapting,
+
+        /*
+         * Independent camera/microphone states.
+         */
+        cameraStatus,
+        micStatus
     } = useGameSession();
 
-    const { t } = useLanguage();
+    const { t } =
+        useLanguage();
 
 
     /* =====================================================
        START GAME SESSION
-       
+
        IMPORTANT:
        Do NOT call complete() here or in cleanup.
 
@@ -61,19 +71,29 @@ export default function GamePage() {
         switch (gameId) {
 
             case "memory-detective":
-                return <MemoryDetective />;
+                return (
+                    <MemoryDetective />
+                );
 
             case "memory-mosaic":
-                return <MemoryMosaic />;
+                return (
+                    <MemoryMosaic />
+                );
 
             case "memory-village":
-                return <MemoryVillage />;
+                return (
+                    <MemoryVillage />
+                );
 
             case "routine-rescue":
-                return <RoutineRescue />;
+                return (
+                    <RoutineRescue />
+                );
 
             case "sound-object-match":
-                return <SoundObjectMatch />;
+                return (
+                    <SoundObjectMatch />
+                );
 
             default:
                 return (
@@ -113,6 +133,24 @@ export default function GamePage() {
                     {engineError}
                 </div>
             )}
+
+            {/* =================================================
+                MEDIA DEVICE STATUS
+
+                This is informational only.
+
+                It does NOT block the game and does NOT change
+                the existing touch-telemetry fallback.
+            ================================================= */}
+
+            <MediaDeviceStatus
+                cameraStatus={
+                    cameraStatus
+                }
+                micStatus={
+                    micStatus
+                }
+            />
 
             {game}
 

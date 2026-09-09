@@ -40,82 +40,165 @@ const gameTypeForApi = (gameId) => {
 };
 
 const average = (values) => values.length
-    ? values.reduce((total, value) => total + value, 0) / values.length
+    ? values.reduce(
+        (total, value) => total + value,
+        0
+    ) / values.length
     : 0;
 
-export function GameSessionProvider({ children }) {
-    const [session, setSession] = useState(null);
-    const [engineError, setEngineError] = useState(null);
-    const [isAdapting, setIsAdapting] = useState(false);
+export function GameSessionProvider({
+    children
+}) {
+    const [session, setSession] =
+        useState(null);
+
+    const [engineError, setEngineError] =
+        useState(null);
+
+    const [isAdapting, setIsAdapting] =
+        useState(false);
 
     /*
      * Ref is used because game interactions can happen rapidly.
      * It always contains the latest session without waiting for
      * React state updates.
      */
-    const sessionRef = useRef(null);
+    const sessionRef =
+        useRef(null);
 
     /*
      * Prevents the same session from being completed more than once.
      */
-    const completingSessionRef = useRef(null);
+    const completingSessionRef =
+        useRef(null);
 
     const { user } = useAuth();
-    const [liveAffect, setLiveAffect] = useState({ valence: 0, arousal: 0 });
-    const [liveCDI, setLiveCDI] = useState(0);
 
-    const handleBiomarkerUpdate = useCallback(({ type, data }) => {
-        const current = sessionRef.current;
+    const [liveAffect, setLiveAffect] =
+        useState({
+            valence: 0,
+            arousal: 0
+        });
 
-        if (type === "affect") {
-            const valence = Number(data?.valence) || 0;
-            const arousal = Number(data?.arousal) || 0;
-            setLiveAffect({
-                valence,
-                arousal
-            });
+    const [liveCDI, setLiveCDI] =
+        useState(0);
 
-            if (current && !current.completed) {
-                const valenceSamples = [
-                    ...current.valenceSamples,
-                    valence
-                ].slice(-60);
-                const arousalSamples = [
-                    ...current.arousalSamples,
-                    arousal
-                ].slice(-60);
-                const updated = {
-                    ...current,
-                    valenceSamples,
-                    arousalSamples,
-                    avgValence: average(valenceSamples),
-                    avgArousal: average(arousalSamples)
-                };
-                sessionRef.current = updated;
-                setSession(updated);
-            }
-        } else if (type === "acoustic") {
-            const cdi = Number(data?.cognitive_drift_index) || 0;
-            setLiveCDI(cdi);
+    const handleBiomarkerUpdate =
+        useCallback(
+            ({ type, data }) => {
+                const current =
+                    sessionRef.current;
 
-            if (current && !current.completed) {
-                const cdiSamples = [
-                    ...current.cdiSamples,
-                    cdi
-                ].slice(-60);
-                const updated = {
-                    ...current,
-                    cdiSamples,
-                    avgCDI: average(cdiSamples)
-                };
-                sessionRef.current = updated;
-                setSession(updated);
-            }
-        }
-    }, []);
+                if (type === "affect") {
+                    const valence =
+                        Number(
+                            data?.valence
+                        ) || 0;
 
-    useInGameAAMonitor(
-        Boolean(session && !session.completed),
+                    const arousal =
+                        Number(
+                            data?.arousal
+                        ) || 0;
+
+                    setLiveAffect({
+                        valence,
+                        arousal
+                    });
+
+                    if (
+                        current &&
+                        !current.completed
+                    ) {
+                        const valenceSamples =
+                            [
+                                ...current.valenceSamples,
+                                valence
+                            ].slice(-60);
+
+                        const arousalSamples =
+                            [
+                                ...current.arousalSamples,
+                                arousal
+                            ].slice(-60);
+
+                        const updated = {
+                            ...current,
+                            valenceSamples,
+                            arousalSamples,
+                            avgValence:
+                                average(
+                                    valenceSamples
+                                ),
+                            avgArousal:
+                                average(
+                                    arousalSamples
+                                )
+                        };
+
+                        sessionRef.current =
+                            updated;
+
+                        setSession(
+                            updated
+                        );
+                    }
+                } else if (
+                    type === "acoustic"
+                ) {
+                    const cdi =
+                        Number(
+                            data?.cognitive_drift_index
+                        ) || 0;
+
+                    setLiveCDI(cdi);
+
+                    if (
+                        current &&
+                        !current.completed
+                    ) {
+                        const cdiSamples =
+                            [
+                                ...current.cdiSamples,
+                                cdi
+                            ].slice(-60);
+
+                        const updated = {
+                            ...current,
+                            cdiSamples,
+                            avgCDI:
+                                average(
+                                    cdiSamples
+                                )
+                        };
+
+                        sessionRef.current =
+                            updated;
+
+                        setSession(
+                            updated
+                        );
+                    }
+                }
+            },
+            []
+        );
+
+    /*
+     * ------------------------------------------------------------
+     * A/V MONITOR
+     * ------------------------------------------------------------
+     *
+     * Camera and microphone are monitored independently.
+     */
+    const {
+        isMonitoring,
+        cameraStatus,
+        micStatus
+    } = useInGameAAMonitor(
+        Boolean(
+            session &&
+            !session.completed
+        ),
         handleBiomarkerUpdate
     );
 
@@ -124,127 +207,134 @@ export function GameSessionProvider({ children }) {
      * START SESSION
      * ------------------------------------------------------------
      */
-    const start = useCallback((gameId) => {
-        if (!gameId) {
-            return null;
-        }
 
-        const nextSession = {
-            local_session_id: `${gameId}-${Date.now()}-${Math.random()
-                .toString(36)
-                .slice(2, 8)}`,
+    const start = useCallback(
+        (gameId) => {
+            if (!gameId) {
+                return null;
+            }
 
-            gameId,
+            const nextSession = {
+                local_session_id:
+                    `${gameId}-${Date.now()}-${Math.random()
+                        .toString(36)
+                        .slice(2, 8)}`,
 
-            /*
-             * Core performance metrics
-             */
-            score: 0,
-            correct: 0,
-            errors: 0,
+                gameId,
 
-            /*
-             * Number of consecutive incorrect attempts.
-             * Used by the adaptive difficulty engine.
-             */
-            consecutiveErrors: 0,
+                /*
+                 * Core performance metrics
+                 */
+                score: 0,
+                correct: 0,
+                errors: 0,
 
-            /*
-             * Every attempt's reaction time.
-             *
-             * Example:
-             * [1200, 950, 2100, 3400]
-             */
-            reactionTimes: [],
-            valenceSamples: [],
-            arousalSamples: [],
-            cdiSamples: [],
-            avgValence: 0,
-            avgArousal: 0,
-            avgCDI: 0,
+                /*
+                 * Number of consecutive incorrect attempts.
+                 * Used by the adaptive difficulty engine.
+                 */
+                consecutiveErrors: 0,
 
-            /*
-             * Additional frontend-only tracking.
-             *
-             * This allows us to know how many total attempts
-             * happened without changing the backend payload.
-             */
-            totalAttempts: 0,
+                /*
+                 * Every attempt's reaction time.
+                 */
+                reactionTimes: [],
 
-            /*
-             * Session timing
-             */
-            startedAt: Date.now(),
+                valenceSamples: [],
+                arousalSamples: [],
+                cdiSamples: [],
 
-            /*
-             * Adaptive difficulty level
-             */
-            level: 1,
+                avgValence: 0,
+                avgArousal: 0,
+                avgCDI: 0,
 
-            /*
-             * Completion state
-             */
-            completed: false
-        };
+                /*
+                 * Additional frontend-only tracking.
+                 */
+                totalAttempts: 0,
 
-        sessionRef.current = nextSession;
-        completingSessionRef.current = null;
+                /*
+                 * Session timing
+                 */
+                startedAt: Date.now(),
 
-        setSession(nextSession);
-        setLiveAffect({ valence: 0, arousal: 0 });
-        setLiveCDI(0);
-        setEngineError(null);
-        setIsAdapting(false);
+                /*
+                 * Adaptive difficulty level
+                 */
+                level: 1,
 
-        return nextSession.local_session_id;
-    }, []);
+                /*
+                 * Completion state
+                 */
+                completed: false
+            };
+
+            sessionRef.current =
+                nextSession;
+
+            completingSessionRef.current =
+                null;
+
+            setSession(
+                nextSession
+            );
+
+            setLiveAffect({
+                valence: 0,
+                arousal: 0
+            });
+
+            setLiveCDI(0);
+            setEngineError(null);
+            setIsAdapting(false);
+
+            return nextSession.local_session_id;
+        },
+        []
+    );
 
     /*
      * ------------------------------------------------------------
      * RECORD GAME ATTEMPT
      * ------------------------------------------------------------
-     *
-     * Every individual game interaction should call:
-     *
-     * record({
-     *     correct: true,
-     *     latencyMs: 1250
-     * });
-     *
-     * or:
-     *
-     * record({
-     *     correct: false,
-     *     latencyMs: 3200
-     * });
-     *
-     * The games do NOT need to calculate:
-     * - score
-     * - errors
-     * - consecutive errors
-     *
-     * This context handles all of that.
      */
+
     const record = useCallback(
-        ({ correct, latencyMs = 0 } = {}) => {
-            const current = sessionRef.current;
+        ({
+            correct,
+            latencyMs = 0
+        } = {}) => {
+            const current =
+                sessionRef.current;
 
             /*
              * Ignore events when there is no active game.
              */
-            if (!current || current.completed) {
+            if (
+                !current ||
+                current.completed
+            ) {
                 return;
             }
 
-            const safeLatency = Number.isFinite(Number(latencyMs))
-                ? Math.max(0, Number(latencyMs))
-                : 0;
+            const safeLatency =
+                Number.isFinite(
+                    Number(latencyMs)
+                )
+                    ? Math.max(
+                        0,
+                        Number(latencyMs)
+                    )
+                    : 0;
 
-            const isCorrect = Boolean(correct);
+            const isCorrect =
+                Boolean(correct);
 
-            const nextConsecutiveErrors = isCorrect
-                ? 0
-                : current.consecutiveErrors + 1;
+            const nextConsecutiveErrors =
+                isCorrect
+                    ? 0
+                    : current.consecutiveErrors +
+                      1;
 
             const next = {
                 ...current,
@@ -288,17 +378,31 @@ export function GameSessionProvider({ children }) {
                  * Total number of attempts.
                  */
                 totalAttempts:
-                    current.totalAttempts + 1,
+                    current.totalAttempts +
+                    1,
 
-                valenceSamples: current.valenceSamples,
-                arousalSamples: current.arousalSamples,
-                cdiSamples: current.cdiSamples,
-                avgValence: current.avgValence,
-                avgArousal: current.avgArousal,
-                avgCDI: current.avgCDI
+                valenceSamples:
+                    current.valenceSamples,
+
+                arousalSamples:
+                    current.arousalSamples,
+
+                cdiSamples:
+                    current.cdiSamples,
+
+                avgValence:
+                    current.avgValence,
+
+                avgArousal:
+                    current.avgArousal,
+
+                avgCDI:
+                    current.avgCDI
             };
 
-            sessionRef.current = next;
+            sessionRef.current =
+                next;
+
             setSession(next);
 
             /*
@@ -314,9 +418,10 @@ export function GameSessionProvider({ children }) {
                 setEngineError(null);
 
                 adaptGameDifficulty({
-                    game_type: gameTypeForApi(
-                        current.gameId
-                    ),
+                    game_type:
+                        gameTypeForApi(
+                            current.gameId
+                        ),
 
                     current_level:
                         current.level,
@@ -329,30 +434,42 @@ export function GameSessionProvider({ children }) {
 
                     is_stalled:
                         safeLatency > 4500,
-                    facial_valence: liveAffect.valence,
-                    cognitive_drift_index: liveCDI
+
+                    facial_valence:
+                        liveAffect.valence,
+
+                    cognitive_drift_index:
+                        liveCDI
                 })
-                    .then((response) => {
-                        /*
-                         * The session may have ended while the
-                         * adaptation request was running.
-                         */
-                        if (
-                            !response?.next_level ||
-                            !sessionRef.current ||
-                            sessionRef.current.completed
-                        ) {
-                            return;
+                    .then(
+                        (response) => {
+                            /*
+                             * The session may have ended while
+                             * the adaptation request was running.
+                             */
+                            if (
+                                !response?.next_level ||
+                                !sessionRef.current ||
+                                sessionRef.current
+                                    .completed
+                            ) {
+                                return;
+                            }
+
+                            const updated = {
+                                ...sessionRef.current,
+                                level:
+                                    response.next_level
+                            };
+
+                            sessionRef.current =
+                                updated;
+
+                            setSession(
+                                updated
+                            );
                         }
-
-                        const updated = {
-                            ...sessionRef.current,
-                            level: response.next_level
-                        };
-
-                        sessionRef.current = updated;
-                        setSession(updated);
-                    })
+                    )
                     .catch(() => {
                         /*
                          * Game continues normally even when the
@@ -363,168 +480,181 @@ export function GameSessionProvider({ children }) {
                         );
                     })
                     .finally(() => {
-                        setIsAdapting(false);
+                        setIsAdapting(
+                            false
+                        );
                     });
             }
         },
-        [liveAffect, liveCDI]
+        [
+            liveAffect,
+            liveCDI
+        ]
     );
 
     /*
      * ------------------------------------------------------------
      * COMPLETE SESSION
      * ------------------------------------------------------------
-     *
-     * Called when the user leaves a game.
-     *
-     * This sends the accumulated game data to the EXISTING
-     * backend /sync endpoint.
      */
-    const complete = useCallback(async () => {
-        const current = sessionRef.current;
 
-        /*
-         * AuthContext currently exposes patientId/id.
-         */
-        const patientId =
-            user?.patientId ?? user?.id;
+    const complete =
+        useCallback(
+            async () => {
+                const current =
+                    sessionRef.current;
 
-        /*
-         * Nothing to send.
-         */
-        if (!current) {
-            return;
-        }
+                /*
+                 * AuthContext currently exposes patientId/id.
+                 */
+                const patientId =
+                    user?.patientId ??
+                    user?.id;
 
-        /*
-         * Already completed.
-         */
-        if (current.completed) {
-            return;
-        }
-
-        /*
-         * Prevent duplicate completion requests while
-         * the first request is still being processed.
-         */
-        if (
-            completingSessionRef.current ===
-            current.local_session_id
-        ) {
-            return;
-        }
-
-        /*
-         * We cannot send a session without a patient ID.
-         */
-        if (patientId == null) {
-            console.warn(
-                "Game session was not synced because no patient ID was available."
-            );
-
-            return;
-        }
-
-        completingSessionRef.current =
-            current.local_session_id;
-
-        /*
-         * Freeze the session before sending it.
-         */
-        const completed = {
-            ...current,
-            completed: true
-        };
-
-        sessionRef.current = completed;
-        setSession(completed);
-
-        /*
-         * Calculate final duration once.
-         */
-        const durationSeconds =
-            Math.max(
-                0,
-                (Date.now() - current.startedAt) /
-                    1000
-            );
-
-        /*
-         * Existing backend payload.
-         *
-         * IMPORTANT:
-         * We are NOT changing the backend.
-         * These fields already match the existing
-         * GameSessionSyncPayload.
-         */
-        const sessionPayload = {
-            local_session_id:
-                current.local_session_id,
-
-            patient_id:
-                Number(patientId),
-
-            game_type:
-                gameTypeForApi(
-                    current.gameId
-                ),
-
-            score:
-                current.score,
-
-            duration_seconds:
-                durationSeconds,
-
-            total_errors:
-                current.errors,
-
-            level_achieved:
-                current.level,
-
-            reaction_times_ms:
-                current.reactionTimes,
-
-            avg_cdi: current.avgCDI,
-            avg_valence: current.avgValence,
-
-            created_at_offline:
-                new Date().toISOString()
-        };
-
-        try {
-            await queueOperation({
-                endpoint: "/sync",
-                method: "POST",
-
-                data: {
-                    sessions: [
-                        sessionPayload
-                    ]
+                /*
+                 * Nothing to send.
+                 */
+                if (!current) {
+                    return;
                 }
-            });
-        } catch (error) {
-            /*
-             * queueOperation is responsible for the offline
-             * synchronization flow.
-             *
-             * We don't throw here because the game itself
-             * should already be considered completed.
-             */
-            console.warn(
-                "Game session queued for synchronization:",
-                error
-            );
-        }
-    }, [user?.patientId, user?.id]);
+
+                /*
+                 * Already completed.
+                 */
+                if (current.completed) {
+                    return;
+                }
+
+                /*
+                 * Prevent duplicate completion requests.
+                 */
+                if (
+                    completingSessionRef.current ===
+                    current.local_session_id
+                ) {
+                    return;
+                }
+
+                /*
+                 * We cannot send a session without a patient ID.
+                 */
+                if (patientId == null) {
+                    console.warn(
+                        "Game session was not synced because no patient ID was available."
+                    );
+
+                    return;
+                }
+
+                completingSessionRef.current =
+                    current.local_session_id;
+
+                /*
+                 * Freeze the session before sending it.
+                 */
+                const completed = {
+                    ...current,
+                    completed: true
+                };
+
+                sessionRef.current =
+                    completed;
+
+                setSession(
+                    completed
+                );
+
+                /*
+                 * Calculate final duration once.
+                 */
+                const durationSeconds =
+                    Math.max(
+                        0,
+                        (Date.now() -
+                            current.startedAt) /
+                            1000
+                    );
+
+                /*
+                 * Existing backend payload.
+                 */
+                const sessionPayload = {
+                    local_session_id:
+                        current.local_session_id,
+
+                    patient_id:
+                        Number(patientId),
+
+                    game_type:
+                        gameTypeForApi(
+                            current.gameId
+                        ),
+
+                    score:
+                        current.score,
+
+                    duration_seconds:
+                        durationSeconds,
+
+                    total_errors:
+                        current.errors,
+
+                    level_achieved:
+                        current.level,
+
+                    reaction_times_ms:
+                        current.reactionTimes,
+
+                    avg_cdi:
+                        current.avgCDI,
+
+                    avg_valence:
+                        current.avgValence,
+
+                    created_at_offline:
+                        new Date().toISOString()
+                };
+
+                try {
+                    await queueOperation({
+                        endpoint: "/sync",
+                        method: "POST",
+
+                        data: {
+                            sessions: [
+                                sessionPayload
+                            ]
+                        }
+                    });
+                } catch (error) {
+                    /*
+                     * queueOperation handles offline
+                     * synchronization.
+                     */
+                    console.warn(
+                        "Game session queued for synchronization:",
+                        error
+                    );
+                }
+            },
+            [
+                user?.patientId,
+                user?.id
+            ]
+        );
 
     /*
      * ------------------------------------------------------------
      * RESET SESSION
      * ------------------------------------------------------------
      */
+
     const reset = useCallback(() => {
-        sessionRef.current = null;
-        completingSessionRef.current = null;
+        sessionRef.current =
+            null;
+
+        completingSessionRef.current =
+            null;
 
         setSession(null);
         setEngineError(null);
@@ -535,35 +665,17 @@ export function GameSessionProvider({ children }) {
      * ------------------------------------------------------------
      * CONTEXT VALUE
      * ------------------------------------------------------------
-     *
-     * Existing game components can continue using:
-     *
-     * const {
-     *     start,
-     *     record,
-     *     complete
-     * } = useGameSession();
-     *
-     * Nothing needs to change for the basic API.
      */
+
     const value = {
         session,
 
-        /*
-         * Current score.
-         */
         score:
             session?.score ?? 0,
 
-        /*
-         * Existing property used by the game UI.
-         */
         completed:
             session?.correct ?? 0,
 
-        /*
-         * Useful additional metrics for future UI.
-         */
         correct:
             session?.correct ?? 0,
 
@@ -585,7 +697,19 @@ export function GameSessionProvider({ children }) {
         reset,
 
         engineError,
-        isAdapting
+        isAdapting,
+
+        /*
+         * --------------------------------------------------------
+         * A/V STATUS
+         * --------------------------------------------------------
+         *
+         * These are additional context values.
+         * Existing game logic does not need to change.
+         */
+        isMonitoring,
+        cameraStatus,
+        micStatus
     };
 
     return (
@@ -595,14 +719,16 @@ export function GameSessionProvider({ children }) {
     );
 }
 
-export const useGameSession = () => {
-    const context = useContext(Ctx);
+export const useGameSession =
+    () => {
+        const context =
+            useContext(Ctx);
 
-    if (!context) {
-        throw new Error(
-            "useGameSession must be used inside GameSessionProvider"
-        );
-    }
+        if (!context) {
+            throw new Error(
+                "useGameSession must be used inside GameSessionProvider"
+            );
+        }
 
-    return context;
-};
+        return context;
+    };

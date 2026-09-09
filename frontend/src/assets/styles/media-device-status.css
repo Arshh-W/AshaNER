@@ -1,0 +1,284 @@
+/* =========================================================
+   MEDIA DEVICE STATUS
+   ========================================================= */
+
+.media-device-status {
+    width: fit-content;
+    max-width: calc(100% - 32px);
+
+    margin: 32px auto 20px;
+
+    padding: 8px 12px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    background: rgba(255, 255, 255, 0.88);
+
+    border: 1px solid rgba(
+        22,
+        79,
+        56,
+        0.10
+    );
+
+    border-radius: 999px;
+
+    box-shadow:
+        0 8px 24px rgba(
+            22,
+            79,
+            56,
+            0.07
+        );
+
+    backdrop-filter: blur(10px);
+
+    font-family: inherit;
+}
+
+
+/* =========================================================
+   DEVICE ITEM
+   ========================================================= */
+
+.media-device-item {
+    min-width: 142px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    color: #164f38;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   DEVICE NAME
+   ========================================================= */
+
+.media-device-main {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    white-space: nowrap;
+}
+
+.media-device-main svg {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   DEVICE STATE
+   ========================================================= */
+
+.media-device-state {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    white-space: nowrap;
+
+    font-size: 11px;
+
+    color: #66736d;
+}
+
+
+/* =========================================================
+   STATUS DOT
+   ========================================================= */
+
+.media-device-dot {
+    width: 7px;
+    height: 7px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+
+/* =========================================================
+   CONNECTED
+   ========================================================= */
+
+.media-device-status-connected
+    .media-device-dot {
+    color: #2f8f5b;
+}
+
+.media-device-status-connected
+    .media-device-state {
+    color: #2f8f5b;
+}
+
+
+/* =========================================================
+   DISCONNECTED
+   ========================================================= */
+
+.media-device-status-disconnected
+    .media-device-dot {
+    color: #d95c4f;
+}
+
+.media-device-status-disconnected
+    .media-device-state {
+    color: #c74f43;
+}
+
+
+/* =========================================================
+   PERMISSION DENIED
+   ========================================================= */
+
+.media-device-status-permission
+    .media-device-dot {
+    color: #d89032;
+}
+
+.media-device-status-permission
+    .media-device-state {
+    color: #bd7720;
+}
+
+
+/* =========================================================
+   UNAVAILABLE
+   ========================================================= */
+
+.media-device-status-unavailable
+    .media-device-dot {
+    color: #8a928e;
+}
+
+.media-device-status-unavailable
+    .media-device-state {
+    color: #727a76;
+}
+
+
+/* =========================================================
+   CHECKING
+   ========================================================= */
+
+.media-device-status-checking
+    .media-device-dot {
+    color: #8a928e;
+}
+
+.media-device-status-checking
+    .media-device-state {
+    color: #727a76;
+}
+
+
+/* =========================================================
+   CHECKING ANIMATION
+   ========================================================= */
+
+.media-device-spinner {
+    animation:
+        media-device-spin 1s linear infinite;
+}
+
+@keyframes media-device-spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.media-device-divider {
+    width: 1px;
+    height: 24px;
+
+    background:
+        rgba(
+            22,
+            79,
+            56,
+            0.12
+        );
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .media-device-status {
+        width: calc(100% - 20px);
+
+        justify-content: center;
+
+        border-radius: 18px;
+
+        padding: 9px 10px;
+
+        gap: 8px;
+    }
+
+    .media-device-item {
+        min-width: 0;
+
+        flex: 1;
+
+        gap: 6px;
+
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .media-device-state {
+        font-size: 10px;
+    }
+
+    .media-device-divider {
+        height: 34px;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .media-device-status {
+        gap: 6px;
+    }
+
+    .media-device-main {
+        font-size: 11px;
+    }
+
+    .media-device-state {
+        font-size: 9px;
+    }
+
+}
