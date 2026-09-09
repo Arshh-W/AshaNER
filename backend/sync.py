@@ -95,14 +95,36 @@ def batch_sync_offline_data(
                 score = event.data.get("score", 0)
                 duration = event.data.get("duration_seconds", 60.0)
                 errors = event.data.get("total_errors", 0)
+                avg_valence = event.data.get("avg_valence")
+                avg_arousal = event.data.get("avg_arousal")
+                distress_count = event.data.get("distress_count", 0)
+                affect_sample_count = event.data.get("affect_sample_count", 0)
 
                 cursor.execute(
                     """
-                    INSERT INTO game_sessions 
-                    (local_session_id, patient_id, game_type, score, duration_seconds, total_errors, created_at, client_event_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO game_sessions
+                    (
+                        local_session_id, patient_id, game_type, score,
+                        duration_seconds, total_errors, created_at,
+                        avg_valence, avg_arousal, distress_count,
+                        affect_sample_count, client_event_id
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (local_session_id, event.patient_id, game_type, score, duration, errors, event.timestamp_utc, event.client_event_id)
+                    (
+                        local_session_id,
+                        event.patient_id,
+                        game_type,
+                        score,
+                        duration,
+                        errors,
+                        event.timestamp_utc,
+                        avg_valence,
+                        avg_arousal,
+                        distress_count,
+                        affect_sample_count,
+                        event.client_event_id,
+                    )
                 )
 
             else:

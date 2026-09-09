@@ -616,7 +616,12 @@ def build_game_stats(patient_id: int) -> dict:
                    COALESCE(AVG(score), 0) AS avg_score,
                    COALESCE(AVG(total_errors), 0) AS avg_errors,
                    COALESCE(AVG(duration_seconds), 0) AS avg_duration,
-                   COALESCE(MAX(level_achieved), 1) AS best_level
+                   COALESCE(MAX(level_achieved), 1) AS best_level,
+                   AVG(avg_valence) AS avg_valence,
+                   AVG(avg_arousal) AS avg_arousal,
+                   COALESCE(SUM(distress_count), 0) AS distress_count,
+                   COALESCE(SUM(affect_sample_count), 0) AS affect_sample_count,
+                   COUNT(avg_valence) AS affect_sessions
             FROM game_sessions
             WHERE patient_id = ?
             """,
@@ -630,7 +635,11 @@ def build_game_stats(patient_id: int) -> dict:
                    COALESCE(AVG(score), 0) AS average_score,
                    COALESCE(AVG(total_errors), 0) AS average_errors,
                    COALESCE(AVG(duration_seconds), 0) AS average_duration,
-                   COALESCE(MAX(level_achieved), 1) AS best_level
+                   COALESCE(MAX(level_achieved), 1) AS best_level,
+                   AVG(avg_valence) AS average_valence,
+                   AVG(avg_arousal) AS average_arousal,
+                   COALESCE(SUM(distress_count), 0) AS distress_count,
+                   COALESCE(SUM(affect_sample_count), 0) AS affect_sample_count
             FROM game_sessions
             WHERE patient_id = ?
             GROUP BY game_type
@@ -644,6 +653,7 @@ def build_game_stats(patient_id: int) -> dict:
             SELECT id, local_session_id, patient_id, game_type, score,
                    duration_seconds, total_errors, level_achieved,
                    reaction_times_json, created_at, avg_cdi, avg_valence,
+                   avg_arousal, distress_count, affect_sample_count,
                    triggered_reminiscence, xai_reason
             FROM game_sessions
             WHERE patient_id = ?
@@ -677,6 +687,9 @@ def build_game_stats(patient_id: int) -> dict:
                 "created_at": row["created_at"],
                 "avg_cdi": row["avg_cdi"],
                 "avg_valence": row["avg_valence"],
+                "avg_arousal": row["avg_arousal"],
+                "distress_count": int(row["distress_count"] or 0),
+                "affect_sample_count": int(row["affect_sample_count"] or 0),
                 "triggered_reminiscence": bool(row["triggered_reminiscence"]),
                 "xai_reason": row["xai_reason"],
             }
@@ -692,6 +705,18 @@ def build_game_stats(patient_id: int) -> dict:
                 "average_errors_per_session": round(overall["avg_errors"], 1),
                 "average_duration_seconds": round(overall["avg_duration"], 1),
                 "best_level": int(overall["best_level"] or 1),
+                "average_valence": round(overall["avg_valence"], 3) if overall["avg_valence"] is not None else None,
+                "average_arousal": round(overall["avg_arousal"], 3) if overall["avg_arousal"] is not None else None,
+                "distress_observations": int(overall["distress_count"] or 0),
+                "affect_sample_count": int(overall["affect_sample_count"] or 0),
+                "affect_sessions": int(overall["affect_sessions"] or 0),
+            },
+            "affect_insights": {
+                "average_valence": round(overall["avg_valence"], 3) if overall["avg_valence"] is not None else None,
+                "average_arousal": round(overall["avg_arousal"], 3) if overall["avg_arousal"] is not None else None,
+                "distress_observations": int(overall["distress_count"] or 0),
+                "affect_sample_count": int(overall["affect_sample_count"] or 0),
+                "sessions_with_affect_data": int(overall["affect_sessions"] or 0),
             },
             "games": [
                 {
@@ -701,6 +726,10 @@ def build_game_stats(patient_id: int) -> dict:
                     "average_errors": round(row["average_errors"], 1),
                     "average_duration": round(row["average_duration"], 1),
                     "best_level": int(row["best_level"] or 1),
+                    "average_valence": round(row["average_valence"], 3) if row["average_valence"] is not None else None,
+                    "average_arousal": round(row["average_arousal"], 3) if row["average_arousal"] is not None else None,
+                    "distress_observations": int(row["distress_count"] or 0),
+                    "affect_sample_count": int(row["affect_sample_count"] or 0),
                 }
                 for row in game_rows
             ],
@@ -862,9 +891,10 @@ def sync_offline_game_sessions(
                     local_session_id, patient_id, game_type, score,
                     duration_seconds, total_errors, level_achieved,
                     reaction_times_json, created_at, avg_cdi, avg_valence,
+                    avg_arousal, distress_count, affect_sample_count,
                     triggered_reminiscence, xai_reason
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     session.local_session_id,
@@ -878,6 +908,9 @@ def sync_offline_game_sessions(
                     session.created_at_offline,
                     session.avg_cdi,
                     session.avg_valence,
+                    session.avg_arousal,
+                    session.distress_count,
+                    session.affect_sample_count,
                     int(session.triggered_reminiscence or False),
                     session.xai_reason,
                 ),

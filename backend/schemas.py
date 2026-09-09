@@ -113,6 +113,8 @@ class GameSessionSyncPayload(BaseModel):
     avg_cdi: Optional[float] = None
     avg_valence: Optional[float] = None
     avg_arousal: Optional[float] = None
+    distress_count: int = Field(default=0, ge=0)
+    affect_sample_count: int = Field(default=0, ge=0)
     triggered_reminiscence: Optional[bool] = False
     xai_reason: Optional[str] = None
 
@@ -141,6 +143,9 @@ class GameHistoryItem(BaseModel):
     created_at: str
     avg_cdi: Optional[float] = None
     avg_valence: Optional[float] = None
+    avg_arousal: Optional[float] = None
+    distress_count: int = 0
+    affect_sample_count: int = 0
     triggered_reminiscence: bool = False
     xai_reason: Optional[str] = None
 
@@ -177,6 +182,9 @@ class GameSessionResponse(BaseModel):
     created_at: str
     avg_cdi: Optional[float] = None
     avg_valence: Optional[float] = None
+    avg_arousal: Optional[float] = None
+    distress_count: int = 0
+    affect_sample_count: int = 0
     triggered_reminiscence: bool = False
     xai_reason: Optional[str] = None
 
